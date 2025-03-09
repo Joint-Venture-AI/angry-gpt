@@ -29,7 +29,7 @@ export const sendEmail = async (values: ISendEmail) => {
 
     logger.info(`Mail send successfully. On: ${accepted[0]}`);
   } catch (error: any) {
-    errorLogger.error('Email send failed. Reason:', error.message);
+    errorLogger.error('Email send failed', error.message);
     throw new ServerError(StatusCodes.BAD_REQUEST, error.message);
   }
 };

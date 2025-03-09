@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { createToken, generateOtp, verifyToken } from './Auth.utils';
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../../../errors/ServerError';
-import { sendEmail } from '../../../helpers/sendMail';
+import { sendEmail } from '../../../util/sendMail';
 import { sendOtpTemplate } from './Auth.template';
 import { Types } from 'mongoose';
 export const AuthServices = {
