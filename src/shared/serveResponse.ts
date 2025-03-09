@@ -17,17 +17,8 @@ type ApiResponse<T> = {
 };
 
 /**
- * Sends a standardized JSON response.
- *
- * @template T - The type of the response data.
- * @param {Response} res - The Express response object.
- * @param {Object} [options] - Optional parameters for the response.
- * @param {number} [options.statusCode=StatusCodes.OK] - The HTTP status code for the response.
- * @param {boolean} [options.success=true] - Indicates whether the request was successful.
- * @param {string} [options.message='Success'] - A message describing the result of the request.
- * @param {Object} [options.meta={}] - Additional metadata to include in the response.
- * @param {T} [options.data] - The data to include in the response.
- * @returns {void}
+ * Sends a standardized API response with consistent formatting
+ * including success status, message, metadata and optional data payload
  */
 const serveResponse = <T>(
   res: Response,

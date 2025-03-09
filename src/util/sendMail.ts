@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer';
 import config from '../config';
 import { errorLogger, logger } from '../shared/logger';
-import { ISendEmail } from '../types/email';
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../errors/ServerError';
 
@@ -17,7 +16,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async (values: ISendEmail) => {
+/**
+ * Send email
+ * @param {TEmailProps} values - Email values
+ * @returns void
+ */
+export const sendEmail = async (values: TEmailProps) => {
   try {
     const { accepted } = await transporter.sendMail({
       from,
@@ -32,4 +36,10 @@ export const sendEmail = async (values: ISendEmail) => {
     errorLogger.error('Email send failed', error.message);
     throw new ServerError(StatusCodes.BAD_REQUEST, error.message);
   }
+};
+
+type TEmailProps = {
+  to: string;
+  subject: string;
+  html: string;
 };

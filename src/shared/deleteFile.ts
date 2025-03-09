@@ -3,6 +3,10 @@ import path from 'path';
 import { errorLogger, logger } from './logger';
 import colors from 'colors';
 
+/**
+ * Delete a file from the uploads directory
+ * @param file - The file to delete
+ */
 const deleteFile = async (file: string) => {
   const filePath = path.join(process.cwd(), 'uploads', file);
 

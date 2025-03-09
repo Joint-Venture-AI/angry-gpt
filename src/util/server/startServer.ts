@@ -2,7 +2,7 @@ import colors from 'colors';
 import { createServer } from 'http';
 import app from '../../app';
 import config from '../../config';
-import seedAdmin from '../../DB';
+import seedAdmin from '../../db';
 import { errorLogger, logger } from '../../shared/logger';
 import shutdownServer from './shutdownServer';
 import connectDB from './connectDB';

@@ -22,10 +22,6 @@ const catchAsync =
 export default catchAsync;
 
 /**
- * Wrapper for async request handlers with a custom error callback.
- * If an error occurs, the callback is invoked before passing the error to `next()`.
- */
-/**
  * Wrapper for async request handlers with a custom error handler.
  * If an error occurs, the provided error handler is invoked before passing the error to `next()`.
  */

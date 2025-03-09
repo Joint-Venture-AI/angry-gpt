@@ -2,23 +2,17 @@ import { RequestHandler } from 'express';
 import { UserServices } from './User.service';
 import { StatusCodes } from 'http-status-codes';
 import { AuthServices } from '../auth/Auth.service';
-import { TUser } from './User.interface';
 import catchAsync from '../../../shared/catchAsync';
 import config from '../../../config';
-import sendResponse from '../../../shared/sendResponse';
+import serveResponse from '../../../shared/serveResponse';
+import { verifyToken } from '../auth/Auth.utils';
 
 const createUser: RequestHandler = catchAsync(async ({ body }, res) => {
-  const { firstName, lastName, gender, email, password, avatar } = body;
+  body.name = { firstName: body.firstName, lastName: body.lastName };
+  body.role = undefined;
 
-  const userData: Partial<TUser> = {
-    name: { firstName, lastName },
-    gender,
-    email,
-    password,
-    avatar,
-  };
+  await UserServices.createUser(body);
 
-  await UserServices.createUser(userData);
   const { accessToken, refreshToken, user } = await AuthServices.loginUser({
     email: body.email,
     password: body.password,
@@ -26,11 +20,11 @@ const createUser: RequestHandler = catchAsync(async ({ body }, res) => {
 
   res.cookie('refreshToken', refreshToken, {
     secure: config.server.node_env !== 'development',
+    maxAge: verifyToken(refreshToken, 'refresh').exp! * 1000,
     httpOnly: true,
   });
 
-  sendResponse(res, {
-    success: true,
+  serveResponse(res, {
     statusCode: StatusCodes.CREATED,
     message: 'User created successfully!',
     data: { token: accessToken, user },
@@ -39,9 +33,8 @@ const createUser: RequestHandler = catchAsync(async ({ body }, res) => {
 
 const getAllUser: RequestHandler = catchAsync(async (req, res) => {
   const usersWithMeta = await UserServices.getAllUser(req.query);
-  sendResponse(res, {
-    success: true,
-    statusCode: StatusCodes.OK,
+
+  serveResponse(res, {
     message: 'Users are retrieved successfully!',
     data: usersWithMeta,
   });
@@ -53,9 +46,7 @@ const userList: RequestHandler = catchAsync(async (req, res) => {
     req.query.removeId as string,
   );
 
-  sendResponse(res, {
-    success: true,
-    statusCode: StatusCodes.OK,
+  serveResponse(res, {
     message: 'Users are retrieved successfully!',
     data: users,
   });
