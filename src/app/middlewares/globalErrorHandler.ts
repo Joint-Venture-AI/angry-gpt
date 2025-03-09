@@ -3,7 +3,6 @@
 /* eslint-disable no-unused-expressions */
 import { ErrorRequestHandler } from 'express';
 import config from '../../config';
-import ApiError from '../../errors/ApiError';
 import handleValidationError from '../../errors/handleValidationError';
 import handleZodError from '../../errors/handleZodError';
 import { errorLogger } from '../../shared/logger';
@@ -11,7 +10,7 @@ import { IErrorMessage } from '../../types/errors.types';
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../../errors/ServerError';
 
-const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
+const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   config.server.node_env === 'development'
     ? console.log('🚨 globalErrorHandler ~~ ', error)
     : errorLogger.error('🚨 globalErrorHandler ~~ ', error);
@@ -53,7 +52,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
           },
         ]
       : [];
-  } else if (error instanceof ApiError || error instanceof ServerError) {
+  } else if (error instanceof ServerError) {
     statusCode = error.statusCode;
     message = error.message;
     errorMessages = error.message

@@ -1,113 +1,139 @@
 import User from '../user/User.model';
 import bcrypt from 'bcrypt';
-import { createToken, verifyToken } from './Auth.utils';
-import { TUser } from '../user/User.interface';
-import { makeResetBody } from './Auth.constant';
+import { createToken, generateOtp, verifyToken } from './Auth.utils';
 import { StatusCodes } from 'http-status-codes';
-import ApiError from '../../../errors/ApiError';
+import ServerError from '../../../errors/ServerError';
 import { sendEmail } from '../../../helpers/sendMail';
-import config from '../../../config';
-
+import { sendOtpTemplate } from './Auth.template';
+import { Types } from 'mongoose';
 export const AuthServices = {
   async loginUser({ email, password }: { email: string; password: string }) {
     const user = await User.findOne({
       email,
     }).select('+password');
 
-    if (!user) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'User not found!');
-    }
+    if (!user)
+      throw new ServerError(
+        StatusCodes.UNAUTHORIZED,
+        "Email or password don't match!",
+      );
 
-    if (user.status !== 'ACTIVE') {
-      throw new ApiError(
+    if (user.status !== 'ACTIVE')
+      throw new ServerError(
         StatusCodes.FORBIDDEN,
         'Account is not active. Please contact support.',
       );
-    }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Incorrect password!');
-    }
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword)
+      throw new ServerError(
+        StatusCodes.UNAUTHORIZED,
+        "Email or password don't match!",
+      );
 
-    const {
-      _id,
-      gender,
-      name: { firstName, lastName },
-      role,
-      avatar,
-    } = user.toJSON();
+    const partialUser = await User.findById(user._id).select(
+      'name gender avatar email role',
+    );
 
-    const partialUser: Partial<TUser> = {
-      _id,
-      email,
-      gender,
-      name: { firstName, lastName },
-      role,
-      avatar,
-    };
+    const accessToken = createToken({ email }, 'access');
 
-    const jwtPayload = {
-      email,
-    };
-
-    const accessToken = createToken(jwtPayload, 'access');
-
-    const refreshToken = createToken(jwtPayload, 'refresh');
+    const refreshToken = createToken({ email }, 'refresh');
 
     return { accessToken, user: partialUser, refreshToken };
   },
 
   async changePassword(
-    user: TUser,
-    {
-      newPassword,
-      oldPassword,
-    }: {
-      newPassword: string;
-      oldPassword: string;
-    },
+    id: Types.ObjectId,
+    { newPassword, oldPassword }: Record<string, string>,
   ) {
-    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-    if (!isPasswordValid) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Incorrect password!');
-    }
+    const user = (await User.findById(id).select('+password'))!;
 
-    newPassword = await bcrypt.hash(newPassword, config.bcrypt_salt_rounds);
+    const isValidPassword = await bcrypt.compare(oldPassword, user.password);
+    if (!isValidPassword)
+      throw new ServerError(
+        StatusCodes.UNAUTHORIZED,
+        "Email or password don't match!",
+      );
 
-    await User.updateOne(
-      {
-        email: user.email,
-      },
-      {
-        password: newPassword,
-      },
+    user.password = newPassword;
+
+    await user.save();
+  },
+
+  async sendOtp(email: string) {
+    const user = await User.findOne({ email });
+
+    if (!user)
+      throw new ServerError(
+        StatusCodes.NOT_FOUND,
+        'User not found. Check your email and try again.',
+      );
+
+    const otp = generateOtp();
+
+    user.otp = otp;
+    user.otpExp = new Date(Date.now() + 10 * 60 * 1000);
+
+    await user.save();
+
+    sendEmail({
+      to: email,
+      subject: `Your Angry GPT OTP is ${otp}.`,
+      html: sendOtpTemplate(user.name.firstName, otp),
+    });
+  },
+
+  async verifyOtp(email: string, otp: number) {
+    const user = await User.findOne({ email });
+
+    if (!user)
+      throw new ServerError(
+        StatusCodes.NOT_FOUND,
+        'User not found. Check your email and try again.',
+      );
+
+    if (user.otpExp && new Date(user.otpExp) < new Date())
+      throw new ServerError(
+        StatusCodes.UNAUTHORIZED,
+        'The OTP has expired. Please request a new one.',
+      );
+
+    if (user.otp !== otp)
+      throw new ServerError(
+        StatusCodes.UNAUTHORIZED,
+        'The OTP you entered is incorrect or expired. Please check your email and try again.',
+      );
+
+    /** otp = one time password; Be careful */
+    user.otp = undefined;
+    user.otpExp = undefined;
+
+    await user.save();
+
+    const accessToken = createToken(
+      { email: user.email, userId: user._id },
+      'access',
     );
+
+    return { accessToken };
   },
 
-  async forgetPassword({ email }: TUser) {
-    const jwtPayload = {
-      email,
-    };
+  async resetPassword(email: string, password: string) {
+    const user = await User.findOne({ email });
 
-    const resetToken = createToken(jwtPayload, 'reset');
+    if (!user)
+      throw new ServerError(
+        StatusCodes.NOT_FOUND,
+        'User not found. Try again later.',
+      );
 
-    await sendEmail(email, 'Password Reset Request', makeResetBody(resetToken));
-  },
-
-  async resetPassword({ email }: TUser) {
-    const jwtPayload = {
-      email,
-    };
-
-    const resetToken = createToken(jwtPayload, 'reset');
-
-    await sendEmail(email, 'Password Reset Request', makeResetBody(resetToken));
+    user.password = password;
+    await user.save();
   },
 
   async refreshToken(token: string) {
     if (!token) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Access Denied!');
+      throw new ServerError(StatusCodes.UNAUTHORIZED, 'Access Denied!');
     }
 
     const { email } = verifyToken(token.split(' ')[0], 'refresh');
@@ -117,11 +143,11 @@ export const AuthServices = {
     });
 
     if (!user) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'User not found!');
+      throw new ServerError(StatusCodes.NOT_FOUND, 'User not found!');
     }
 
     if (user.status !== 'ACTIVE') {
-      throw new ApiError(
+      throw new ServerError(
         StatusCodes.FORBIDDEN,
         'Account is not active. Please contact support.',
       );

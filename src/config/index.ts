@@ -1,5 +1,6 @@
 import './configure';
 import env from '../util/env/getEnv';
+import type ms from 'ms';
 
 export default {
   server: {
@@ -16,11 +17,11 @@ export default {
   jwt: {
     access_token: {
       secret: env<string>('jwt secret'),
-      expire_in: env<string>('jwt expire in'),
+      expire_in: env<ms.StringValue>('jwt expire in', '1h'),
     },
     refresh_token: {
       secret: env<string>('jwt refresh secret'),
-      expire_in: env<string>('jwt refresh expire in'),
+      expire_in: env<ms.StringValue>('jwt refresh expire in', '1d'),
     },
   },
   payment: {

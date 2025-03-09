@@ -14,4 +14,8 @@ export type TUser = {
   password: string;
   role: TUserRole;
   status?: 'ACTIVE' | 'SUSPENDED' | 'DELETED';
+  otp?: number;
+  otpExp?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 class ServerError extends Error {
   constructor(
-    // eslint-disable-next-line no-unused-vars
     public readonly statusCode: number,
     message = 'An error occurred',
     stack?: string,

@@ -6,50 +6,32 @@ export type TTokenType = 'access' | 'reset' | 'refresh';
 export const createToken = (jwtPayload: JwtPayload, type: TTokenType) => {
   jwtPayload.tokenType = type;
 
-  let token = '';
-
   switch (type) {
     case 'access':
-      token = jwt.sign(jwtPayload, config.jwt.access_token.secret as string, {
+      return jwt.sign(jwtPayload, config.jwt.access_token.secret, {
         expiresIn: config.jwt.access_token.expire_in,
       });
-      break;
     case 'reset':
-      token = jwt.sign(jwtPayload, config.jwt.access_token.secret as string, {
+      return jwt.sign(jwtPayload, config.jwt.access_token.secret, {
         expiresIn: '10m',
       });
-      break;
     case 'refresh':
-      token = jwt.sign(jwtPayload, config.jwt.refresh_token.secret as string, {
+      return jwt.sign(jwtPayload, config.jwt.refresh_token.secret, {
         expiresIn: config.jwt.refresh_token.expire_in,
       });
   }
-
-  return token;
 };
 
 export const verifyToken = (token: string, type: TTokenType) => {
-  let user: JwtPayload;
-
   switch (type) {
     case 'access':
-      user = jwt.verify(
-        token,
-        config.jwt.access_token.secret as string,
-      ) as JwtPayload;
-      break;
+      return jwt.verify(token, config.jwt.access_token.secret) as JwtPayload;
     case 'reset':
-      user = jwt.verify(
-        token,
-        config.jwt.access_token.secret as string,
-      ) as JwtPayload;
-      break;
+      return jwt.verify(token, config.jwt.access_token.secret) as JwtPayload;
     case 'refresh':
-      user = jwt.verify(
-        token,
-        config.jwt.refresh_token.secret as string,
-      ) as JwtPayload;
+      return jwt.verify(token, config.jwt.refresh_token.secret) as JwtPayload;
   }
-
-  return user;
 };
+
+export const generateOtp = () =>
+  Math.floor(1_00_000 + Math.random() * 9_00_000);

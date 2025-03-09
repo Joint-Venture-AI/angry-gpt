@@ -1,5 +1,6 @@
 import { Error } from 'mongoose';
 import { IErrorMessage } from '../types/errors.types';
+import { StatusCodes } from 'http-status-codes';
 
 const handleValidationError = (error: Error.ValidationError) => {
   const errorMessages: IErrorMessage[] = Object.values(error.errors).map(
@@ -11,10 +12,9 @@ const handleValidationError = (error: Error.ValidationError) => {
     },
   );
 
-  const statusCode = 400;
   return {
-    statusCode,
-    message: 'Validation Error',
+    statusCode: StatusCodes.BAD_REQUEST,
+    message: 'Data validation error',
     errorMessages,
   };
 };
