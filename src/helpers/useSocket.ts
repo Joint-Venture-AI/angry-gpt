@@ -6,7 +6,6 @@ import { logger } from '../shared/logger';
 import config from '../config';
 import { jwtHelper } from './jwtHelper';
 import User from '../app/modules/user/User.model';
-import chatSocket from '../app/modules/chat/Chat.socket';
 
 export let io: Server | null;
 
@@ -48,8 +47,7 @@ const useSocket = (server: http.Server) => {
 
       io?.emit('onlineUsers', Array.from(onlineUsers));
 
-      // Attach chat socket events
-      chatSocket(socket, io!);
+      /** write socket handlers :> handler(socket, io!) */
 
       // Handle disconnection
       socket.on('disconnect', () => {

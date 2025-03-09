@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
-import { resolve } from 'path';
+import './configure';
 import env from '../util/env/getEnv';
-
-dotenv.config({ path: resolve(process.cwd(), '.env') });
 
 export default {
   server: {
@@ -16,7 +13,6 @@ export default {
   },
   allowed_origins: env<string[]>('allowed origins', []),
   bcrypt_salt_rounds: env<number>('bcrypt salt rounds', 10),
-  google_maps: env<string>('google maps'),
   jwt: {
     access_token: {
       secret: env<string>('jwt secret'),
