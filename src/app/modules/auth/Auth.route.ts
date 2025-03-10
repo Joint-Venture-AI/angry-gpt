@@ -29,15 +29,15 @@ router.patch(
   AuthController.changePassword,
 );
 
-// router.post('/send-otp', AuthController.sendOtp);
+router.post('/send-otp', AuthController.sendOtp);
 
-// router.post('/verify-otp', AuthController.verifyOtp);
+router.post('/verify-otp', AuthController.verifyOtp);
 
-// router.post(
-//   '/reset-password',
-//   auth('USER', 'ADMIN'),
-//   AuthController.resetPassword,
-// );
+router.post(
+  '/reset-password',
+  auth('USER', 'ADMIN'),
+  AuthController.resetPassword,
+);
 
 /**
  * generate new access token
