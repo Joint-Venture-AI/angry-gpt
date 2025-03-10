@@ -1,3 +1,5 @@
+import config from '../../../config';
+
 export const AuthTemplates = {
   otp: (userName: string, otp: number) => /*html*/ `
   <!DOCTYPE html>
@@ -5,7 +7,7 @@ export const AuthTemplates = {
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Angry GPT - OTP Verification</title>
+      <title>${config.server.name} - OTP Verification</title>
       <style>
         body {
           font-family: Arial, sans-serif;
@@ -51,7 +53,7 @@ export const AuthTemplates = {
     </head>
     <body>
       <div class="email-container">
-        <h1>Angry GPT</h1>
+        <h1>${config.server.name}</h1>
         <p>Hi ${userName}. Your OTP for verification is:</p>
         <p class="otp">${otp}</p>
         <p>
@@ -59,7 +61,7 @@ export const AuthTemplates = {
           it expires.
         </p>
         <p>If you didn’t request this, please ignore this email.</p>
-        <div class="footer">&copy; ${new Date().getFullYear()} Angry GPT</div>
+        <div class="footer">&copy; ${new Date().getFullYear()} ${config.server.name}</div>
       </div>
     </body>
   </html>

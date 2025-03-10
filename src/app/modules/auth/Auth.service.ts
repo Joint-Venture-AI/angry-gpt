@@ -6,6 +6,7 @@ import ServerError from '../../../errors/ServerError';
 import { sendEmail } from '../../../util/sendMail';
 import { AuthTemplates } from './Auth.template';
 import { Types } from 'mongoose';
+import config from '../../../config';
 export const AuthServices = {
   async login({ email, password }: Record<string, string>) {
     const user = await User.findOne({
@@ -78,7 +79,7 @@ export const AuthServices = {
 
     sendEmail({
       to: email,
-      subject: `Your Angry GPT OTP is ${otp}.`,
+      subject: `Your ${config.server.name} OTP is ${otp}.`,
       html: AuthTemplates.otp(user.name.firstName, otp),
     });
   },

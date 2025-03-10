@@ -13,6 +13,7 @@ export default {
     ip_address: env<string>('ip address', '0.0.0.0'),
     node_env: env<string>('node env', 'development'),
     port: env<number>('port', 3000),
+    name: env<string>('name'),
   },
   url: {
     database: env<string>('database url'),

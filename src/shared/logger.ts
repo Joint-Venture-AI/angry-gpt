@@ -2,29 +2,19 @@
 import path from 'path';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { createDir } from '../util/createDir';
-const { createLogger, format, transports } = require('winston');
+import config from '../config';
+import { createLogger, format, transports } from 'winston';
 const { combine, timestamp, label, printf } = format;
 
-const myFormat = printf(
-  ({
-    level,
-    message,
-    label,
-    timestamp,
-  }: {
-    level: string;
-    message: string;
-    label: string;
-    timestamp: Date;
-  }) => {
-    const date = new Date(timestamp);
-    const hour = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+const myFormat = printf((info: any) => {
+  const { level, message, label, timestamp } = info;
+  const date = new Date(timestamp);
+  const hour = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
 
-    return `${date.toDateString()} ${hour}:${minutes}:${seconds} [${label}] ${level}: ${message}`;
-  },
-);
+  return `${date.toDateString()} ${hour}:${minutes}:${seconds} [${label}] ${level}: ${message}`;
+});
 
 const logDir = path.resolve(process.cwd(), 'winston');
 
@@ -38,7 +28,7 @@ createDir(logDir);
  */
 const logger = createLogger({
   level: 'info',
-  format: combine(label({ label: 'Angry GPT' }), timestamp(), myFormat),
+  format: combine(label({ label: config.server.name }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
@@ -58,7 +48,7 @@ const logger = createLogger({
  */
 const errorLogger = createLogger({
   level: 'error',
-  format: combine(label({ label: 'Angry GPT' }), timestamp(), myFormat),
+  format: combine(label({ label: config.server.name }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
