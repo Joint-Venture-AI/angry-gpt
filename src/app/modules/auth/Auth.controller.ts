@@ -20,12 +20,11 @@ export const AuthController = {
     });
   }),
 
-  logout: catchAsync(async (_req, res) => {
-    ['refreshToken', 'resetToken'].forEach(token => {
-      res.cookie(token, '', {
-        secure: config.server.node_env !== 'development',
-        maxAge: 0,
+  logout: catchAsync(async (req, res) => {
+    Object.keys(req.cookies).forEach(cookie => {
+      res.clearCookie(cookie, {
         httpOnly: true,
+        secure: config.server.node_env !== 'development',
       });
     });
 
