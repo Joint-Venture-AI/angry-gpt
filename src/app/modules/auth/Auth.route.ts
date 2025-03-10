@@ -15,7 +15,7 @@ router.post(
     req.body.avatar = images[0];
   }),
   purifyRequest(UserValidation.userValidationSchema),
-  UserControllers.createUser,
+  UserControllers.create,
 );
 
 router.post('/login', AuthController.login);

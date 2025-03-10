@@ -3,6 +3,6 @@ import { UserControllers } from './User.controller';
 
 const router = Router();
 
-router.get('/', UserControllers.userList);
+router.get('/', UserControllers.list);
 
 export const UserRoutes = router;
