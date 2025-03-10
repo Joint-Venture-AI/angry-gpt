@@ -1,79 +1,68 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-unused-expressions */
+/* eslint-disable no-console */
 import { ErrorRequestHandler } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import colors from 'colors';
 import config from '../../config';
 import handleValidationError from '../../errors/handleValidationError';
 import handleZodError from '../../errors/handleZodError';
-import { errorLogger } from '../../shared/logger';
-import { IErrorMessage } from '../../types/errors.types';
-import { StatusCodes } from 'http-status-codes';
 import ServerError from '../../errors/ServerError';
+import { errorLogger } from '../../shared/logger';
+import { TErrorHandler, TErrorMessage } from '../../types/errors.types';
+
+const defaultError: TErrorHandler = {
+  statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+  message: 'Something went wrong',
+  errorMessages: [],
+};
+
+const createErrorMessage = (message: string): TErrorMessage[] => [
+  { path: '', message },
+];
+
+const handleError = (error: any): TErrorHandler => {
+  const errorHandlers: Record<string, () => TErrorHandler> = {
+    ZodError: () => handleZodError(error),
+    ValidationError: () => handleValidationError(error),
+    TokenExpiredError: () => ({
+      statusCode: StatusCodes.UNAUTHORIZED,
+      message: 'Session Expired',
+      errorMessages: createErrorMessage(
+        'Your session has expired. Please log in again to continue.',
+      ),
+    }),
+    JsonWebTokenError: () => ({
+      statusCode: StatusCodes.UNAUTHORIZED,
+      message: 'Invalid Token',
+      errorMessages: createErrorMessage(
+        'Your token is invalid. Please log in again to continue.',
+      ),
+    }),
+  };
+
+  if (error instanceof ServerError)
+    return {
+      statusCode: error.statusCode,
+      message: error.message,
+      errorMessages: createErrorMessage(error.message),
+    };
+
+  if (error instanceof Error)
+    return {
+      ...defaultError,
+      message: error.message,
+      errorMessages: createErrorMessage(error.message),
+    };
+
+  return errorHandlers[error.name]?.() ?? defaultError;
+};
 
 const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
-  config.server.node_env === 'development'
-    ? console.log('🚨 globalErrorHandler ~~ ', error)
-    : errorLogger.error('🚨 globalErrorHandler ~~ ', error);
+  if (config.server.node_env === 'development')
+    console.log(colors.red('🚨 globalErrorHandler ~~ '), error);
+  else errorLogger.error(colors.red('🚨 globalErrorHandler ~~ '), error);
 
-  let statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
-  let message = 'Something went wrong';
-  let errorMessages: IErrorMessage[] = [];
-
-  if (error.name === 'ZodError') {
-    const simplifiedError = handleZodError(error);
-    statusCode = simplifiedError.statusCode;
-    message = simplifiedError.message;
-    errorMessages = simplifiedError.errorMessages;
-  } else if (error.name === 'ValidationError') {
-    const simplifiedError = handleValidationError(error);
-    statusCode = simplifiedError.statusCode;
-    message = simplifiedError.message;
-    errorMessages = simplifiedError.errorMessages;
-  } else if (error.name === 'TokenExpiredError') {
-    statusCode = StatusCodes.UNAUTHORIZED;
-    message = 'Session Expired';
-    errorMessages = error?.message
-      ? [
-          {
-            path: '',
-            message:
-              'Your session has expired. Please log in again to continue.',
-          },
-        ]
-      : [];
-  } else if (error.name === 'JsonWebTokenError') {
-    statusCode = StatusCodes.UNAUTHORIZED;
-    message = 'Invalid Token';
-    errorMessages = error?.message
-      ? [
-          {
-            path: '',
-            message: 'Your token is invalid. Please log in again to continue.',
-          },
-        ]
-      : [];
-  } else if (error instanceof ServerError) {
-    statusCode = error.statusCode;
-    message = error.message;
-    errorMessages = error.message
-      ? [
-          {
-            path: '',
-            message: error.message,
-          },
-        ]
-      : [];
-  } else if (error instanceof Error) {
-    message = error.message;
-    errorMessages = error.message
-      ? [
-          {
-            path: '',
-            message: error?.message,
-          },
-        ]
-      : [];
-  }
+  const { statusCode, message, errorMessages } = handleError(error);
 
   res.status(statusCode).json({
     success: false,
