@@ -1,5 +1,9 @@
 declare global {
   interface String {
+    /**
+     * Converts a string to snake case
+     * @returns string
+     */
     toSnakeCase(): string;
   }
 }

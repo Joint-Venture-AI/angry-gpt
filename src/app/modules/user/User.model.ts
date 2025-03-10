@@ -46,7 +46,7 @@ const userSchema = new Schema<TUser>(
   { timestamps: true },
 );
 
-UserMiddlewares.schema(userSchema);
+userSchema.inject(UserMiddlewares.schema);
 
 const User = model<TUser>('User', userSchema);
 
