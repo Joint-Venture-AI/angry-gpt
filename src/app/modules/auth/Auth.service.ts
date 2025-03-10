@@ -132,9 +132,8 @@ export const AuthServices = {
   },
 
   async refreshToken(token: string) {
-    if (!token) {
-      throw new ServerError(StatusCodes.UNAUTHORIZED, 'Access Denied!');
-    }
+    if (!token)
+      throw new ServerError(StatusCodes.UNAUTHORIZED, 'You are not logged in!');
 
     const { email } = verifyToken(token.split(' ')[0], 'refresh');
 
@@ -142,22 +141,15 @@ export const AuthServices = {
       email,
     });
 
-    if (!user) {
-      throw new ServerError(StatusCodes.NOT_FOUND, 'User not found!');
-    }
+    if (!user) throw new ServerError(StatusCodes.NOT_FOUND, 'User not found!');
 
-    if (user.status !== 'ACTIVE') {
+    if (user.status !== 'ACTIVE')
       throw new ServerError(
         StatusCodes.FORBIDDEN,
         'Account is not active. Please contact support.',
       );
-    }
 
-    const jwtPayload = {
-      email,
-    };
-
-    const accessToken = createToken(jwtPayload, 'access');
+    const accessToken = createToken({ email }, 'access');
 
     return { accessToken };
   },
