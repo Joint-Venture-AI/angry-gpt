@@ -73,11 +73,11 @@ export const AuthController = {
   }),
 
   refreshToken: catchAsync(async (req, res) => {
-    const token = await AuthServices.refreshToken(req.cookies.refreshToken);
+    const data = await AuthServices.refreshToken(req.cookies.refreshToken);
 
     serveResponse(res, {
       message: 'New Access create successfully!',
-      data: { token },
+      data,
     });
   }),
 };
