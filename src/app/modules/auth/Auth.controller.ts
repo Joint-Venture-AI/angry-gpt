@@ -6,8 +6,7 @@ import { verifyToken } from './Auth.utils';
 
 export const AuthController = {
   login: catchAsync(async ({ body }, res) => {
-    const { accessToken, refreshToken, user } =
-      await AuthServices.loginUser(body);
+    const { accessToken, refreshToken, user } = await AuthServices.login(body);
 
     res.cookie('refreshToken', refreshToken, {
       secure: config.server.node_env !== 'development',

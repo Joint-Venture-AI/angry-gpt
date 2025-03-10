@@ -7,7 +7,7 @@ import { sendEmail } from '../../../util/sendMail';
 import { sendOtpTemplate } from './Auth.template';
 import { Types } from 'mongoose';
 export const AuthServices = {
-  async loginUser({ email, password }: { email: string; password: string }) {
+  async login({ email, password }: Record<string, string>) {
     const user = await User.findOne({
       email,
     }).select('+password');
@@ -31,15 +31,15 @@ export const AuthServices = {
         "Email or password don't match!",
       );
 
-    const partialUser = await User.findById(user._id).select(
-      'name gender avatar email role',
-    );
+    const userData = await User.findById(user._id)
+      .select('name gender avatar email role')
+      .lean();
 
     const accessToken = createToken({ email }, 'access');
 
     const refreshToken = createToken({ email }, 'refresh');
 
-    return { accessToken, user: partialUser, refreshToken };
+    return { accessToken, user: userData, refreshToken };
   },
 
   async changePassword(

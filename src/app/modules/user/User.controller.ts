@@ -13,7 +13,7 @@ export const UserControllers = {
 
     await UserServices.create(body);
 
-    const { accessToken, refreshToken, user } = await AuthServices.loginUser({
+    const { accessToken, refreshToken, user } = await AuthServices.login({
       email: body.email,
       password: body.password,
     });
