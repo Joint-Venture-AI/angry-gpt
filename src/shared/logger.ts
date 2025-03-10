@@ -31,6 +31,12 @@ const logDir = path.resolve(process.cwd(), 'winston');
 
 createDir(logDir);
 
+/**
+ * Logger for success messages
+ *
+ * This logger is used to log success messages to the console and a daily rotating file.
+ * It uses the same format as the error logger but with a different filename.
+ */
 const logger = createLogger({
   level: 'info',
   format: combine(label({ label: 'Angry GPT' }), timestamp(), myFormat),
@@ -45,6 +51,12 @@ const logger = createLogger({
   ],
 });
 
+/**
+ * Logger for error messages
+ *
+ * This logger is used to log error messages to the console and a daily rotating file.
+ * It uses the same format as the main logger but with a different filename.
+ */
 const errorLogger = createLogger({
   level: 'error',
   format: combine(label({ label: 'Angry GPT' }), timestamp(), myFormat),

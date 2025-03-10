@@ -5,8 +5,8 @@ import { StatusCodes } from 'http-status-codes';
 import ServerError from '../../errors/ServerError';
 import { Request, Response, NextFunction } from 'express';
 import deleteFile from '../../shared/deleteFile';
-import { catchAsyncWithCallback } from '../../shared/catchAsync';
 import { createDir } from '../../util/createDir';
+import catchAsync from '../../shared/catchAsync';
 
 /**
  * Image upload middleware using multer.
@@ -61,7 +61,7 @@ const imageUploader = (
     fileFilter,
   }).fields([{ name: 'images', maxCount: 20 }]); // Allow up to 20 images
 
-  return catchAsyncWithCallback((req, res, next) => {
+  return catchAsync((req, res, next) => {
     upload(req, res, err => {
       if (err) {
         throw new ServerError(

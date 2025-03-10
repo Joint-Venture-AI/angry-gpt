@@ -3,6 +3,9 @@ import config from '../../config';
 import colors from 'colors';
 import { errorLogger, logger } from '../../shared/logger';
 
+/**
+ * Connects to the database
+ */
 export default async function connectDB() {
   try {
     await connect(config.url.database as string);

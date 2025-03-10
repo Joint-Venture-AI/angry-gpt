@@ -7,6 +7,12 @@ import { errorLogger, logger } from '../../shared/logger';
 import shutdownServer from './shutdownServer';
 import connectDB from './connectDB';
 
+/**
+ * Starts the server
+ *
+ * This function creates a new HTTP server instance and connects to the database.
+ * It also seeds the admin user if it doesn't exist in the database.
+ */
 export default async function startServer() {
   try {
     const server = createServer(app);

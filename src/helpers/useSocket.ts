@@ -10,6 +10,15 @@ export let io: Server | null;
 
 const onlineUsers = new Set<string>();
 
+/**
+ * Initializes the Socket.io server
+ *
+ * This function creates a new Socket.io server instance and attaches it to the provided HTTP server.
+ * It also sets up the necessary CORS configuration for the server.
+ *
+ * @param {http.Server} server - The HTTP server instance to attach the Socket.io server to
+ * @returns {void}
+ */
 const useSocket = (server: http.Server) => {
   io = new Server(server, { cors: { origin: '*' } });
   logger.info(colors.green('Socket server initialized'));

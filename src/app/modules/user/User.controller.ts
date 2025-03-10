@@ -1,7 +1,7 @@
 import { UserServices } from './User.service';
 import { StatusCodes } from 'http-status-codes';
 import { AuthServices } from '../auth/Auth.service';
-import catchAsync, { catchAsyncWithCallback } from '../../../shared/catchAsync';
+import catchAsync from '../../../shared/catchAsync';
 import config from '../../../config';
 import serveResponse from '../../../shared/serveResponse';
 import { verifyToken } from '../auth/Auth.utils';
@@ -29,7 +29,7 @@ export const UserControllers = {
     });
   }),
 
-  edit: catchAsyncWithCallback(async (req, res) => {
+  edit: catchAsync(async (req, res) => {
     const updatedUser = await UserServices.edit(req);
 
     serveResponse(res, {

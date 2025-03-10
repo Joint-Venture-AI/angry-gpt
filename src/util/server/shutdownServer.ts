@@ -2,6 +2,12 @@ import colors from 'colors';
 import { Server } from 'http';
 import { errorLogger, logger } from '../../shared/logger';
 
+/**
+ * Shuts down the server
+ *
+ * This function shuts down the server gracefully when a signal is received.
+ * It logs a message indicating that the server is shutting down and closes the server.
+ */
 export default function shutdownServer(
   server: Server,
   signal: string,

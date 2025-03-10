@@ -4,38 +4,43 @@ import ServerError from '../../errors/ServerError';
 import User from '../modules/user/User.model';
 import { verifyToken } from '../modules/auth/Auth.utils';
 
+/**
+ * Middleware to authenticate and authorize requests based on user roles
+ *
+ * @param {...('USER' | 'ADMIN')} roles - The roles that are allowed to access the resource
+ * @returns {Function} - The middleware function
+ */
 const auth =
   (...roles: ('USER' | 'ADMIN')[]) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     try {
-      const bearerToken = req.headers.authorization;
+      const token = req.headers?.authorization?.split(' ')[1];
 
-      if (bearerToken?.startsWith('Bearer')) {
-        const token = bearerToken.split(' ')[1];
+      if (!token)
+        throw new ServerError(
+          StatusCodes.UNAUTHORIZED,
+          'You are not authorized',
+        );
 
-        const { email } = verifyToken(token, 'access');
+      const { email } = verifyToken(token, 'access');
 
-        const user = await User.findOne({ email });
+      const user = await User.findOne({ email });
 
-        if (!user)
-          throw new ServerError(
-            StatusCodes.UNAUTHORIZED,
-            'You are not authorized',
-          );
+      if (!user)
+        throw new ServerError(
+          StatusCodes.UNAUTHORIZED,
+          'You are not authorized',
+        );
 
-        //set user to header
-        req.user = user;
+      req.user = user;
 
-        //guard user
-        if (roles.length && !roles.includes(user.role)) {
-          throw new ServerError(
-            StatusCodes.FORBIDDEN,
-            "You don't have permission to access this api",
-          );
-        }
+      if (roles.length && !roles.includes(user.role))
+        throw new ServerError(
+          StatusCodes.FORBIDDEN,
+          'You are not authorized to access this api',
+        );
 
-        next();
-      }
+      next();
     } catch (error) {
       next(error);
     }

@@ -1,6 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../../errors/ServerError';
 
+/**
+ * Retrieves an environment variable with type checking and error handling
+ *
+ * @param key - The key of the environment variable to retrieve
+ * @param defaultValue - The default value to return if the environment variable is not found
+ * @returns The value of the environment variable or the default value
+ */
 export default function getEnv<T>(key: string, defaultValue?: T): T {
   const envKey = key.toSnakeCase().toUpperCase();
   const value = process.env[envKey];

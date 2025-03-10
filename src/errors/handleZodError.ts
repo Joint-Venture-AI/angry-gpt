@@ -1,9 +1,9 @@
 import { ZodError } from 'zod';
-import { IErrorMessage } from '../types/errors.types';
+import { TErrorMessage } from '../types/errors.types';
 import { StatusCodes } from 'http-status-codes';
 
 const handleZodError = (error: ZodError) => {
-  const errorMessages: IErrorMessage[] = error.errors.map(el => {
+  const errorMessages: TErrorMessage[] = error.errors.map(el => {
     return {
       path: el.path[el.path.length - 1],
       message: el.message,

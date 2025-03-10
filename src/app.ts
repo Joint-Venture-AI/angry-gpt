@@ -9,6 +9,12 @@ import ServerError from './errors/ServerError';
 import serveResponse from './shared/serveResponse';
 import config from './config';
 
+/**
+ * The main application instance
+ *
+ * This is the main application instance that sets up the Express server.
+ * It configures middleware, routes, and error handling.
+ */
 const app = express();
 
 // Serve static files

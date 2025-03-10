@@ -2,6 +2,12 @@ import './configure';
 import env from '../util/env/getEnv';
 import type ms from 'ms';
 
+/**
+ * Configuration object for the application
+ *
+ * This object contains various configuration settings for the application,
+ * including server details, database connection, allowed origins, and authentication settings.
+ */
 export default {
   server: {
     ip_address: env<string>('ip address', '0.0.0.0'),

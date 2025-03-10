@@ -7,37 +7,19 @@ import {
 } from 'express';
 
 /**
- * Wrapper for async request handlers with standard error handling.
+ * Wraps an Express request handler to catch and handle async errors
+ *
+ * @param fn - The Express request handler function to wrap
+ * @param errFn - Optional error handler function to handle caught errors
+ * @returns A wrapped request handler that catches async errors
  */
 const catchAsync =
-  (fn: RequestHandler): RequestHandler =>
+  (fn: RequestHandler, errFn?: ErrorRequestHandler): RequestHandler =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       await fn(req, res, next);
     } catch (error) {
-      next(error);
+      void (errFn?.(error, req, res, next) ?? next(error));
     }
   };
-
 export default catchAsync;
-
-/**
- * Wrapper for async request handlers with a custom error handler.
- * If an error occurs, the provided error handler is invoked before passing the error to `next()`.
- */
-export const catchAsyncWithCallback =
-  (
-    fn: RequestHandler,
-    errorHandler?: ErrorRequestHandler, // Use Express's ErrorRequestHandler type
-  ): RequestHandler =>
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      await fn(req, res, next);
-    } catch (error) {
-      if (errorHandler) {
-        errorHandler(error, req, res, next); // Invoke the provided error handler
-      } else {
-        next(error); // Pass the error to the default error handler
-      }
-    }
-  };
