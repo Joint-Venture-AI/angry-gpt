@@ -34,35 +34,50 @@ export const AuthController = {
   }),
 
   changePassword: catchAsync(async (req, res) => {
-    await AuthServices.changePassword(req.user._id!, req.body);
+    await AuthServices.changePassword(req.user!._id!, req.body);
 
     serveResponse(res, {
       message: 'Password has changed successfully!',
     });
   }),
 
-  // forgetPassword: catchAsync(async (req, res) => {
-  //   await AuthServices.forgetPassword(req.user);
+  sendOtp: catchAsync(async (req, res) => {
+    const { email } = req.body;
 
-  //   serveResponse(res, {
-  //     message: 'Password reset link sent successfully!',
-  //   });
-  // }),
+    await AuthServices.sendOtp(email);
 
-  // resetPassword: catchAsync(async (req, res) => {
-  //   await AuthServices.forgetPassword(req.user);
+    serveResponse(res, {
+      message: 'Send Otp successfully! Check your email.',
+    });
+  }),
 
-  //   serve(res, {
-  //     message: 'Password reset link sent successfully!',
-  //   });
-  // }),
+  verifyOtp: catchAsync(async (req, res) => {
+    const { email, otp } = req.body;
+
+    const { accessToken } = await AuthServices.verifyOtp(email, +otp);
+
+    serveResponse(res, {
+      message: 'Otp verified successfully! Set your new password.',
+      data: { accessToken },
+    });
+  }),
+
+  resetPassword: catchAsync(async (req, res) => {
+    const { password } = req.body;
+
+    await AuthServices.resetPassword(req.user!.email!, password);
+
+    serveResponse(res, {
+      message: 'Password reset successfully!',
+    });
+  }),
 
   refreshToken: catchAsync(async (req, res) => {
-    const result = await AuthServices.refreshToken(req.cookies.refreshToken);
+    const token = await AuthServices.refreshToken(req.cookies.refreshToken);
 
     serveResponse(res, {
       message: 'New Access create successfully!',
-      data: result,
+      data: { token },
     });
   }),
 };
