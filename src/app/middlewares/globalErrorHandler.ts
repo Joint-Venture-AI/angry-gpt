@@ -8,6 +8,7 @@ import handleZodError from '../../errors/handleZodError';
 import ServerError from '../../errors/ServerError';
 import { errorLogger } from '../../shared/logger';
 import { TErrorHandler, TErrorMessage } from '../../types/errors.types';
+import handleMongooseDuplicateError from '../../errors/handleMongooseDuplicateError';
 
 const defaultError: TErrorHandler = {
   statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -60,6 +61,8 @@ const handleError = (error: any): TErrorHandler => {
       ),
     }),
   };
+
+  if (error.code === 11000) return handleMongooseDuplicateError(error);
 
   if (error instanceof ServerError)
     return {
