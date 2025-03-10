@@ -4,12 +4,10 @@ import { StatusCodes } from 'http-status-codes';
 
 const handleValidationError = (error: Error.ValidationError) => {
   const errorMessages: TErrorMessage[] = Object.values(error.errors).map(
-    (el: Error.ValidatorError | Error.CastError) => {
-      return {
-        path: el.path,
-        message: el.message,
-      };
-    },
+    (el: Error.ValidatorError | Error.CastError) => ({
+      path: el.path,
+      message: el.message,
+    }),
   );
 
   return {
