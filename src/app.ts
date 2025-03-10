@@ -39,8 +39,7 @@ app.use(
 // Health check endpoint
 app.get('/', (_, res) => {
   serveResponse(res, {
-    message:
-      'Server is running successfully. Please check the documentation for more details.',
+    message: `${config.server.name} is running successfully. Please check the documentation for more details.`,
   });
 });
 
