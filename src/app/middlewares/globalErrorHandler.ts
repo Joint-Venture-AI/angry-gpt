@@ -1,4 +1,4 @@
-/* eslint-disable no-console, no-unused-vars, @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console, no-unused-vars, @typescript-eslint/no-unused-vars, no-unused-expressions */
 import { ErrorRequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import colors from 'colors';
@@ -21,9 +21,9 @@ const defaultError: TErrorHandler = {
  * This middleware catches all errors and logs them appropriately based on the environment
  */
 const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
-  void (config.server.node_env === 'development'
+  config.server.node_env === 'development'
     ? console.log(colors.red('🚨 globalErrorHandler ~~ '), error)
-    : errorLogger.error(colors.red('🚨 globalErrorHandler ~~ '), error));
+    : errorLogger.error(colors.red('🚨 globalErrorHandler ~~ '), error);
 
   const { statusCode, message, errorMessages } = handleError(error);
 

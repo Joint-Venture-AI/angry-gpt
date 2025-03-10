@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import {
   ErrorRequestHandler,
   NextFunction,
@@ -19,7 +20,8 @@ const catchAsync =
     try {
       await fn(req, res, next);
     } catch (error) {
-      void (errFn?.(error, req, res, next) ?? next(error));
+      errFn?.(error, req, res, next) ?? next(error);
     }
   };
+
 export default catchAsync;
