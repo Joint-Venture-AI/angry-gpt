@@ -11,14 +11,16 @@ import catchAsync from '../../shared/catchAsync';
  * @param {AnyZodObject} schema - The Zod schema to validate the request body against.
  * @return Middleware function to purify the request body.
  */
-const purifyRequest = (schema: AnyZodObject) =>
+const purifyRequest = ({ parseAsync }: AnyZodObject) =>
   catchAsync(async (req, _, next) => {
-    const parseData = await schema.parseAsync({
+    const parsedData = await parseAsync({
       body: req.body,
       cookies: req.cookies,
+      query: req.query,
+      params: req.params,
     });
 
-    req.body = parseData.body;
+    Object.assign(req, parsedData);
 
     next();
   });
