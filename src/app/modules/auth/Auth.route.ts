@@ -14,7 +14,7 @@ router.post(
   imageUploader((req, images) => {
     req.body.avatar = images[0];
   }),
-  purifyRequest(UserValidation.userValidationSchema),
+  purifyRequest(UserValidation.create),
   UserControllers.create,
 );
 
