@@ -7,8 +7,7 @@ import { verifyToken } from '../modules/auth/Auth.utils';
 /**
  * Middleware to authenticate and authorize requests based on user roles
  *
- * @param {...('USER' | 'ADMIN')} roles - The roles that are allowed to access the resource
- * @returns {Function} - The middleware function
+ * @param roles - The roles that are allowed to access the resource
  */
 const auth =
   (...roles: ('USER' | 'ADMIN')[]) =>

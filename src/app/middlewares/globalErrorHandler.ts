@@ -15,6 +15,28 @@ const defaultError: TErrorHandler = {
   errorMessages: [],
 };
 
+/**
+ * Global error handler middleware
+ *
+ * This middleware catches all errors and logs them appropriately based on the environment
+ */
+const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
+  void (config.server.node_env === 'development'
+    ? console.log(colors.red('🚨 globalErrorHandler ~~ '), error)
+    : errorLogger.error(colors.red('🚨 globalErrorHandler ~~ '), error));
+
+  const { statusCode, message, errorMessages } = handleError(error);
+
+  res.status(statusCode).json({
+    success: false,
+    message,
+    errorMessages,
+    stack: config.server.node_env !== 'production' ? error?.stack : undefined,
+  });
+};
+
+export default globalErrorHandler;
+
 const createErrorMessage = (message: string): TErrorMessage[] => [
   { path: '', message },
 ];
@@ -55,25 +77,3 @@ const handleError = (error: any): TErrorHandler => {
 
   return errorHandlers[error.name]?.() ?? defaultError;
 };
-
-/**
- * Global error handler middleware
- *
- * This middleware catches all errors and logs them appropriately based on the environment
- */
-const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
-  void (config.server.node_env === 'development'
-    ? console.log(colors.red('🚨 globalErrorHandler ~~ '), error)
-    : errorLogger.error(colors.red('🚨 globalErrorHandler ~~ '), error));
-
-  const { statusCode, message, errorMessages } = handleError(error);
-
-  res.status(statusCode).json({
-    success: false,
-    message,
-    errorMessages,
-    stack: config.server.node_env !== 'production' ? error?.stack : undefined,
-  });
-};
-
-export default globalErrorHandler;
