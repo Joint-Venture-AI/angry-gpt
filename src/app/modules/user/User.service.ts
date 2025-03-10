@@ -1,7 +1,5 @@
 import { TUser } from './User.interface';
 import User from './User.model';
-import { userSearchableFields } from './User.constant';
-import QueryBuilder from '../../builder/QueryBuilder';
 import { StatusCodes } from 'http-status-codes';
 import { Request } from 'express';
 import deleteFile from '../../../shared/deleteFile';
@@ -35,19 +33,18 @@ export const UserServices = {
   },
 
   async list(query: Record<string, unknown>) {
-    const userQuery = new QueryBuilder(User.find(), query)
-      .search(userSearchableFields)
-      .filter()
-      .sort()
-      .paginate()
-      .fields();
+    const users = await User.find()
+      .limit((query?.limit as number) ?? 10)
+      .skip((query?.skip as number) ?? 10);
 
-    const total = await User.countDocuments();
-    const users = await userQuery.modelQuery.exec();
+    const totalUsers = await User.countDocuments();
 
     return {
       meta: {
-        total,
+        total: totalUsers,
+        page: query?.page as number,
+        limit: query?.limit as number,
+        totalPage: Math.ceil(totalUsers / (query?.limit as number)),
       },
       users,
     };
