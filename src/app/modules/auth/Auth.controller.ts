@@ -4,7 +4,7 @@ import config from '../../../config';
 import serveResponse from '../../../shared/serveResponse';
 import { verifyToken } from './Auth.utils';
 
-export const AuthController = {
+export const AuthControllers = {
   login: catchAsync(async ({ body }, res) => {
     const { accessToken, refreshToken, user } = await AuthServices.login(body);
 

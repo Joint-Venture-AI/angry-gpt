@@ -1,4 +1,4 @@
-export const AuthTemplate = {
+export const AuthTemplates = {
   otp: (userName: string, otp: number) => /*html*/ `
   <!DOCTYPE html>
   <html lang="en">

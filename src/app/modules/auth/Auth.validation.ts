@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AuthValidation = {
+export const AuthValidations = {
   passwordChangeValidationSchema: z.object({
     body: z.object({
       oldPassword: z

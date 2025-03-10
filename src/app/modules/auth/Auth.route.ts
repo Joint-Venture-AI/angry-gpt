@@ -1,9 +1,9 @@
 import express from 'express';
-import { AuthController } from './Auth.controller';
-import { AuthValidation } from './Auth.validation';
+import { AuthControllers } from './Auth.controller';
+import { AuthValidations } from './Auth.validation';
 import auth from '../../middlewares/auth';
 import { UserControllers } from '../user/User.controller';
-import { UserValidation } from '../user/User.validation';
+import { UserValidations } from '../user/User.validation';
 import imageUploader from '../../middlewares/imageUploader';
 import purifyRequest from '../../middlewares/purifyRequest';
 
@@ -13,30 +13,51 @@ router.post(
   '/register',
   imageUploader((req, images) => {
     req.body.avatar = images[0];
+    req.body.name = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+    };
   }),
-  purifyRequest(UserValidation.create),
+  purifyRequest(UserValidations.create),
   UserControllers.create,
 );
 
-router.post('/login', AuthController.login);
+router.patch(
+  '/edit',
+  auth('USER', 'ADMIN'),
+  imageUploader((req, images) => {
+    req.body.avatar = images[0];
+  }, true),
+  (req, _, next) => {
+    req.body.name = {
+      firstName: req.body?.firstName,
+      lastName: req.body?.lastName,
+    };
+    next();
+  },
+  purifyRequest(UserValidations.edit),
+  UserControllers.edit,
+);
 
-router.post('/logout', AuthController.logout);
+router.post('/login', AuthControllers.login);
+
+router.post('/logout', AuthControllers.logout);
 
 router.patch(
   '/change-password',
   auth('USER', 'ADMIN'),
-  purifyRequest(AuthValidation.passwordChangeValidationSchema),
-  AuthController.changePassword,
+  purifyRequest(AuthValidations.passwordChangeValidationSchema),
+  AuthControllers.changePassword,
 );
 
-router.post('/send-otp', AuthController.sendOtp);
+router.post('/send-otp', AuthControllers.sendOtp);
 
-router.post('/verify-otp', AuthController.verifyOtp);
+router.post('/verify-otp', AuthControllers.verifyOtp);
 
 router.post(
   '/reset-password',
   auth('USER', 'ADMIN'),
-  AuthController.resetPassword,
+  AuthControllers.resetPassword,
 );
 
 /**
@@ -44,8 +65,8 @@ router.post(
  */
 router.get(
   '/refresh-token',
-  purifyRequest(AuthValidation.refreshTokenValidationSchema),
-  AuthController.refreshToken,
+  purifyRequest(AuthValidations.refreshTokenValidationSchema),
+  AuthControllers.refreshToken,
 );
 
 export const AuthRoutes = router;
