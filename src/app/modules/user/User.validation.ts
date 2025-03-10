@@ -19,12 +19,14 @@ export const UserValidations = {
 
   edit: z.object({
     body: z.object({
-      name: z.object({
-        firstName: z.string().min(1, 'First name is required'),
-        lastName: z.string().min(1, 'Last name is required'),
-      }),
-      gender: z.enum(['male', 'female']),
-      avatar: z.string(),
+      name: z
+        .object({
+          firstName: z.string().optional(),
+          lastName: z.string().optional(),
+        })
+        .optional(),
+      gender: z.enum(['male', 'female']).optional(),
+      avatar: z.string().optional(),
     }),
   }),
 };
