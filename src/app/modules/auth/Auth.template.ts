@@ -1,10 +1,11 @@
-export const sendOtpTemplate = (userName: string, otp: number) => /*html*/ `
+export const AuthTemplate = {
+  otp: (userName: string, otp: number) => /*html*/ `
   <!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Console Locker - OTP Verification</title>
+      <title>Angry GPT - OTP Verification</title>
       <style>
         body {
           font-family: Arial, sans-serif;
@@ -62,4 +63,5 @@ export const sendOtpTemplate = (userName: string, otp: number) => /*html*/ `
       </div>
     </body>
   </html>
-`;
+`,
+};

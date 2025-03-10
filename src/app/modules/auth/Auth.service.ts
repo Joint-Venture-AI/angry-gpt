@@ -4,7 +4,7 @@ import { createToken, generateOtp, verifyToken } from './Auth.utils';
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../../../errors/ServerError';
 import { sendEmail } from '../../../util/sendMail';
-import { sendOtpTemplate } from './Auth.template';
+import { AuthTemplate } from './Auth.template';
 import { Types } from 'mongoose';
 export const AuthServices = {
   async login({ email, password }: Record<string, string>) {
@@ -79,7 +79,7 @@ export const AuthServices = {
     sendEmail({
       to: email,
       subject: `Your Angry GPT OTP is ${otp}.`,
-      html: sendOtpTemplate(user.name.firstName, otp),
+      html: AuthTemplate.otp(user.name.firstName, otp),
     });
   },
 
