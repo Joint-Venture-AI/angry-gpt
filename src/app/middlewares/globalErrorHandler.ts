@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
+/* eslint-disable no-console, no-unused-vars, @typescript-eslint/no-unused-vars */
 import { ErrorRequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import colors from 'colors';
