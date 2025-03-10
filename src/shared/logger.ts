@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-undef */
+/* eslint-disable no-undef, @typescript-eslint/no-var-requires */
 import path from 'path';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { createDir } from '../util/createDir';
