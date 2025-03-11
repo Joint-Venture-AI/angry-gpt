@@ -16,6 +16,10 @@ export default {
     name: env<string>('name'),
   },
   url: {
+    payment: {
+      success: env<string>('payment success url'),
+      cancel: env<string>('payment cancel url'),
+    },
     database: env<string>('database url'),
     reset_pass_ui: env<string>('reset pass ui link'),
   },
