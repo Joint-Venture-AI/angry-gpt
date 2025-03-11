@@ -1,7 +1,7 @@
 import { TTransaction } from '../transaction/Transaction.interface';
 import { Order } from '../order/Order.model';
 import { TransactionService } from '../transaction/Transaction.service';
-import stripe from './Payment.utils';
+import { stripe } from './Payment.utils';
 import Stripe from 'stripe';
 import config from '../../../config';
 

@@ -1,7 +1,7 @@
 import catchAsync from '../../../shared/catchAsync';
 import config from '../../../config';
 import { PaymentServices } from './Payment.service';
-import stripe from './Payment.utils';
+import { stripe } from './Payment.utils';
 import serveResponse from '../../../shared/serveResponse';
 
 export const PaymentControllers = {
