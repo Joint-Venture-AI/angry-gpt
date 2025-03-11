@@ -3,14 +3,61 @@ import { TBook } from './Book.interface';
 import Book from './Book.model';
 import ServerError from '../../../errors/ServerError';
 import deleteFile from '../../../shared/deleteFile';
+import { TPagination } from '../../../shared/serveResponse';
 
 export const BookServices = {
   async create(bookData: TBook) {
     return await Book.create(bookData);
   },
 
-  async list(query: any) {
-    return await Book.find(query);
+  async list(query: Record<string, any>) {
+    const page = +query.page || 1,
+      limit = +query.limit || 10,
+      search = query.search || '',
+      sort = query.sort || 'createdAt';
+
+    const books = await Book.aggregate([
+      {
+        $match: {
+          $or: [
+            { title: { $regex: search, $options: 'i' } },
+            { author: { $regex: search, $options: 'i' } },
+          ],
+        },
+      },
+      {
+        $sort: {
+          [sort]: -1,
+        },
+      },
+      {
+        $skip: (page - 1) * limit,
+      },
+      {
+        $limit: limit,
+      },
+    ]);
+
+    const total = await Book.countDocuments({
+      $or: [
+        { title: { $regex: search, $options: 'i' } },
+        { author: { $regex: search, $options: 'i' } },
+      ],
+    });
+
+    const pagination: TPagination = {
+      limit,
+      page,
+      total,
+      totalPage: Math.ceil(total / limit),
+    };
+
+    return {
+      books,
+      meta: {
+        pagination,
+      },
+    };
   },
 
   async retrieve(id: string) {

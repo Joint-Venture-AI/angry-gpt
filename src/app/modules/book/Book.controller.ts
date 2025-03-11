@@ -15,11 +15,12 @@ export const BookController = {
   }),
 
   list: catchAsync(async (req, res) => {
-    const data = await BookServices.list(req.query);
+    const { books, meta } = await BookServices.list(req.query);
 
     serveResponse(res, {
       message: 'Books fetched successfully',
-      data,
+      meta,
+      data: books,
     });
   }),
 
