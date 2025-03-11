@@ -1,6 +1,6 @@
 import { TTransaction } from '../transaction/Transaction.interface';
 import { Order } from '../order/Order.model';
-import { TransactionService } from '../transaction/Transaction.service';
+import { TransactionServices } from '../transaction/Transaction.service';
 import { stripe } from './Payment.utils';
 import Stripe from 'stripe';
 import config from '../../../config';
@@ -52,8 +52,7 @@ export const PaymentServices = {
       customer: order.customer,
     };
 
-    const transaction =
-      await TransactionService.createTransaction(transactionData);
+    const transaction = await TransactionServices.create(transactionData);
 
     order.transaction = transaction._id;
     order.payment_method = paymentMethod.type;
