@@ -7,4 +7,4 @@ import fs from 'fs';
  * If it doesn't exist, it creates the directory.
  */
 export const createDir = (path: string) =>
-  !fs.existsSync(path) && fs.mkdirSync(path);
+  !fs.existsSync(path) && fs.mkdirSync(path, { recursive: true });
