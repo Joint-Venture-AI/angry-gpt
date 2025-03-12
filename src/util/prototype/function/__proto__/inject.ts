@@ -4,7 +4,7 @@ import { TRoute } from '../../../../types/route.types';
 
 declare global {
   interface Function {
-    inject(routes: TRoute[]): void;
+    inject(routes: TRoute[]): Router;
   }
 }
 
@@ -13,7 +13,7 @@ Function.prototype.inject = function (routes: TRoute[]) {
     (this as Router).use(path, ...middlewares, route),
   );
 
-  return this;
+  return this as Router;
 };
 
 export {};

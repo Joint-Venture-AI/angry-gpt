@@ -1,8 +1,12 @@
 import { Router } from 'express';
 import { SubscriptionRoutes } from '../subscription/Subscription.route';
+import { TRoute } from '../../../types/route.types';
 
-const router = Router();
+const routes: TRoute[] = [
+  {
+    path: '/subscription',
+    route: SubscriptionRoutes.admin,
+  },
+];
 
-router.use('/subscription', SubscriptionRoutes.admin);
-
-export const AdminRoutes = router;
+export default Router().inject(routes);

@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
-import router from './routes';
+import RoutesV1 from './routes/v1';
 import { Morgan } from './shared/morgen';
 import cookieParser from 'cookie-parser';
 import ServerError from './errors/ServerError';
@@ -44,7 +44,7 @@ app.get('/', (_, res) => {
 });
 
 // API routes
-app.use('/api/v1', router);
+app.use('/api/v1', RoutesV1);
 
 // 404 handler
 app.use(({ originalUrl }, _, next) => {
