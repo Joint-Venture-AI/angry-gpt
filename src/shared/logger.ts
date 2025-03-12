@@ -17,8 +17,11 @@ const myFormat = printf((info: any) => {
 });
 
 const logDir = path.resolve(process.cwd(), 'winston');
+const successLogDir = path.join(logDir, 'success');
+const errorLogDir = path.join(logDir, 'error');
 
-createDir(logDir);
+createDir(successLogDir);
+createDir(errorLogDir);
 
 /**
  * Logger for success messages
@@ -32,7 +35,7 @@ const logger = createLogger({
   transports: [
     new transports.Console(),
     new DailyRotateFile({
-      filename: path.join(logDir, 'success', '%DATE%-success.log'),
+      filename: path.join(successLogDir, '%DATE%-success.log'),
       datePattern: 'DD-MM-YYYY-HH',
       maxSize: '20m',
       maxFiles: '1d',
@@ -52,7 +55,7 @@ const errorLogger = createLogger({
   transports: [
     new transports.Console(),
     new DailyRotateFile({
-      filename: path.join(logDir, 'error', '%DATE%-error.log'),
+      filename: path.join(errorLogDir, '%DATE%-error.log'),
       datePattern: 'DD-MM-YYYY-HH',
       maxSize: '20m',
       maxFiles: '1d',
