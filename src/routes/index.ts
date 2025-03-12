@@ -1,9 +1,12 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import { AuthRoutes } from '../app/modules/auth/Auth.route';
 import { UserRoutes } from '../app/modules/user/User.route';
 import { AdminRoutes } from '../app/modules/admin/Admin.routes';
+import auth from '../app/middlewares/auth';
+
 type TRoute = {
   path: string;
+  middlewares?: Array<RequestHandler>;
   route: Router;
 };
 
@@ -15,7 +18,7 @@ type TRoute = {
  */
 const router = Router();
 
-const apiRoutes: TRoute[] = [
+const routes: TRoute[] = [
   {
     path: '/auth',
     route: AuthRoutes,
@@ -26,10 +29,13 @@ const apiRoutes: TRoute[] = [
   },
   {
     path: '/admin',
+    middlewares: [auth('ADMIN')],
     route: AdminRoutes,
   },
 ];
 
-apiRoutes.forEach(({ path, route }) => router.use(path, route));
+routes.forEach(({ path, middlewares = [], route }) =>
+  router.use(path, ...middlewares, route),
+);
 
 export default router;
