@@ -32,7 +32,9 @@ const subscriptionSchema = new Schema<TSubscription>(
       default: 1,
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
 const Subscription = model<TSubscription>('Subscription', subscriptionSchema);
