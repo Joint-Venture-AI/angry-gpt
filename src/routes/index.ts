@@ -30,8 +30,6 @@ const routes: TRoute[] = [
   },
 ];
 
-routes.forEach(({ path, middlewares = [], route }) =>
-  router.use(path, ...middlewares, route),
-);
+router.inject(routes);
 
 export default router;
