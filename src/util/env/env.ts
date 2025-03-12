@@ -1,62 +1,53 @@
+/* eslint-disable no-console */
 import fs from 'fs';
-import { errorLogger } from '../../shared/logger';
-import colors from 'colors';
 import { envPath } from '../../config/configure';
+import colors from 'colors';
 
 /**
- * Retrieves an environment variable. If not found, sets it with the default value.
+ * Retrieves an environment variable with type checking, error handling, and appending to .env if not found
  *
- * @param key - The key of the environment variable
- * @param defaultValue - The default value to use if the variable is missing
- * @returns The value of the environment variable
+ * @param key - The key of the environment variable to retrieve
+ * @param defaultValue - The default value to return if the environment variable is not found
+ * @returns The value of the environment variable or the default value
  */
 export default function env<T>(key: string, defaultValue?: T): T {
-  const envKey = key.toSnakeCase().toUpperCase();
+  key = key.toSnakeCase().toUpperCase();
+  const value = process.env[key];
 
-  try {
-    const envData = fs.readFileSync(envPath, 'utf8');
-
-    let value =
-      process.env[envKey] ??
-      envData.match(new RegExp(`^${envKey}=(.*)`, 'm'))?.[1];
-
-    if (value !== undefined) return parseValue(value, defaultValue);
-
-    errorLogger.error(
-      colors.red(`❌ ${envKey} is missing, setting default value`),
-      defaultValue,
+  if (value === undefined) {
+    console.log(
+      colors.yellow(
+        `⚠️ Environment variable ${key} is not set, setting to ${defaultValue}`,
+      ),
     );
 
-    value = formatValue(defaultValue);
-    const updatedEnv = envData.includes(`${envKey}=`)
-      ? envData.replace(new RegExp(`^${envKey}=.*`, 'm'), `${envKey}=${value}`)
-      : envData.trim() + `\n${envKey}=${value}\n`;
+    if (defaultValue === undefined)
+      console.error(colors.red(`❌ Environment variable ${key} is required`));
 
-    fs.writeFileSync(envPath, updatedEnv, 'utf8');
-    process.env[envKey] = value;
+    if (fs.existsSync(envPath)) {
+      const envData = fs.readFileSync(envPath, 'utf8');
+      if (!envData.includes(`${key}=`))
+        fs.appendFileSync(envPath, `\n${key}=${defaultValue}\n`, 'utf8');
+    } else fs.writeFileSync(envPath, `${key}=${defaultValue}\n`, 'utf8');
 
-    return parseValue(value, defaultValue);
-  } catch (error) {
-    errorLogger.error(
-      colors.red('❌ Error getting environment variable'),
-      error,
+    console.log(
+      colors.green(`✅ Environment variable ${key} set to ${defaultValue}`),
     );
-
-    process.exit(1);
   }
-}
 
-/** Parses the retrieved environment value into its correct type */
-const parseValue = <T>(value: string, defaultValue?: T): T => {
   if (typeof defaultValue === 'boolean')
-    return (value.toLowerCase() === 'true') as T;
-  if (typeof defaultValue === 'number')
-    return (isNaN(+value) ? defaultValue : +value) as T;
-  if (Array.isArray(defaultValue))
-    return value.split(',').map(item => item.trim()) as T;
-  return value as T;
-};
+    return (value!.toLowerCase() === 'true') as T;
 
-/** Formats the default value correctly for writing to the .env file */
-const formatValue = <T>(value: T): string =>
-  Array.isArray(value) ? value.join(',') : (value as any).toString();
+  if (typeof defaultValue === 'number') {
+    const num = Number(value);
+    if (isNaN(num))
+      throw new Error(`Environment variable ${key} is not a valid number`);
+
+    return num as T;
+  }
+
+  if (Array.isArray(defaultValue))
+    return value!.split(',').map(item => item.trim()) as T;
+
+  return (value ?? defaultValue) as T;
+}

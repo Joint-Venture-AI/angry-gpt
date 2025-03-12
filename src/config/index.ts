@@ -1,6 +1,7 @@
 import './configure';
 import env from '../util/env/env';
 import type ms from 'ms';
+import { genSecret } from '../util/jwt/genSecret';
 
 /**
  * Configuration object for the application
@@ -27,11 +28,11 @@ export default {
   bcrypt_salt_rounds: env<number>('bcrypt salt rounds', 10),
   jwt: {
     access_token: {
-      secret: env<string>('jwt secret'),
+      secret: env<string>('jwt secret', genSecret()),
       expire_in: env<ms.StringValue>('jwt expire in', '1h'),
     },
     refresh_token: {
-      secret: env<string>('jwt refresh secret'),
+      secret: env<string>('jwt refresh secret', genSecret()),
       expire_in: env<ms.StringValue>('jwt refresh expire in', '1d'),
     },
   },
