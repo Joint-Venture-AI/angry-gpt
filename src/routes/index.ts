@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthRoutes } from '../app/modules/auth/Auth.route';
 import { UserRoutes } from '../app/modules/user/User.route';
-
+import { AdminRoutes } from '../app/modules/admin/Admin.routes';
 type TRoute = {
   path: string;
   route: Router;
@@ -24,8 +24,12 @@ const apiRoutes: TRoute[] = [
     path: '/users',
     route: UserRoutes,
   },
+  {
+    path: '/admin',
+    route: AdminRoutes,
+  },
 ];
 
-apiRoutes.forEach(route => router.use(route.path, route.route));
+apiRoutes.forEach(({ path, route }) => router.use(path, route));
 
 export default router;
