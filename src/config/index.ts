@@ -1,5 +1,5 @@
 import './configure';
-import env from '../util/env/getEnv';
+import env from '../util/env/env';
 import type ms from 'ms';
 
 /**

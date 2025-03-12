@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import { resolve } from 'path';
 
-dotenv.config({ path: resolve(process.cwd(), '.env') });
+export const envPath = resolve(process.cwd(), '.env');
+
+dotenv.config({ path: envPath });
 
 export default process.env;
