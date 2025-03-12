@@ -6,6 +6,7 @@ import { UserControllers } from '../user/User.controller';
 import { UserValidations } from '../user/User.validation';
 import imageUploader from '../../middlewares/imageUploader';
 import purifyRequest from '../../middlewares/purifyRequest';
+import { EUserRole } from '../user/User.enum';
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.post(
 
 router.patch(
   '/edit',
-  auth('USER', 'ADMIN'),
+  auth(EUserRole.USER, EUserRole.ADMIN),
   imageUploader((req, images) => {
     req.body.avatar = images[0];
   }, true),
@@ -45,7 +46,7 @@ router.post('/logout', AuthControllers.logout);
 
 router.patch(
   '/change-password',
-  auth('USER', 'ADMIN'),
+  auth(EUserRole.USER, EUserRole.ADMIN),
   purifyRequest(AuthValidations.passwordChangeValidationSchema),
   AuthControllers.changePassword,
 );
@@ -56,7 +57,7 @@ router.post('/verify-otp', AuthControllers.verifyOtp);
 
 router.post(
   '/reset-password',
-  auth('USER', 'ADMIN'),
+  auth(EUserRole.USER, EUserRole.ADMIN),
   AuthControllers.resetPassword,
 );
 

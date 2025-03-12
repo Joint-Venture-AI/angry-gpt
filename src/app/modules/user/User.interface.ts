@@ -1,6 +1,5 @@
 import { Types } from 'mongoose';
-
-export type TUserRole = 'USER' | 'ADMIN';
+import { EUserRole, EUserStatus, EUserGender } from './User.enum';
 
 export type TUser = {
   _id?: Types.ObjectId;
@@ -9,11 +8,11 @@ export type TUser = {
     lastName: string;
   };
   avatar: string;
-  gender: 'male' | 'female';
+  gender: EUserGender;
   email: string;
   password: string;
-  role: TUserRole;
-  status?: 'ACTIVE' | 'SUSPENDED' | 'DELETED';
+  role: EUserRole;
+  status: EUserStatus;
   otp?: number;
   otpExp?: Date;
   createdAt?: Date;
