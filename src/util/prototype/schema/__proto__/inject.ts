@@ -14,6 +14,7 @@ declare module 'mongoose' {
 
 Schema.prototype.inject = function (fn) {
   fn(this);
+
   return this;
 };
 

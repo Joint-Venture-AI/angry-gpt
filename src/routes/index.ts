@@ -6,14 +6,6 @@ import auth from '../app/middlewares/auth';
 import { EUserRole } from '../app/modules/user/User.enum';
 import { TRoute } from '../types/route.types';
 
-/**
- * Main router for the application
- *
- * This router is the main entry point for all API routes in the application.
- * It aggregates all the routes from different modules and mounts them on the appropriate paths.
- */
-const router = Router();
-
 const routes: TRoute[] = [
   {
     path: '/auth',
@@ -30,6 +22,4 @@ const routes: TRoute[] = [
   },
 ];
 
-router.inject(routes);
-
-export default router;
+export default Router().inject(routes);

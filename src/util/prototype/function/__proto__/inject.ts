@@ -12,6 +12,8 @@ Function.prototype.inject = function (routes: TRoute[]) {
   routes.forEach(({ path, middlewares = [], route }) =>
     (this as Router).use(path, ...middlewares, route),
   );
+
+  return this;
 };
 
 export {};
