@@ -3,7 +3,7 @@ import config from '../config';
 import { errorLogger, logger } from '../shared/logger';
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../errors/ServerError';
-
+import colors from 'colors';
 const { host, port, user, pass, from } = config.email;
 
 const transporter = nodemailer.createTransport({
@@ -31,9 +31,9 @@ export const sendEmail = async (values: TEmailProps) => {
     if (!accepted.length)
       throw new ServerError(StatusCodes.BAD_REQUEST, 'Mail not sent');
 
-    logger.info(`Mail send successfully. On: ${accepted[0]}`);
+    logger.info(colors.green(`✔ Mail send successfully. On: ${accepted[0]}`));
   } catch (error: any) {
-    errorLogger.error('Email send failed', error.message);
+    errorLogger.error(colors.red('❌ Email send failed'), error.message);
     throw new ServerError(StatusCodes.BAD_REQUEST, error.message);
   }
 };

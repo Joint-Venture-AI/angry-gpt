@@ -21,7 +21,7 @@ const onlineUsers = new Set<string>();
  */
 const useSocket = (server: http.Server) => {
   io = new Server(server, { cors: { origin: '*' } });
-  logger.info(colors.green('Socket server initialized'));
+  logger.info(colors.green('🔑 Socket server initialized'));
 
   io.on('connection', async socket => {
     try {

@@ -2,6 +2,7 @@ import './configure';
 import env from '../util/env/env';
 import type ms from 'ms';
 import { genSecret } from '../util/jwt/genSecret';
+import getIpAddress from '../util/server/getIpAddress';
 
 /**
  * Configuration object for the application
@@ -11,9 +12,9 @@ import { genSecret } from '../util/jwt/genSecret';
  */
 export default {
   server: {
-    ip_address: env<string>('ip address', '0.0.0.0'),
+    ip_address: env<string>('ip address', getIpAddress()),
     node_env: env<string>('node env', 'development'),
-    port: env<number>('port', 3000),
+    port: env<number>('port', Math.floor(Math.random() * 1_000) + 3_000),
     name: env<string>('name', 'Project Name'),
   },
   url: {

@@ -10,12 +10,15 @@ import colors from 'colors';
 const deleteFile = async (file: string) => {
   const filePath = path.join(process.cwd(), 'uploads', file);
 
-  logger.info(colors.yellow(`Deleting file: ${filePath}`));
+  logger.info(colors.yellow(`🗑️ Deleting file: ${filePath}`));
   try {
     await fs.unlink(filePath);
-    logger.info(colors.green('File deleted successfully'));
+    logger.info(colors.green('✔ File deleted successfully'));
   } catch (error) {
-    errorLogger.error(colors.red(`Failed to delete file: ${filePath}`), error);
+    errorLogger.error(
+      colors.red(`❌ Failed to delete file: ${filePath}`),
+      error,
+    );
   }
 };
 

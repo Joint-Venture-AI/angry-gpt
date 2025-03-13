@@ -23,7 +23,7 @@ export default async function startServer() {
     server.listen(config.server.port, config.server.ip_address, () => {
       logger.info(
         colors.yellow(
-          `♻️ Server running on http://${config.server.ip_address}:${config.server.port}`,
+          `🚀 Server listening on http://${config.server.ip_address}:${config.server.port}`,
         ),
       );
     });
