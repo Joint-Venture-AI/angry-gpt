@@ -1,1 +1,1 @@
-import './__proto__/use';
+import './__proto__/inject';
