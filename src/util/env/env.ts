@@ -12,7 +12,7 @@ import colors from 'colors';
  */
 export default function env<T>(key: string, defaultValue?: T): T {
   key = key.toSnakeCase().toUpperCase();
-  const value = process.env[key];
+  let value: any = process.env[key];
 
   if (value === undefined) {
     console.log(
@@ -33,6 +33,9 @@ export default function env<T>(key: string, defaultValue?: T): T {
     console.log(
       colors.green(`✅ Environment variable ${key} set to ${defaultValue}`),
     );
+
+    if (Array.isArray(defaultValue)) value = defaultValue.join(',');
+    else value = defaultValue;
   }
 
   if (typeof defaultValue === 'boolean')
@@ -47,7 +50,7 @@ export default function env<T>(key: string, defaultValue?: T): T {
   }
 
   if (Array.isArray(defaultValue))
-    return value!.split(',').map(item => item.trim()) as T;
+    return value!.split(',').map((item: string) => item.trim()) as T;
 
   return (value ?? defaultValue) as T;
 }
