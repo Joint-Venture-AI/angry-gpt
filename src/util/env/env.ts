@@ -26,7 +26,10 @@ export default function env<T>(key: string, defaultValue?: T): T {
 
     if (fs.existsSync(envPath)) {
       const envData = fs.readFileSync(envPath, 'utf8');
-      if (!envData.includes(`${key}=`))
+
+      const keyRegex = new RegExp(`^${key}=`, 'm');
+
+      if (!keyRegex.test(envData))
         fs.appendFileSync(envPath, `\n${key}=${defaultValue}\n`, 'utf8');
     } else fs.writeFileSync(envPath, `${key}=${defaultValue}\n`, 'utf8');
 
