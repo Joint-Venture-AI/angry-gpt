@@ -1,6 +1,6 @@
 import { SubscriptionServices } from './Subscription.service';
-import catchAsync from '../../../shared/catchAsync';
-import serveResponse from '../../../shared/serveResponse';
+import catchAsync from '../../../util/server/catchAsync';
+import serveResponse from '../../../util/server/serveResponse';
 
 export const SubscriptionControllers = {
   create: catchAsync(async (req, res) => {

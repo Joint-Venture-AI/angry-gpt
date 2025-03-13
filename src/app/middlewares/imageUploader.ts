@@ -4,9 +4,9 @@ import multer, { FileFilterCallback } from 'multer';
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../../errors/ServerError';
 import { Request, ErrorRequestHandler } from 'express';
-import deleteFile from '../../shared/deleteFile';
-import { createDir } from '../../util/createDir';
-import catchAsync from '../../shared/catchAsync';
+import deleteFile from '../../util/file/deleteFile';
+import { createDir } from '../../util/file/createDir';
+import catchAsync from '../../util/server/catchAsync';
 
 /**
  * Image upload middleware using multer.

@@ -1,6 +1,6 @@
 import colors from 'colors';
 import { Server } from 'http';
-import { errorLogger, logger } from '../../shared/logger';
+import { errorLogger, logger } from '../logger/logger';
 
 /**
  * Shuts down the server

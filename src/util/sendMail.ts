@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import config from '../config';
-import { errorLogger, logger } from '../shared/logger';
+import { errorLogger, logger } from './logger/logger';
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../errors/ServerError';
 import colors from 'colors';

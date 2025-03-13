@@ -1,5 +1,5 @@
 import colors from 'colors';
-import { errorLogger, logger } from '../shared/logger';
+import { errorLogger, logger } from '../util/logger/logger';
 import User from '../app/modules/user/User.model';
 import { adminData } from '../app/modules/auth/Auth.constant';
 

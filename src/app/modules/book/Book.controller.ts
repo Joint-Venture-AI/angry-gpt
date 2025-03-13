@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
-import catchAsync from '../../../shared/catchAsync';
-import serveResponse from '../../../shared/serveResponse';
+import catchAsync from '../../../util/server/catchAsync';
+import serveResponse from '../../../util/server/serveResponse';
 import { BookServices } from './Book.service';
 
 export const BookController = {

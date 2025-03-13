@@ -1,7 +1,7 @@
 import './util/prototype';
-import useSocket from './helpers/useSocket';
 import startServer from './util/server/startServer';
+import socket from './util/socket';
 
 startServer().then(server => {
-  useSocket(server);
+  server.use(socket);
 });

@@ -1,7 +1,7 @@
 import { AuthServices } from './Auth.service';
-import catchAsync from '../../../shared/catchAsync';
+import catchAsync from '../../../util/server/catchAsync';
 import config from '../../../config';
-import serveResponse from '../../../shared/serveResponse';
+import serveResponse from '../../../util/server/serveResponse';
 import { verifyToken } from './Auth.utils';
 
 export const AuthControllers = {

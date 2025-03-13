@@ -1,5 +1,5 @@
 import { AnyZodObject } from 'zod';
-import catchAsync from '../../shared/catchAsync';
+import catchAsync from '../../util/server/catchAsync';
 
 /**
  * Middleware to purify and validate the request {body, cookies} using a Zod schema.

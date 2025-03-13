@@ -2,7 +2,7 @@ import { TUser } from './User.interface';
 import User from './User.model';
 import { StatusCodes } from 'http-status-codes';
 import { Request } from 'express';
-import deleteFile from '../../../shared/deleteFile';
+import deleteFile from '../../../util/file/deleteFile';
 import ServerError from '../../../errors/ServerError';
 
 export const UserServices = {

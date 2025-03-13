@@ -1,7 +1,7 @@
 import { connect } from 'mongoose';
 import config from '../../config';
 import colors from 'colors';
-import { errorLogger, logger } from '../../shared/logger';
+import { errorLogger, logger } from '../logger/logger';
 
 /**
  * Connects to the database

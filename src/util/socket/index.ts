@@ -2,9 +2,9 @@
 import colors from 'colors';
 import http from 'http';
 import { Server } from 'socket.io';
-import { logger, errorLogger } from '../shared/logger';
-import User from '../app/modules/user/User.model';
-import { verifyToken } from '../app/modules/auth/Auth.utils';
+import { logger, errorLogger } from '../logger/logger';
+import User from '../../app/modules/user/User.model';
+import { verifyToken } from '../../app/modules/auth/Auth.utils';
 
 export let io: Server | null;
 
@@ -17,9 +17,8 @@ const onlineUsers = new Set<string>();
  * It also sets up the necessary CORS configuration for the server.
  *
  * @param {http.Server} server - The HTTP server instance to attach the Socket.io server to
- * @returns {void}
  */
-const useSocket = (server: http.Server) => {
+const socket = (server: http.Server) => {
   io = new Server(server, { cors: { origin: '*' } });
   logger.info(colors.green('🔑 Socket server initialized'));
 
@@ -75,4 +74,4 @@ const useSocket = (server: http.Server) => {
   });
 };
 
-export default useSocket;
+export default socket;

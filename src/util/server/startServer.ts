@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import app from '../../app';
 import config from '../../config';
 import seedAdmin from '../../db';
-import { errorLogger, logger } from '../../shared/logger';
+import { errorLogger, logger } from '../logger/logger';
 import shutdownServer from './shutdownServer';
 import connectDB from './connectDB';
 

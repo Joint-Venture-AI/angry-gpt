@@ -1,8 +1,8 @@
 /* eslint-disable no-undef, @typescript-eslint/no-var-requires */
 import path from 'path';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import { createDir } from '../util/createDir';
-import config from '../config';
+import { createDir } from '../file/createDir';
+import config from '../../config';
 import { createLogger, format, transports } from 'winston';
 const { combine, timestamp, label, printf } = format;
 

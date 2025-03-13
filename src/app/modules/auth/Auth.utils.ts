@@ -2,7 +2,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../../config';
 import ServerError from '../../../errors/ServerError';
 import { StatusCodes } from 'http-status-codes';
-import { errorLogger } from '../../../shared/logger';
+import { errorLogger } from '../../../util/logger/logger';
 import colors from 'colors';
 export type TTokenType = 'access' | 'reset' | 'refresh';
 

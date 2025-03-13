@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { errorLogger, logger } from './logger';
+import { errorLogger, logger } from '../logger/logger';
 import colors from 'colors';
 
 /**

@@ -6,7 +6,7 @@ import config from '../../config';
 import handleValidationError from '../../errors/handleValidationError';
 import handleZodError from '../../errors/handleZodError';
 import ServerError from '../../errors/ServerError';
-import { errorLogger } from '../../shared/logger';
+import { errorLogger } from '../../util/logger/logger';
 import { TErrorHandler, TErrorMessage } from '../../types/errors.types';
 import handleMongooseDuplicateError from '../../errors/handleMongooseDuplicateError';
 

@@ -3,10 +3,10 @@ import express from 'express';
 import { StatusCodes } from 'http-status-codes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import RoutesV1 from './routes/v1';
-import { Morgan } from './shared/morgen';
+import { Morgan } from './util/logger/morgen';
 import cookieParser from 'cookie-parser';
 import ServerError from './errors/ServerError';
-import serveResponse from './shared/serveResponse';
+import serveResponse from './util/server/serveResponse';
 import config from './config';
 
 /**

@@ -1,8 +1,8 @@
-import catchAsync from '../../../shared/catchAsync';
+import catchAsync from '../../../util/server/catchAsync';
 import config from '../../../config';
 import { PaymentServices } from './Payment.service';
 import { stripe } from './Payment.utils';
-import serveResponse from '../../../shared/serveResponse';
+import serveResponse from '../../../util/server/serveResponse';
 
 export const PaymentControllers = {
   create: catchAsync(async (req, res) => {

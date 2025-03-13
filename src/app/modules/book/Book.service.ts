@@ -2,8 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import { TBook } from './Book.interface';
 import Book from './Book.model';
 import ServerError from '../../../errors/ServerError';
-import deleteFile from '../../../shared/deleteFile';
-import { TPagination } from '../../../shared/serveResponse';
+import deleteFile from '../../../util/file/deleteFile';
+import { TPagination } from '../../../util/server/serveResponse';
 
 export const BookServices = {
   async create(bookData: TBook) {
