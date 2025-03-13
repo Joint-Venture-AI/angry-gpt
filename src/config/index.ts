@@ -1,7 +1,7 @@
 import './configure';
 import env from '../util/env/env';
 import type ms from 'ms';
-import { genSecret } from '../util/jwt/genSecret';
+import { genSecret } from '../util/crypto/genSecret';
 import getIpAddress from '../util/server/getIpAddress';
 
 /**
@@ -71,6 +71,6 @@ export default {
   },
   admin: {
     email: env<string>('admin email', env<string>('email user')),
-    password: env<string>('admin password', 'password'),
+    password: env<string>('admin password', genSecret(4)),
   },
 };
