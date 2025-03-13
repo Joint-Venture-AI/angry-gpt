@@ -18,7 +18,7 @@ export default {
     name: env<string>('name', 'Project Name'),
   },
   url: {
-    database: env<string>('database url', 'mongodb://localhost:27017'),
+    database: env<string>('database url', 'mongodb://127.0.0.1:27017'),
     reset_pass_ui: env<string>(
       'reset pass ui link',
       'https://example.com/reset-pass-ui',
@@ -39,11 +39,11 @@ export default {
   jwt: {
     access_token: {
       secret: env<string>('jwt secret', genSecret()),
-      expire_in: env<ms.StringValue>('jwt expire in', '1h'),
+      expire_in: env<ms.StringValue>('jwt expire in', '1d'),
     },
     refresh_token: {
       secret: env<string>('jwt refresh secret', genSecret()),
-      expire_in: env<ms.StringValue>('jwt refresh expire in', '1d'),
+      expire_in: env<ms.StringValue>('jwt refresh expire in', '30d'),
     },
   },
   payment: {
@@ -63,14 +63,14 @@ export default {
     },
   },
   email: {
-    from: env<string>('email from', 'Project Name <project@example.com>'),
     user: env<string>('email user', 'project@example.com'),
+    from: `${env<string>('name')} <${env<string>('email user')}>`,
     port: env<number>('email port', 587),
     host: env<string>('email host', 'smtp.example.com'),
     pass: env<string>('email pass', 'password'),
   },
   admin: {
-    email: env<string>('admin email', 'admin@example.com'),
+    email: env<string>('admin email', env<string>('email user')),
     password: env<string>('admin password', 'password'),
   },
 };
