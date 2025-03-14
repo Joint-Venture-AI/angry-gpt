@@ -4,6 +4,8 @@ import type ms from 'ms';
 import { genSecret } from '../util/crypto/genSecret';
 import getIpAddress from '../util/server/getIpAddress';
 
+const port = Math.floor(Math.random() * 1_000) + 3_000;
+
 /**
  * Configuration object for the application
  *
@@ -14,8 +16,12 @@ export default {
   server: {
     ip_address: env<string>('ip address', getIpAddress()),
     node_env: env<string>('node env', 'development'),
-    port: env<number>('port', Math.floor(Math.random() * 1_000) + 3_000),
+    port: env<number>('port', port),
     name: env<string>('name', 'Project Name'),
+    href: env<string>(
+      'href',
+      `http://${getIpAddress()}:${env<number>('port') ?? port}`,
+    ),
   },
   url: {
     database: env<string>('database url', 'mongodb://127.0.0.1:27017'),

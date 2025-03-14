@@ -80,7 +80,7 @@ export const AuthServices = {
     sendEmail({
       to: email,
       subject: `Your ${config.server.name} OTP is ${otp}.`,
-      html: AuthTemplates.otp(user.name.firstName, otp),
+      html: AuthTemplates.otp(user.name.firstName, otp.toString()),
     });
   },
 
