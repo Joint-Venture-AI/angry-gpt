@@ -70,7 +70,7 @@ export default {
     pass: env<string>('email pass', 'password'),
   },
   admin: {
-    email: env<string>('admin email', env<string>('email user')),
+    email: env<string>('admin email', 'admin@example.com'),
     password: env<string>('admin password', genSecret(4)),
   },
 };
