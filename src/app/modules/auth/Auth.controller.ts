@@ -6,11 +6,18 @@ import { verifyToken } from './Auth.utils';
 
 export const AuthControllers = {
   login: catchAsync(async ({ body }, res) => {
-    const { accessToken, refreshToken, user } = await AuthServices.login(body);
+    const data = await AuthServices.login(body);
+
+    if (!data)
+      return serveResponse(res, {
+        message: 'OTP sent to your email. Please verify your account.',
+      });
+
+    const { accessToken, refreshToken, user } = data;
 
     res.cookie('refreshToken', refreshToken, {
       secure: config.server.node_env !== 'development',
-      maxAge: verifyToken(refreshToken, 'refresh').exp! * 1000,
+      maxAge: verifyToken(refreshToken!, 'refresh').exp! * 1000,
       httpOnly: true,
     });
 
