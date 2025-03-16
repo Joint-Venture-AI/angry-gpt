@@ -54,11 +54,20 @@ export const AuthControllers = {
   verifyOtp: catchAsync(async (req, res) => {
     const { email, otp } = req.body;
 
-    const { accessToken } = await AuthServices.verifyOtp(email, +otp);
+    const { accessToken, refreshToken, user } = await AuthServices.verifyOtp(
+      email,
+      +otp,
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      secure: config.server.node_env !== 'development',
+      maxAge: verifyToken(refreshToken, 'refresh').exp! * 1000,
+      httpOnly: true,
+    });
 
     serveResponse(res, {
-      message: 'Otp verified successfully! Set your new password.',
-      data: { accessToken },
+      message: 'Otp verified successfully!',
+      data: { token: accessToken, user },
     });
   }),
 

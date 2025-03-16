@@ -1,7 +1,17 @@
 import config from '../../../config';
 
 export const AuthTemplates = {
-  otp: (userName: string, otp: string) => /*html*/ `
+  reset_otp: (userName: string, otp: string) =>
+    AuthTemplates.default_otp(userName, otp, 'reset'),
+
+  activate_otp: (userName: string, otp: string) =>
+    AuthTemplates.default_otp(userName, otp, 'active'),
+
+  default_otp: (
+    userName: string,
+    otp: string,
+    type: 'reset' | 'active',
+  ) => /*html*/ `
   <!DOCTYPE html>
 	<html lang="en">
   	<head>
@@ -10,7 +20,7 @@ export const AuthTemplates = {
   			name="viewport"
   			content="width=device-width, initial-scale=1.0"
   		/>
-  		<title>${config.server.name} - Password Reset Verification</title>
+  		<title>${config.server.name} - ${type === 'reset' ? 'Password Reset' : 'Account Activation'} Verification</title>
 			<base href="${config.server.href}" />
 			<style>
 				* {
@@ -39,7 +49,6 @@ export const AuthTemplates = {
 				  border-radius: 16px;
 				  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 				  overflow: hidden;
-				  margin-top: 60px;
 				}
 
 				/* Header styles */
@@ -200,7 +209,7 @@ export const AuthTemplates = {
   			<div class="card">
   				<div class="header">
   					<img src="${config.server.logo}" class="logo" alt="${config.server.name} Logo" />
-  					<h1>Password Reset</h1>
+  					<h1>${type === 'reset' ? 'Password Reset' : 'Account Activation'}</h1>
   					<p>Verification Required</p>
   				</div>
 
@@ -254,10 +263,9 @@ export const AuthTemplates = {
   							<span class="icon warning"></span>
   						</div>
   						<div class="info-content">
-  							<h3>Didn't Request This?</h3>
+  							<h3>Didn't ${type === 'reset' ? 'Request' : 'Create'} an Account?</h3>
   							<p>
-  								If you didn't request a password reset, please
-  								secure your account immediately
+  								If you didn't ${type === 'reset' ? 'request' : 'create'} an account with us, you can safely ignore this email.
   							</p>
   						</div>
   					</div>

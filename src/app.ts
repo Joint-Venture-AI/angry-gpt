@@ -8,7 +8,6 @@ import cookieParser from 'cookie-parser';
 import ServerError from './errors/ServerError';
 import serveResponse from './util/server/serveResponse';
 import config from './config';
-// import { AuthTemplates } from './app/modules/auth/Auth.template';
 
 /**
  * The main application instance
@@ -42,8 +41,6 @@ app.get('/', (_, res) => {
   serveResponse(res, {
     message: `${config.server.name} is running successfully. Please check the documentation for more details.`,
   });
-
-  // res.send(AuthTemplates.otp('Soham', '123456'));
 });
 
 // API routes

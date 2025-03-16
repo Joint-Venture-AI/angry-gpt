@@ -7,6 +7,8 @@ import { sendEmail } from '../../../util/sendMail';
 import { AuthTemplates } from './Auth.template';
 import { Types } from 'mongoose';
 import config from '../../../config';
+import { EUserStatus } from '../user/User.enum';
+
 export const AuthServices = {
   async login({ email, password }: Record<string, string>) {
     const user = await User.findOne({
@@ -18,6 +20,26 @@ export const AuthServices = {
         StatusCodes.UNAUTHORIZED,
         "Email or password don't match!",
       );
+
+    if (user.status !== EUserStatus.ACTIVE) {
+      const otp = generateOtp();
+
+      user.otp = otp;
+      user.otpExp = new Date(Date.now() + 10 * 60 * 1000);
+
+      await user.save();
+
+      await sendEmail({
+        to: email,
+        subject: `Your ${config.server.name} account activation OTP is ${otp}.`,
+        html: AuthTemplates.activate_otp(user.name, otp.toString()),
+      });
+
+      throw new ServerError(
+        StatusCodes.ACCEPTED,
+        'OTP sent to your email. Please verify your account.',
+      );
+    }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword)
@@ -71,10 +93,10 @@ export const AuthServices = {
 
     await user.save();
 
-    sendEmail({
+    await sendEmail({
       to: email,
-      subject: `Your ${config.server.name} OTP is ${otp}.`,
-      html: AuthTemplates.otp(user.name, otp.toString()),
+      subject: `Your ${config.server.name} password reset OTP is ${otp}.`,
+      html: AuthTemplates.reset_otp(user.name, otp.toString()),
     });
   },
 
@@ -99,18 +121,23 @@ export const AuthServices = {
         'The OTP you entered is incorrect or expired. Please check your email and try again.',
       );
 
+    if (user.status !== EUserStatus.ACTIVE) user.status = EUserStatus.ACTIVE;
+
     /** otp = one time password; Be careful */
     user.otp = undefined;
     user.otpExp = undefined;
 
     await user.save();
 
-    const accessToken = createToken(
-      { email: user.email, userId: user._id },
-      'access',
-    );
+    const userData = await User.findById(user._id)
+      .select('name gender avatar email role')
+      .lean();
 
-    return { accessToken };
+    const accessToken = createToken({ email: user.email }, 'access');
+
+    const refreshToken = createToken({ email }, 'refresh');
+
+    return { accessToken, refreshToken, user: userData };
   },
 
   async resetPassword(email: string, password: string) {
