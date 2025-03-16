@@ -52,10 +52,6 @@ export default {
   },
   payment: {
     stripe: {
-      key: env<string>(
-        'stripe api key',
-        'sk_test_51O5555555555555555555555555555555',
-      ),
       secret: env<string>(
         'stripe api secret',
         'sk_test_51O5555555555555555555555555555555',

@@ -22,6 +22,7 @@ const transporter = nodemailer.createTransport({
  * @returns void
  */
 export const sendEmail = async (values: TEmailProps) => {
+  logger.info(colors.yellow('Sending email...'), values);
   try {
     const { accepted } = await transporter.sendMail({
       from,

@@ -30,15 +30,12 @@ export const AuthServices = {
       await user.save();
 
       await sendEmail({
-        to: email,
+        to: 'limon222019@gmail.com' /** TODO: change to user.email */,
         subject: `Your ${config.server.name} account activation OTP is ${otp}.`,
         html: AuthTemplates.activate_otp(user.name, otp.toString()),
       });
 
-      throw new ServerError(
-        StatusCodes.ACCEPTED,
-        'OTP sent to your email. Please verify your account.',
-      );
+      return;
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -94,7 +91,7 @@ export const AuthServices = {
     await user.save();
 
     await sendEmail({
-      to: email,
+      to: 'limon222019@gmail.com' /** TODO: change to user.email */,
       subject: `Your ${config.server.name} password reset OTP is ${otp}.`,
       html: AuthTemplates.reset_otp(user.name, otp.toString()),
     });

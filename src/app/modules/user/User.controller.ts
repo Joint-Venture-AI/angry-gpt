@@ -11,10 +11,17 @@ export const UserControllers = {
   create: catchAsync(async ({ body }, res) => {
     await UserServices.create(body);
 
-    const { accessToken, refreshToken, user } = await AuthServices.login({
+    const data = await AuthServices.login({
       email: body.email,
       password: body.password,
     });
+
+    if (!data)
+      return serveResponse(res, {
+        message: 'OTP sent to your email. Please verify your account.',
+      });
+
+    const { accessToken, refreshToken, user } = data;
 
     res.cookie('refreshToken', refreshToken, {
       secure: config.server.node_env !== 'development',
