@@ -12,8 +12,9 @@ const routes: TRoute[] = [
     route: AuthRoutes,
   },
   {
-    path: '/users',
-    route: UserRoutes,
+    path: '/profile',
+    middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
+    route: UserRoutes.user,
   },
   {
     path: '/admin',

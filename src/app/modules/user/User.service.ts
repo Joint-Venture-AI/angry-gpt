@@ -22,7 +22,7 @@ export const UserServices = {
         new: true,
         runValidators: true,
       },
-    );
+    ).select('name avatar email role');
 
     if (!updatedUser)
       throw new ServerError(StatusCodes.NOT_FOUND, 'Admin not found');

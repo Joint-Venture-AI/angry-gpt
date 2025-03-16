@@ -49,7 +49,7 @@ export const AuthServices = {
       );
 
     const userData = await User.findById(user._id)
-      .select('name gender avatar email role')
+      .select('name avatar email role')
       .lean();
 
     const accessToken = createToken({ email }, 'access');
@@ -130,7 +130,7 @@ export const AuthServices = {
     await user.save();
 
     const userData = await User.findById(user._id)
-      .select('name gender avatar email role')
+      .select('name avatar email role')
       .lean();
 
     const accessToken = createToken({ email: user.email }, 'access');

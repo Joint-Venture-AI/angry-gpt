@@ -1,8 +1,24 @@
 import { Router } from 'express';
 import { UserControllers } from './User.controller';
+import imageUploader from '../../middlewares/imageUploader';
+import purifyRequest from '../../middlewares/purifyRequest';
+import { UserValidations } from './User.validation';
 
-const router = Router();
+const adminRoutes = Router();
+const userRoutes = Router();
 
-router.get('/', UserControllers.list);
+adminRoutes.get('/', UserControllers.list);
 
-export const UserRoutes = router;
+userRoutes.patch(
+  '/edit',
+  imageUploader((req, images) => {
+    req.body.avatar = images[0];
+  }, true),
+  purifyRequest(UserValidations.edit),
+  UserControllers.edit,
+);
+
+export const UserRoutes = {
+  admin: adminRoutes,
+  user: userRoutes,
+};
