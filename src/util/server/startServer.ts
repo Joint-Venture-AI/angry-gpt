@@ -2,11 +2,10 @@ import colors from 'colors';
 import { createServer } from 'http';
 import app from '../../app';
 import config from '../../config';
-import seedAdmin from '../../db';
 import { errorLogger, logger } from '../logger/logger';
 import shutdownServer from './shutdownServer';
 import connectDB from './connectDB';
-
+import { AdminServices } from '../../app/modules/admin/Admin.service';
 /**
  * Starts the server
  *
@@ -18,7 +17,7 @@ export default async function startServer() {
     const server = createServer(app);
 
     await connectDB();
-    await seedAdmin();
+    await AdminServices.seed();
 
     server.listen(config.server.port, config.server.ip_address, () => {
       logger.info(

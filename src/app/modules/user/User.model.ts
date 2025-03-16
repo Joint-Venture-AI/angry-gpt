@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 import { TUser } from './User.interface';
 import { UserMiddlewares } from './User.middleware';
-import { EUserRole } from './User.enum';
+import { EUserRole, EUserStatus } from './User.enum';
 import config from '../../../config';
 const userSchema = new Schema<TUser>(
   {
@@ -27,6 +27,11 @@ const userSchema = new Schema<TUser>(
       type: String,
       enum: [EUserRole.ADMIN, EUserRole.USER],
       default: EUserRole.USER,
+    },
+    status: {
+      type: String,
+      enum: [EUserStatus.ACTIVE, EUserStatus.INACTIVE],
+      default: EUserStatus.INACTIVE,
     },
     otp: Number,
     otpExp: Date,
