@@ -18,17 +18,15 @@ export default {
     node_env: env<string>('node env', 'development'),
     port: env<number>('port', port),
     name: env<string>('name', 'Project Name'),
+    logo: env<string>('logo', '/images/logo.png'),
     href: env<string>(
       'href',
       `http://${getIpAddress()}:${env<number>('port') ?? port}`,
     ),
+    default_avatar: env<string>('default avatar', '/images/placeholder.png'),
   },
   url: {
     database: env<string>('database url', 'mongodb://127.0.0.1:27017'),
-    reset_pass_ui: env<string>(
-      'reset pass ui link',
-      'https://example.com/reset-pass-ui',
-    ),
     payment: {
       success: env<string>(
         'payment success url',
@@ -44,8 +42,8 @@ export default {
   bcrypt_salt_rounds: env<number>('bcrypt salt rounds', 10),
   jwt: {
     access_token: {
-      secret: env<string>('jwt secret', genSecret()),
-      expire_in: env<ms.StringValue>('jwt expire in', '1d'),
+      secret: env<string>('jwt access secret', genSecret()),
+      expire_in: env<ms.StringValue>('jwt access expire in', '1d'),
     },
     refresh_token: {
       secret: env<string>('jwt refresh secret', genSecret()),
@@ -76,6 +74,7 @@ export default {
     pass: env<string>('email pass', 'password'),
   },
   admin: {
+    name: env<string>('admin name', 'Mr. Admin'),
     email: env<string>('admin email', 'admin@example.com'),
     password: env<string>('admin password', genSecret(4)),
   },

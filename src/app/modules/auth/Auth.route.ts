@@ -12,13 +12,6 @@ const router = express.Router();
 
 router.post(
   '/register',
-  imageUploader((req, images) => {
-    req.body.avatar = images[0];
-    req.body.name = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-    };
-  }),
   purifyRequest(UserValidations.create),
   UserControllers.create,
 );
@@ -29,13 +22,6 @@ router.patch(
   imageUploader((req, images) => {
     req.body.avatar = images[0];
   }, true),
-  (req, _, next) => {
-    req.body.name = {
-      firstName: req.body?.firstName,
-      lastName: req.body?.lastName,
-    };
-    next();
-  },
   purifyRequest(UserValidations.edit),
   UserControllers.edit,
 );

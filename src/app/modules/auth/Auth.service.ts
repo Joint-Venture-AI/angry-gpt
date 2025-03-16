@@ -19,12 +19,6 @@ export const AuthServices = {
         "Email or password don't match!",
       );
 
-    if (user.status !== 'ACTIVE')
-      throw new ServerError(
-        StatusCodes.FORBIDDEN,
-        'Account is not active. Please contact support.',
-      );
-
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword)
       throw new ServerError(
@@ -80,7 +74,7 @@ export const AuthServices = {
     sendEmail({
       to: email,
       subject: `Your ${config.server.name} OTP is ${otp}.`,
-      html: AuthTemplates.otp(user.name.firstName, otp.toString()),
+      html: AuthTemplates.otp(user.name, otp.toString()),
     });
   },
 
@@ -143,12 +137,6 @@ export const AuthServices = {
     });
 
     if (!user) throw new ServerError(StatusCodes.NOT_FOUND, 'User not found!');
-
-    if (user.status !== 'ACTIVE')
-      throw new ServerError(
-        StatusCodes.FORBIDDEN,
-        'Account is not active. Please contact support.',
-      );
 
     const accessToken = createToken({ email }, 'access');
 

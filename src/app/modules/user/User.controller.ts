@@ -24,7 +24,7 @@ export const UserControllers = {
 
     serveResponse(res, {
       statusCode: StatusCodes.CREATED,
-      message: 'User created successfully!',
+      message: 'User registered successfully!',
       data: { token: accessToken, user },
     });
   }),
@@ -33,7 +33,7 @@ export const UserControllers = {
     const updatedUser = await UserServices.edit(req);
 
     serveResponse(res, {
-      message: 'Update admin successfully!',
+      message: 'Profile updated successfully!',
       data: updatedUser,
     });
   }, imagesUploadRollback),

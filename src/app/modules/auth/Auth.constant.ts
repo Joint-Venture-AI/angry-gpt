@@ -1,14 +1,13 @@
 import config from '../../../config';
-import { EUserRole, EUserStatus } from '../user/User.enum';
-import { EUserGender } from '../user/User.enum';
+import { EUserRole } from '../user/User.enum';
 import { TUser } from '../user/User.interface';
 
+const { name, email, password } = config.admin;
+
 export const adminData: TUser = {
-  name: { firstName: 'super', lastName: 'admin' },
-  gender: EUserGender.MALE,
-  email: config.admin.email,
-  password: config.admin.password,
+  name,
+  email,
+  password,
   role: EUserRole.ADMIN,
-  avatar: '/placeholder.png',
-  status: EUserStatus.ACTIVE,
+  avatar: config.server.default_avatar,
 };

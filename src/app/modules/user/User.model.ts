@@ -1,20 +1,12 @@
 import { model, Schema } from 'mongoose';
 import { TUser } from './User.interface';
 import { UserMiddlewares } from './User.middleware';
-import { EUserRole, EUserStatus, EUserGender } from './User.enum';
-
+import { EUserRole } from './User.enum';
+import config from '../../../config';
 const userSchema = new Schema<TUser>(
   {
     name: {
-      type: {
-        firstName: { type: String, required: true },
-        lastName: { type: String, required: true },
-      },
-      required: true,
-    },
-    gender: {
       type: String,
-      enum: [EUserGender.MALE, EUserGender.FEMALE],
       required: true,
     },
     email: {
@@ -24,7 +16,7 @@ const userSchema = new Schema<TUser>(
     },
     avatar: {
       type: String,
-      required: true,
+      default: config.server.default_avatar,
     },
     password: {
       type: String,
@@ -36,15 +28,12 @@ const userSchema = new Schema<TUser>(
       enum: [EUserRole.ADMIN, EUserRole.USER],
       default: EUserRole.USER,
     },
-    status: {
-      type: String,
-      enum: [EUserStatus.ACTIVE, EUserStatus.SUSPENDED, EUserStatus.DELETED],
-      default: EUserStatus.ACTIVE,
-    },
     otp: Number,
     otpExp: Date,
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
 userSchema.inject(UserMiddlewares.schema);

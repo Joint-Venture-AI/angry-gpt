@@ -199,7 +199,7 @@ export const AuthTemplates = {
   		<div class="container">
   			<div class="card">
   				<div class="header">
-  					<img src="/logo.png" class="logo" alt="${config.server.name} Logo" />
+  					<img src="${config.server.logo}" class="logo" alt="${config.server.name} Logo" />
   					<h1>Password Reset</h1>
   					<p>Verification Required</p>
   				</div>
