@@ -25,7 +25,7 @@ export const AuthServices = {
       const otp = generateOtp();
 
       user.otp = otp;
-      user.otpExp = new Date(Date.now() + 10 * 60 * 1000);
+      user.otpExp = new Date(Date.now() + 10 * 60 * 1000 * 1000);
 
       await user.save();
 
@@ -89,7 +89,7 @@ export const AuthServices = {
     const otp = generateOtp();
 
     user.otp = otp;
-    user.otpExp = new Date(Date.now() + 10 * 60 * 1000);
+    user.otpExp = new Date(Date.now() + 10 * 60 * 1000 * 1000);
 
     await user.save();
 
