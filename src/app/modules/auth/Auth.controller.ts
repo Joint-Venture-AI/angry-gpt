@@ -96,4 +96,20 @@ export const AuthControllers = {
       data,
     });
   }),
+
+  loginWith: catchAsync(async ({ body }, res) => {
+    const { accessToken, refreshToken, user } =
+      await AuthServices.loginWith(body);
+
+    res.cookie('refreshToken', refreshToken, {
+      secure: config.server.node_env !== 'development',
+      maxAge: verifyToken(refreshToken!, 'refresh').exp! * 1000,
+      httpOnly: true,
+    });
+
+    serveResponse(res, {
+      message: 'Login successfully!',
+      data: { token: accessToken, user },
+    });
+  }),
 };

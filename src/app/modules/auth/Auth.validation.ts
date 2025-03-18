@@ -21,4 +21,12 @@ export const AuthValidations = {
       }),
     }),
   }),
+
+  loginWithValidationSchema: z.object({
+    body: z.object({
+      email: z.string().email(),
+      name: z.string().min(1, 'Name is required'),
+      avatar: z.string().url().optional(),
+    }),
+  }),
 };

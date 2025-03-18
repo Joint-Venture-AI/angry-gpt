@@ -8,6 +8,8 @@ import { AuthTemplates } from './Auth.template';
 import { Types } from 'mongoose';
 import config from '../../../config';
 import { EUserStatus } from '../user/User.enum';
+import downloadImage from '../../../util/file/downloadImage';
+import deleteFile from '../../../util/file/deleteFile';
 
 export const AuthServices = {
   async login({ email, password }: Record<string, string>) {
@@ -165,5 +167,26 @@ export const AuthServices = {
     const accessToken = createToken({ email }, 'access');
 
     return { accessToken };
+  },
+
+  async loginWith({ email, name, avatar }: Record<string, string>) {
+    let user = await User.findOne({ email });
+    const newAvatar = avatar && (await downloadImage(avatar));
+
+    if (!user) user = await User.create({ email, name, avatar: newAvatar });
+    else if (newAvatar) {
+      const oldAvatar = user.avatar;
+      user.avatar = newAvatar;
+      await user.save();
+      if (oldAvatar) deleteFile(oldAvatar);
+    }
+
+    const accessToken = createToken({ email }, 'access');
+    const refreshToken = createToken({ email }, 'refresh');
+    const userData = await User.findById(user._id)
+      .select('name avatar email role')
+      .lean();
+
+    return { accessToken, user: userData, refreshToken };
   },
 };

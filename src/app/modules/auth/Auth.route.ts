@@ -28,6 +28,12 @@ router.patch(
 
 router.post('/login', AuthControllers.login);
 
+router.post(
+  '/login-with',
+  purifyRequest(AuthValidations.loginWithValidationSchema),
+  AuthControllers.loginWith,
+);
+
 router.post('/logout', AuthControllers.logout);
 
 router.patch(
