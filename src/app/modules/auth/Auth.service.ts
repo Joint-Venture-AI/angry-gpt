@@ -10,6 +10,7 @@ import config from '../../../config';
 import { EUserStatus } from '../user/User.enum';
 import downloadImage from '../../../util/file/downloadImage';
 import deleteFile from '../../../util/file/deleteFile';
+import { Request } from 'express';
 
 export const AuthServices = {
   async login({ email, password }: Record<string, string>) {
@@ -169,24 +170,63 @@ export const AuthServices = {
     return { accessToken };
   },
 
-  async loginWith({ email, name, avatar }: Record<string, string>) {
-    let user = await User.findOne({ email });
-    const newAvatar = avatar && (await downloadImage(avatar));
+  async loginWith({ params: { provider }, body }: Request) {
+    const { email } = body;
 
-    if (!user) user = await User.create({ email, name, avatar: newAvatar });
-    else if (newAvatar) {
-      const oldAvatar = user.avatar;
-      user.avatar = newAvatar;
-      await user.save();
-      if (oldAvatar) deleteFile(oldAvatar);
+    switch (provider) {
+      case 'facebook':
+        break;
+      case 'google':
+        await this.googleLogin(body);
+        break;
+      case 'apple':
+        break;
+      default:
+        throw new ServerError(
+          StatusCodes.UNAUTHORIZED,
+          'You are not logged in!',
+        );
     }
 
     const accessToken = createToken({ email }, 'access');
     const refreshToken = createToken({ email }, 'refresh');
-    const userData = await User.findById(user._id)
+
+    const userData = await User.findOne({ email })
       .select('name avatar email role')
       .lean();
 
     return { accessToken, user: userData, refreshToken };
+  },
+
+  async googleLogin({ email, name, uid, avatar }: any) {
+    let user = await User.findOne({ email }).select('+googleId');
+    const newAvatar = avatar && (await downloadImage(avatar));
+
+    if (!user)
+      user = await User.create({
+        email,
+        name,
+        avatar: newAvatar,
+        googleId: uid,
+        status: EUserStatus.ACTIVE,
+      });
+    else {
+      if (user.googleId !== uid)
+        throw new ServerError(
+          StatusCodes.UNAUTHORIZED,
+          'You are not authorized',
+        );
+
+      if (newAvatar) {
+        const oldAvatar = user.avatar;
+        user.avatar = newAvatar;
+        if (oldAvatar) await deleteFile(oldAvatar);
+      }
+
+      user.name = name;
+      user.status = EUserStatus.ACTIVE;
+
+      await user.save();
+    }
   },
 };

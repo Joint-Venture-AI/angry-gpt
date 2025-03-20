@@ -27,6 +27,10 @@ const userSchema = new Schema<TUser>(
       enum: [EUserRole.ADMIN, EUserRole.USER],
       default: EUserRole.USER,
     },
+    googleId: {
+      type: String,
+      select: false,
+    },
     status: {
       type: String,
       enum: [EUserStatus.ACTIVE, EUserStatus.INACTIVE],

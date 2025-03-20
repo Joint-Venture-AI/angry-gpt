@@ -74,4 +74,12 @@ export default {
     email: env<string>('admin email', 'admin@example.com'),
     password: env<string>('admin password', genSecret(4)),
   },
+  auth: {
+    google: {
+      clint: env<string>('google client id', ''),
+    },
+    apple: {
+      clint: env<string>('apple client id', ''),
+    },
+  },
 };

@@ -97,9 +97,9 @@ export const AuthControllers = {
     });
   }),
 
-  loginWith: catchAsync(async ({ body }, res) => {
+  loginWith: catchAsync(async (req, res) => {
     const { accessToken, refreshToken, user } =
-      await AuthServices.loginWith(body);
+      await AuthServices.loginWith(req);
 
     res.cookie('refreshToken', refreshToken, {
       secure: config.server.node_env !== 'development',

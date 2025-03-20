@@ -29,7 +29,7 @@ router.patch(
 router.post('/login', AuthControllers.login);
 
 router.post(
-  '/login-with',
+  '/login/:provider',
   purifyRequest(AuthValidations.loginWithValidationSchema),
   AuthControllers.loginWith,
 );

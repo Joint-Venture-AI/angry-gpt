@@ -11,6 +11,7 @@ export type TUser = {
   status: EUserStatus;
   otp?: number;
   otpExp?: Date;
+  googleId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };

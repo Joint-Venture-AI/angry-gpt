@@ -23,10 +23,12 @@ export const AuthValidations = {
   }),
 
   loginWithValidationSchema: z.object({
-    body: z.object({
-      email: z.string().email(),
-      name: z.string().min(1, 'Name is required'),
-      avatar: z.string().url().optional(),
+    params: z.object({
+      provider: z.enum(['facebook', 'google', 'apple'], {
+        errorMap: () => ({
+          message: 'Provider must be one of facebook, google, or apple',
+        }),
+      }),
     }),
   }),
 };

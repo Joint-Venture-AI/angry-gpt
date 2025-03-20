@@ -36,7 +36,6 @@ async function downloadImage(url: string) {
     return `/images/${fileName}`;
   } catch (error) {
     logger.error(colors.red('❎ Error downloading image:'), error);
-    return;
   }
 }
 
