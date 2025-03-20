@@ -199,11 +199,13 @@ export const AuthServices = {
   },
 
   async googleLogin({ email, name, uid, avatar }: any) {
-    let user = await User.findOne({ email }).select('+googleId');
-    const newAvatar = avatar && (await downloadImage(avatar));
+    const user = await User.findOne({ email }).select('+googleId');
+    const newAvatar = avatar
+      ? await downloadImage(avatar)
+      : config.server.default_avatar;
 
     if (!user)
-      user = await User.create({
+      await User.create({
         email,
         name,
         avatar: newAvatar,
@@ -217,15 +219,13 @@ export const AuthServices = {
           'You are not authorized',
         );
 
-      if (newAvatar) {
+      if (newAvatar && user.avatar !== newAvatar) {
         const oldAvatar = user.avatar;
         user.avatar = newAvatar;
         if (oldAvatar) await deleteFile(oldAvatar);
       }
 
-      user.name = name;
-      user.status = EUserStatus.ACTIVE;
-
+      Object.assign(user, { name, status: EUserStatus.ACTIVE });
       await user.save();
     }
   },
