@@ -23,6 +23,7 @@ adminRoutes.post(
   purifyRequest(BookValidations.create),
   BookController.create,
 );
+
 adminRoutes.patch(
   '/:bookId/edit',
   imageUploader(
@@ -38,12 +39,14 @@ adminRoutes.patch(
   purifyRequest(BookValidations.edit),
   BookController.edit,
 );
+
 adminRoutes.delete('/:bookId/delete', BookController.delete);
 
 /**
  * User Routes
  */
 userRoutes.get('/', BookController.list);
+
 userRoutes.get('/:bookId', BookController.retrieve);
 
 export const BookRoutes = {

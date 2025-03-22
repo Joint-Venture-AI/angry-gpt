@@ -43,7 +43,7 @@ export const BookController = {
   }),
 
   delete: catchAsync(async (req, res) => {
-    const data = await BookServices.delete(req.params.id);
+    const data = await BookServices.delete(req.params.bookId);
 
     serveResponse(res, {
       message: 'Book deleted successfully',
