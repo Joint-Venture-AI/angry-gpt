@@ -4,9 +4,9 @@ import { EUserRole, EUserStatus } from './User.enum';
 export type TUser = {
   _id?: Types.ObjectId;
   name: string;
-  avatar: string;
-  email: string;
-  password: string;
+  avatar?: string;
+  email?: string;
+  password?: string;
   role: EUserRole;
   status: EUserStatus;
   otp?: number;

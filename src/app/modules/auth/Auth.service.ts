@@ -33,16 +33,17 @@ export const AuthServices = {
 
       await user.save();
 
-      await sendEmail({
-        to: user.email,
-        subject: `Your ${config.server.name} account activation OTP is ${otp}.`,
-        html: AuthTemplates.activate_otp(user.name, otp.toString()),
-      });
+      if (email)
+        await sendEmail({
+          to: email,
+          subject: `Your ${config.server.name} account activation OTP is ${otp}.`,
+          html: AuthTemplates.activate_otp(user.name, otp.toString()),
+        });
 
       return;
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcrypt.compare(password, user.password!);
     if (!isValidPassword)
       throw new ServerError(
         StatusCodes.UNAUTHORIZED,
@@ -58,7 +59,7 @@ export const AuthServices = {
   ) {
     const user = (await User.findById(id).select('+password'))!;
 
-    const isValidPassword = await bcrypt.compare(oldPassword, user.password);
+    const isValidPassword = await bcrypt.compare(oldPassword, user.password!);
     if (!isValidPassword)
       throw new ServerError(
         StatusCodes.UNAUTHORIZED,
@@ -86,11 +87,12 @@ export const AuthServices = {
 
     await user.save();
 
-    await sendEmail({
-      to: user.email,
-      subject: `Your ${config.server.name} password reset OTP is ${otp}.`,
-      html: AuthTemplates.reset_otp(user.name, otp.toString()),
-    });
+    if (email)
+      await sendEmail({
+        to: email,
+        subject: `Your ${config.server.name} password reset OTP is ${otp}.`,
+        html: AuthTemplates.reset_otp(user.name, otp.toString()),
+      });
   },
 
   async verifyOtp(email: string, otp: number) {
