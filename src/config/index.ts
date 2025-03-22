@@ -75,11 +75,8 @@ export default {
     password: env<string>('admin password', genSecret(4)),
   },
   auth: {
-    google: {
-      clint: env<string>('google client id', ''),
-    },
     apple: {
-      clint: env<string>('apple client id', ''),
+      client: env<string>('apple client id', ''),
     },
   },
 };
