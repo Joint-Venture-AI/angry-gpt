@@ -6,8 +6,13 @@ import deleteFile from '../../../util/file/deleteFile';
 import ServerError from '../../../errors/ServerError';
 
 export const UserServices = {
-  async create(user: Partial<TUser>) {
-    await User.create(user);
+  async create(userData: Partial<TUser>) {
+    const user = await User.findOne({ email: userData.email });
+
+    if (user)
+      throw new ServerError(StatusCodes.CONFLICT, 'User already exists');
+
+    return await User.create(userData);
   },
 
   async edit(req: Request) {

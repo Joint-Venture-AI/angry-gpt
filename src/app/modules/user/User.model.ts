@@ -11,8 +11,6 @@ const userSchema = new Schema<TUser>(
     },
     email: {
       type: String,
-      required: true,
-      unique: true,
     },
     avatar: {
       type: String,
@@ -31,6 +29,10 @@ const userSchema = new Schema<TUser>(
       type: String,
       select: false,
     },
+    facebookId: {
+      type: String,
+      select: false,
+    },
     status: {
       type: String,
       enum: [EUserStatus.ACTIVE, EUserStatus.INACTIVE],
@@ -41,6 +43,7 @@ const userSchema = new Schema<TUser>(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

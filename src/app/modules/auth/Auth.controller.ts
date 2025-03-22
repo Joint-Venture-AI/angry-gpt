@@ -17,7 +17,7 @@ export const AuthControllers = {
 
     res.cookie('refreshToken', refreshToken, {
       secure: config.server.node_env !== 'development',
-      maxAge: verifyToken(refreshToken!, 'refresh').exp! * 1000,
+      maxAge: verifyToken(refreshToken, 'refresh').exp! * 1000,
       httpOnly: true,
     });
 
@@ -28,12 +28,12 @@ export const AuthControllers = {
   }),
 
   logout: catchAsync(async (req, res) => {
-    Object.keys(req.cookies).forEach(cookie => {
+    Object.keys(req.cookies).forEach(cookie =>
       res.clearCookie(cookie, {
         httpOnly: true,
         secure: config.server.node_env !== 'development',
-      });
-    });
+      }),
+    );
 
     serveResponse(res, {
       message: 'Logged out successfully',
@@ -48,18 +48,16 @@ export const AuthControllers = {
     });
   }),
 
-  sendOtp: catchAsync(async (req, res) => {
-    const { email } = req.body;
-
-    await AuthServices.sendOtp(email);
+  sendOtp: catchAsync(async ({ body }, res) => {
+    await AuthServices.sendOtp(body.email);
 
     serveResponse(res, {
       message: 'Send Otp successfully! Check your email.',
     });
   }),
 
-  verifyOtp: catchAsync(async (req, res) => {
-    const { email, otp } = req.body;
+  verifyOtp: catchAsync(async ({ body }, res) => {
+    const { email, otp } = body;
 
     const { accessToken, refreshToken, user } = await AuthServices.verifyOtp(
       email,
@@ -78,10 +76,8 @@ export const AuthControllers = {
     });
   }),
 
-  resetPassword: catchAsync(async (req, res) => {
-    const { password } = req.body;
-
-    await AuthServices.resetPassword(req.user!.email!, password);
+  resetPassword: catchAsync(async ({ body, user }, res) => {
+    await AuthServices.resetPassword(user!.email!, body.password);
 
     serveResponse(res, {
       message: 'Password reset successfully!',
@@ -89,11 +85,13 @@ export const AuthControllers = {
   }),
 
   refreshToken: catchAsync(async (req, res) => {
-    const data = await AuthServices.refreshToken(req.cookies.refreshToken);
+    const { accessToken } = await AuthServices.refreshToken(
+      req.cookies.refreshToken,
+    );
 
     serveResponse(res, {
       message: 'New Access create successfully!',
-      data,
+      data: { token: accessToken },
     });
   }),
 

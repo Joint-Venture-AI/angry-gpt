@@ -7,27 +7,33 @@ import { Request, ErrorRequestHandler } from 'express';
 import deleteFile from '../../util/file/deleteFile';
 import { createDir } from '../../util/file/createDir';
 import catchAsync from '../../util/server/catchAsync';
+import sharp from 'sharp';
 
 /**
  * Image upload middleware using multer.
  *
  * @param {Function} cb - A function to handle uploaded images.
- * @param {boolean} [isOptional=false] - Whether image upload is optional.
  */
 const imageUploader = (
   cb: (req: Request, images: string[]) => void,
-  isOptional: boolean = false,
+  {
+    isOptional = false,
+    width,
+    height,
+  }: {
+    isOptional?: boolean;
+    width?: number;
+    height?: number;
+  } = {},
 ) => {
-  const baseUploadDir = path.join(process.cwd(), 'uploads');
+  const uploadDir = path.join(process.cwd(), 'uploads', 'images');
+  const resizedDir = path.join(uploadDir, 'resized');
 
-  createDir(baseUploadDir);
+  createDir(uploadDir);
+  createDir(resizedDir);
 
   const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => {
-      const uploadDir = path.join(baseUploadDir, 'images');
-      createDir(uploadDir);
-      cb(null, uploadDir);
-    },
+    destination: (_req, _file, cb) => cb(null, uploadDir),
     filename: (_req, file, cb) => {
       const fileExt = path.extname(file.originalname);
       const fileName =
@@ -58,7 +64,7 @@ const imageUploader = (
   }).fields([{ name: 'images', maxCount: 20 }]); // Allow up to 20 images
 
   return catchAsync((req, res, next) => {
-    upload(req, res, err => {
+    upload(req, res, async err => {
       if (err)
         throw new ServerError(
           StatusCodes.BAD_REQUEST,
@@ -78,12 +84,28 @@ const imageUploader = (
         return next();
       }
 
-      // Extract file paths
-      const images: string[] = uploadedImages.images.map(
-        file => `/images/${file.filename}`,
-      );
+      const resizedImages: string[] = [];
+      for (const file of uploadedImages.images) {
+        const filePath = path.join(uploadDir, file.filename);
 
-      cb(req, images);
+        if (!width && !height) resizedImages.push(`/images/${file.filename}`);
+        else {
+          const resizedFilePath = path.join(resizedDir, file.filename);
+
+          try {
+            await sharp(filePath).resize(width, height).toFile(resizedFilePath);
+
+            resizedImages.push(`/images/resized/${file.filename}`);
+          } catch (resizeError) {
+            throw new ServerError(
+              StatusCodes.INTERNAL_SERVER_ERROR,
+              'Image resizing failed',
+            );
+          }
+        }
+      }
+
+      cb(req, resizedImages);
       next();
     });
   }, imagesUploadRollback);

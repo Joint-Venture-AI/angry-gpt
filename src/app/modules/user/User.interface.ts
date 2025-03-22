@@ -12,6 +12,7 @@ export type TUser = {
   otp?: number;
   otpExp?: Date;
   googleId?: string;
+  facebookId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };

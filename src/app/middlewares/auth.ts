@@ -17,9 +17,9 @@ const auth = (...roles: EUserRole[]) =>
     if (!token)
       throw new ServerError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
 
-    const { email } = verifyToken(token, 'access');
+    const { userId } = verifyToken(token, 'access');
 
-    const user = await User.findOne({ email });
+    const user = await User.findById(userId);
 
     if (!user)
       throw new ServerError(StatusCodes.UNAUTHORIZED, 'You are not authorized');

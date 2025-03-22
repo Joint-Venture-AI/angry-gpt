@@ -11,6 +11,7 @@ import { EUserStatus } from '../user/User.enum';
 import downloadImage from '../../../util/file/downloadImage';
 import deleteFile from '../../../util/file/deleteFile';
 import { Request } from 'express';
+import { facebookUser } from './Auth.lib';
 
 export const AuthServices = {
   async login({ email, password }: Record<string, string>) {
@@ -48,15 +49,7 @@ export const AuthServices = {
         "Email or password don't match!",
       );
 
-    const userData = await User.findById(user._id)
-      .select('name avatar email role')
-      .lean();
-
-    const accessToken = createToken({ email }, 'access');
-
-    const refreshToken = createToken({ email }, 'refresh');
-
-    return { accessToken, user: userData, refreshToken };
+    return this.retrieveToken(user._id);
   },
 
   async changePassword(
@@ -129,15 +122,7 @@ export const AuthServices = {
 
     await user.save();
 
-    const userData = await User.findById(user._id)
-      .select('name avatar email role')
-      .lean();
-
-    const accessToken = createToken({ email: user.email }, 'access');
-
-    const refreshToken = createToken({ email }, 'refresh');
-
-    return { accessToken, refreshToken, user: userData };
+    return this.retrieveToken(user._id);
   },
 
   async resetPassword(email: string, password: string) {
@@ -153,59 +138,64 @@ export const AuthServices = {
     await user.save();
   },
 
-  async refreshToken(token: string) {
+  async refreshToken(refreshToken: string) {
+    const token = refreshToken.split(' ')[0];
+
     if (!token)
       throw new ServerError(StatusCodes.UNAUTHORIZED, 'You are not logged in!');
 
-    const { email } = verifyToken(token.split(' ')[0], 'refresh');
+    const { userId } = verifyToken(token, 'refresh');
 
-    const user = await User.findOne({
-      email,
-    });
+    const user = await User.findById(userId).select('_id');
 
     if (!user) throw new ServerError(StatusCodes.NOT_FOUND, 'User not found!');
 
-    const accessToken = createToken({ email }, 'access');
-
-    return { accessToken };
+    return await this.retrieveToken(user._id);
   },
 
-  async loginWith({ params: { provider }, body }: Request) {
-    const { email } = body;
+  async retrieveToken(userId: Types.ObjectId) {
+    const accessToken = createToken({ userId }, 'access');
+    const refreshToken = createToken({ userId }, 'refresh');
 
-    switch (provider) {
-      case 'facebook':
-        break;
-      case 'google':
-        await this.googleLogin(body);
-        break;
-      case 'apple':
-        break;
-      default:
-        throw new ServerError(
-          StatusCodes.UNAUTHORIZED,
-          'You are not logged in!',
-        );
-    }
-
-    const accessToken = createToken({ email }, 'access');
-    const refreshToken = createToken({ email }, 'refresh');
-
-    const userData = await User.findOne({ email })
+    const userData = await User.findById(userId)
       .select('name avatar email role')
       .lean();
 
     return { accessToken, user: userData, refreshToken };
   },
 
+  async loginWith({ params: { provider }, body, headers }: Request) {
+    const token = headers.authorization?.split(' ')[1];
+
+    switch (provider) {
+      case 'facebook':
+        if (!token)
+          throw new ServerError(
+            StatusCodes.UNAUTHORIZED,
+            'You are not authorized!',
+          );
+
+        return await this.facebookLogin(token);
+      case 'google':
+        return await this.googleLogin(body);
+      // case 'apple':
+      //   break;
+      default:
+        throw new ServerError(
+          StatusCodes.UNAUTHORIZED,
+          'You are not authorized!',
+        );
+    }
+  },
+
   async googleLogin({ email, name, uid, avatar }: any) {
-    const user = await User.findOne({ email }).select('+googleId');
+    let user = await User.findOne({ email }).select('+googleId');
     const newAvatar = avatar
       ? await downloadImage(avatar)
       : config.server.default_avatar;
 
     if (!user)
-      await User.create({
+      user = await User.create({
         email,
         name,
         avatar: newAvatar,
@@ -228,5 +218,41 @@ export const AuthServices = {
       Object.assign(user, { name, status: EUserStatus.ACTIVE });
       await user.save();
     }
+
+    return this.retrieveToken(user._id);
+  },
+
+  async facebookLogin(token: string) {
+    const userData = await facebookUser(token);
+    const avatar = userData?.picture?.data?.url;
+
+    let user = await User.findOne({ facebookId: userData.id }).select(
+      '+facebookId',
+    );
+
+    const newAvatar = avatar
+      ? await downloadImage(avatar)
+      : config.server.default_avatar;
+
+    if (!user)
+      user = await User.create({
+        name: userData.name,
+        email: userData.email,
+        avatar: newAvatar,
+        facebookId: userData.id,
+        status: EUserStatus.ACTIVE,
+      });
+    else {
+      if (newAvatar && user.avatar !== newAvatar) {
+        const oldAvatar = user.avatar;
+        user.avatar = newAvatar;
+        if (oldAvatar) await deleteFile(oldAvatar);
+      }
+
+      Object.assign(user, { name: userData.name, status: EUserStatus.ACTIVE });
+      await user.save();
+    }
+
+    return this.retrieveToken(user._id);
   },
 };
