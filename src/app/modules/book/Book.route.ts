@@ -11,17 +11,30 @@ const userRoutes = Router();
  */
 adminRoutes.post(
   '/create',
-  imageUploader((req, images) => {
-    req.body.images = images;
-  }),
+  imageUploader(
+    (req, images) => {
+      req.body.images = images;
+    },
+    {
+      width: 390,
+      height: 550,
+    },
+  ),
   purifyRequest(BookValidations.create),
   BookController.create,
 );
 adminRoutes.patch(
   '/:bookId/edit',
-  imageUploader((req, images) => {
-    req.body.images = images;
-  }, true),
+  imageUploader(
+    (req, images) => {
+      req.body.images = images;
+    },
+    {
+      isOptional: true,
+      width: 390,
+      height: 550,
+    },
+  ),
   purifyRequest(BookValidations.edit),
   BookController.edit,
 );
