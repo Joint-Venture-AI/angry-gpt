@@ -11,6 +11,6 @@ export const facebookUser = async (token: string) =>
 
 export const appleUser = async (token: string) =>
   await appleSigninAuth.verifyIdToken(token, {
-    audience: config.auth.apple.clint,
+    audience: config.auth.apple.client,
     nonce: null,
   });
