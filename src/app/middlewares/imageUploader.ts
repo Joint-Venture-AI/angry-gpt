@@ -93,7 +93,9 @@ const imageUploader = (
           const resizedFilePath = path.join(resizedDir, file.filename);
 
           try {
-            await sharp(filePath).resize(width, height).toFile(resizedFilePath);
+            await sharp(filePath)
+              .resize(width, height, { fit: 'inside' })
+              .toFile(resizedFilePath);
 
             resizedImages.push(`/images/resized/${file.filename}`);
           } catch (resizeError) {
