@@ -97,6 +97,8 @@ const imageUploader = (
               .resize(width, height, { fit: 'inside' })
               .toFile(resizedFilePath);
 
+            await deleteFile(`/images/${file.filename}`);
+
             resizedImages.push(`/images/resized/${file.filename}`);
           } catch (resizeError) {
             throw new ServerError(
