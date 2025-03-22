@@ -10,52 +10,36 @@ export const BookServices = {
     return await Book.create(bookData);
   },
 
-  async list(query: Record<string, any>) {
-    const page = +query.page || 1,
-      limit = +query.limit || 10,
-      search = query.search || '',
-      sort = query.sort || 'createdAt';
-
-    const books = await Book.aggregate([
-      {
-        $match: {
+  async list({ page = '1', limit = '10', search = '', sort = '-createdAt' }) {
+    const query = search
+      ? {
           $or: [
-            { title: { $regex: search, $options: 'i' } },
-            { author: { $regex: search, $options: 'i' } },
+            { title: { $regex: new RegExp(search, 'i') } },
+            { author: { $regex: new RegExp(search, 'i') } },
           ],
-        },
-      },
-      {
-        $sort: {
-          [sort]: -1,
-        },
-      },
-      {
-        $skip: (page - 1) * limit,
-      },
-      {
-        $limit: limit,
-      },
-    ]);
+        }
+      : {};
 
-    const total = await Book.countDocuments({
-      $or: [
-        { title: { $regex: search, $options: 'i' } },
-        { author: { $regex: search, $options: 'i' } },
-      ],
-    });
+    const total = await Book.countDocuments(query);
+
+    const books = await Book.find(query)
+      .sort(sort)
+      .skip((+page - 1) * +limit)
+      .limit(+limit);
 
     const pagination: TPagination = {
-      limit,
-      page,
+      limit: +limit,
+      page: +page,
       total,
-      totalPage: Math.ceil(total / limit),
+      totalPage: Math.ceil(total / +limit),
     };
 
     return {
       books,
       meta: {
         pagination,
+        search,
+        sort,
       },
     };
   },
