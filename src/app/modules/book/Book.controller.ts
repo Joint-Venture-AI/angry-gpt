@@ -25,10 +25,10 @@ export const BookController = {
   }),
 
   retrieve: catchAsync(async (req, res) => {
-    const data = await BookServices.retrieve(req.params.id);
+    const data = await BookServices.retrieve(req.params.bookId);
 
     serveResponse(res, {
-      message: 'Book fetched successfully',
+      message: 'Book retrieved successfully',
       data,
     });
   }),

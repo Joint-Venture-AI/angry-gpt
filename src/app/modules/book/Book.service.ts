@@ -45,7 +45,11 @@ export const BookServices = {
   },
 
   async retrieve(id: string) {
-    return await Book.findById(id);
+    const book = await Book.findById(id);
+
+    if (!book) throw new ServerError(StatusCodes.NOT_FOUND, 'Book not found');
+
+    return book;
   },
 
   async edit(id: string, bookData: TBook) {
