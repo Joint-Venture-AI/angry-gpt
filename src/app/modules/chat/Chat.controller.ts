@@ -31,4 +31,19 @@ export const ChatControllers = {
       message: 'Chat deleted successfully',
     });
   }),
+  list: catchAsync(async ({ query, user }: any, res) => {
+    const filter = {
+      page: +query.page || 1,
+      limit: +query.limit || 10,
+      user: user._id,
+    };
+
+    const { chats, meta } = await ChatServices.list(filter);
+
+    serveResponse(res, {
+      message: 'Chats fetched successfully',
+      meta,
+      data: chats,
+    });
+  }),
 };

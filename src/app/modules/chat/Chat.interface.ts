@@ -1,8 +1,9 @@
 import { Types } from 'mongoose';
+export type TBot = 'angry' | 'lola' | 'mimi';
 
 export type TChat = {
   user: Types.ObjectId;
-  bot: 'angry' | 'lola' | 'mimi';
+  bot: TBot;
   name: string;
   createdAt: Date;
   updatedAt: Date;

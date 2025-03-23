@@ -82,4 +82,7 @@ export default {
   chatgpt: {
     key: env<string>('chatgpt key', genSecret()),
   },
+  gemini: {
+    key: env<string>('gemini key', genSecret()),
+  },
 };

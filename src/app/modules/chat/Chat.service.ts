@@ -24,4 +24,24 @@ export const ChatServices = {
       session.endSession();
     }
   },
+  async list({ user, page, limit }: Record<string, any>) {
+    const chats = await Chat.find({ user })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total = await Chat.countDocuments({ user });
+
+    return {
+      meta: {
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPage: Math.ceil(total / limit),
+        },
+      },
+      chats,
+    };
+  },
 };

@@ -7,6 +7,7 @@ import { TRoute } from '../types/route.types';
 import AdminRoutes from '../app/modules/admin/Admin.routes';
 import { BookRoutes } from '../app/modules/book/Book.route';
 import { OrderRoutes } from '../app/modules/order/Order.route';
+import { ChatRoutes } from '../app/modules/chat/Chat.route';
 
 const routes: TRoute[] = [
   {
@@ -31,6 +32,11 @@ const routes: TRoute[] = [
     path: '/orders',
     middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
     route: OrderRoutes.user,
+  },
+  {
+    path: '/chats',
+    middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
+    route: ChatRoutes,
   },
 ];
 

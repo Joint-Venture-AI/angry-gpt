@@ -1,20 +1,26 @@
-import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../util/server/catchAsync';
 import serveResponse from '../../../util/server/serveResponse';
 import { MessageServices } from './Message.service';
 
-export const ChatControllers = {
-  create: catchAsync(async (req, res) => {
-    const data = await MessageServices.create(req.body);
+export const MessageControllers = {
+  chat: catchAsync(async (req, res) => {
+    const message = await MessageServices.chat(
+      req.params.chatId,
+      req.body.message,
+    );
 
     serveResponse(res, {
-      statusCode: StatusCodes.CREATED,
-      message: 'Message created successfully',
-      data,
+      message,
     });
   }),
-  list: catchAsync(async (req, res) => {
-    const { messages, meta } = await MessageServices.list(req.query);
+  list: catchAsync(async ({ query, params }: any, res) => {
+    const filter = {
+      page: +query.page || 1,
+      limit: +query.limit || 10,
+      chat: params.chatId,
+    };
+
+    const { messages, meta } = await MessageServices.list(filter);
 
     serveResponse(res, {
       message: 'Messages fetched successfully',
