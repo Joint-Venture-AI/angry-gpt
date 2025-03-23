@@ -1,35 +1,46 @@
 import { Request } from 'express';
 import { TOrder } from './Order.interface';
 import Book from '../book/Book.model';
-import { Types } from 'mongoose';
 import ServerError from '../../../errors/ServerError';
 import { StatusCodes } from 'http-status-codes';
+import Order from './Order.model';
+import { EOrderState } from './Order.enum';
 
 export const OrderService = {
   async checkout(req: Request) {
     const { details, customer } = req.body as TOrder;
 
-    let amount = 0,
-      books: any[] = await Book.find({
-        _id: { $in: details.map(detail => new Types.ObjectId(detail.book)) },
-      });
+    let amount = 0;
 
-    if (!books.length)
-      throw new ServerError(StatusCodes.BAD_REQUEST, 'No valid books found');
+    for (const { book, quantity } of details) {
+      const foundBook = await Book.findById(book);
+      if (foundBook) amount += foundBook.price * quantity;
+    }
 
-    books = books
-      .map(book => {
-        const bookDetail = details.find(
-          detail => detail.book === book._id.toString(),
-        );
+    if (amount === 0)
+      throw new ServerError(
+        StatusCodes.BAD_REQUEST,
+        'No valid books in the order',
+      );
 
-        if (!bookDetail) return null;
+    const order = await Order.findOneAndUpdate(
+      { user: req.user!._id, state: EOrderState.PENDING },
+      {
+        $set: {
+          details,
+          customer,
+          amount,
+          state: EOrderState.PENDING,
+        },
+        $setOnInsert: { createdAt: new Date() },
+      },
+      { upsert: true, new: true },
+    );
 
-        amount += bookDetail.price * bookDetail.quantity;
-
-        return { ...book, quantity: bookDetail.quantity };
-      })
-      .filter(Boolean);
+    return {
+      orderId: order._id,
+      amount,
+    };
   },
 
   // async cancel(orderId: string) {

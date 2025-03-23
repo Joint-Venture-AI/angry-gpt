@@ -5,7 +5,6 @@ export type TOrder = {
   _id?: Types.ObjectId;
   details: {
     book: Types.ObjectId;
-    price: number;
     quantity: number;
   }[];
   customer: TCustomer;
@@ -26,6 +25,6 @@ export type TCustomer = {
     address: string;
     zip: string;
     city: string;
-    apartment: string;
+    apartment?: string;
   };
 };

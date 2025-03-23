@@ -6,6 +6,7 @@ import { EUserRole } from '../app/modules/user/User.enum';
 import { TRoute } from '../types/route.types';
 import AdminRoutes from '../app/modules/admin/Admin.routes';
 import { BookRoutes } from '../app/modules/book/Book.route';
+import { OrderRoutes } from '../app/modules/order/Order.route';
 
 const routes: TRoute[] = [
   {
@@ -25,6 +26,11 @@ const routes: TRoute[] = [
   {
     path: '/books',
     route: BookRoutes.user,
+  },
+  {
+    path: '/orders',
+    middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
+    route: OrderRoutes.user,
   },
 ];
 

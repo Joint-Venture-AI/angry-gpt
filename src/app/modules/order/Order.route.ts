@@ -5,9 +5,9 @@ const publicRouter = Router();
 const privateRouter = Router();
 
 // create a order
-publicRouter.get('/', OrderController.retrieve);
+// publicRouter.get('/', OrderController.retrieve);
 publicRouter.post('/checkout', OrderController.checkout);
-publicRouter.post('/:id/cancel', OrderController.cancel);
+// publicRouter.post('/:id/cancel', OrderController.cancel);
 
 /**
  * *************************************************************************************************************
@@ -17,10 +17,10 @@ publicRouter.post('/:id/cancel', OrderController.cancel);
  * **************************************************************************************************************
  */
 
-privateRouter.post('/:id/shipped', OrderController.shipped);
-privateRouter.get('/', OrderController.list);
+// privateRouter.post('/:id/shipped', OrderController.shipped);
+// privateRouter.get('/', OrderController.list);
 
 export const OrderRoutes = {
-  customerRoutes: publicRouter,
-  adminRoutes: privateRouter,
+  user: publicRouter,
+  admin: privateRouter,
 };

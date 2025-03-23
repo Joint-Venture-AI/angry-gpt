@@ -8,7 +8,7 @@ const addressSchema = new Schema(
     address: { type: String, required: true },
     zip: { type: String, required: true },
     city: { type: String, required: true },
-    apartment: { type: String, required: true },
+    apartment: { type: String },
   },
   { _id: false },
 );
@@ -31,11 +31,6 @@ const orderSchema = new Schema<TOrder>(
           type: Schema.Types.ObjectId,
           ref: 'Book',
           required: true,
-        },
-        price: {
-          type: Number,
-          required: true,
-          min: 0,
         },
         quantity: {
           type: Number,

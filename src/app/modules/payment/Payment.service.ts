@@ -1,21 +1,21 @@
 import { TTransaction } from '../transaction/Transaction.interface';
-import { Order } from '../order/Order.model';
 import { TransactionServices } from '../transaction/Transaction.service';
 import { stripe } from './Payment.utils';
 import Stripe from 'stripe';
 import config from '../../../config';
+import Order from '../order/Order.model';
 
 export const PaymentServices = {
-  create: async (data: Record<string, any>) => {
+  create: async ({ name, amount, method = 'card' }: Record<string, any>) => {
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['klarna', 'paypal'],
+      payment_method_types: [method],
       mode: 'payment',
       line_items: [
         {
           price_data: {
-            currency: 'eur',
-            product_data: { name: data.name },
-            unit_amount: Math.round(data.amount * 100),
+            currency: 'usd',
+            product_data: { name },
+            unit_amount: Math.round(amount * 100),
           },
           quantity: 1,
         },
