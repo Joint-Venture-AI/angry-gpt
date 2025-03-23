@@ -79,4 +79,7 @@ export default {
       client: env<string>('apple client id', ''),
     },
   },
+  chatgpt: {
+    key: env<string>('chatgpt key', genSecret()),
+  },
 };
