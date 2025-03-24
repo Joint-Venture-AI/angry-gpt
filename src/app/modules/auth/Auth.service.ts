@@ -205,7 +205,7 @@ export const AuthServices = {
         status: EUserStatus.ACTIVE,
       });
     else {
-      if (user.googleId !== uid)
+      if (user.googleId && user.googleId !== uid)
         throw new ServerError(
           StatusCodes.UNAUTHORIZED,
           'You are not authorized',
