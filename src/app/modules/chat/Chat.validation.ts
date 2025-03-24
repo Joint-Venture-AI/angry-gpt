@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import Chat from './Chat.model';
+import { exists } from '../../../util/db/exists';
 
 export const ChatValidations = {
   create: z.object({
@@ -12,16 +13,12 @@ export const ChatValidations = {
       name: z.string().min(1, 'Name is required'),
     }),
     params: z.object({
-      chatId: z.string().refine(async id => !!(await Chat.findById(id)), {
-        message: 'Chat not found',
-      }),
+      chatId: z.string().refine(exists(Chat)),
     }),
   }),
   delete: z.object({
     params: z.object({
-      chatId: z.string().refine(async id => !!(await Chat.findById(id)), {
-        message: 'Chat not found',
-      }),
+      chatId: z.string().refine(exists(Chat)),
     }),
   }),
 };

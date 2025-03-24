@@ -1,12 +1,11 @@
 import { z } from 'zod';
 import Chat from '../chat/Chat.model';
+import { exists } from '../../../util/db/exists';
 
 export const MessageValidations = {
   list: z.object({
     params: z.object({
-      chatId: z.string().refine(async id => !!(await Chat.findById(id)), {
-        message: 'Chat not found',
-      }),
+      chatId: z.string().refine(exists(Chat)),
     }),
   }),
   chat: z.object({
@@ -14,9 +13,7 @@ export const MessageValidations = {
       message: z.string().min(1, 'Message is required'),
     }),
     params: z.object({
-      chatId: z.string().refine(async id => !!(await Chat.findById(id)), {
-        message: 'Chat not found',
-      }),
+      chatId: z.string().refine(exists(Chat)),
     }),
   }),
 };
