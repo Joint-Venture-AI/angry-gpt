@@ -27,6 +27,7 @@ const bookSchema = new Schema<TBook>(
     images: {
       type: [String],
       required: true,
+      default: [],
     },
   },
   {

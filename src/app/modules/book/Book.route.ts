@@ -26,6 +26,7 @@ adminRoutes.post(
 
 adminRoutes.patch(
   '/:bookId/edit',
+  purifyRequest(BookValidations.exists),
   imageUploader(
     (req, images) => {
       req.body.images = images;
@@ -40,14 +41,22 @@ adminRoutes.patch(
   BookController.edit,
 );
 
-adminRoutes.delete('/:bookId/delete', BookController.delete);
+adminRoutes.delete(
+  '/:bookId/delete',
+  purifyRequest(BookValidations.exists),
+  BookController.delete,
+);
 
 /**
  * User Routes
  */
 userRoutes.get('/', BookController.list);
 
-userRoutes.get('/:bookId', BookController.retrieve);
+userRoutes.get(
+  '/:bookId',
+  purifyRequest(BookValidations.exists),
+  BookController.retrieve,
+);
 
 export const BookRoutes = {
   admin: adminRoutes,

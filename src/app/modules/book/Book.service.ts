@@ -45,19 +45,13 @@ export const BookServices = {
   },
 
   async retrieve(id: string) {
-    const book = await Book.findById(id);
-
-    if (!book) throw new ServerError(StatusCodes.NOT_FOUND, 'Book not found');
-
-    return book;
+    return await Book.findById(id);
   },
 
   async edit(id: string, bookData: TBook) {
-    const book = await Book.findById(id);
+    const book = (await Book.findById(id))!;
 
-    if (!book) throw new ServerError(StatusCodes.NOT_FOUND, 'Book not found');
-
-    const oldImages = book.images || [];
+    const oldImages = book.images;
 
     Object.assign(book, bookData);
     await book.save();
@@ -70,9 +64,7 @@ export const BookServices = {
   async delete(id: string) {
     const book = await Book.findByIdAndDelete(id);
 
-    if (!book) throw new ServerError(StatusCodes.NOT_FOUND, 'Book not found');
-
-    book.images?.forEach(deleteFile);
+    book!.images?.forEach(deleteFile);
 
     return book;
   },
