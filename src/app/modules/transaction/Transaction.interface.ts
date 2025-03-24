@@ -7,6 +7,7 @@ export type TTransaction = {
   amount: number;
   payment_method: string;
   subscription?: string;
+  type: 'sell' | 'subscription';
   createdAt?: Date;
   updatedAt?: Date;
 };

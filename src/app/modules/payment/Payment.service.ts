@@ -4,6 +4,7 @@ import { stripe } from './Payment.utils';
 import Stripe from 'stripe';
 import config from '../../../config';
 import Order from '../order/Order.model';
+import { EOrderState } from '../order/Order.enum';
 
 export const PaymentServices = {
   create: async ({ name, amount, method = 'card' }: Record<string, any>) => {
@@ -49,14 +50,13 @@ export const PaymentServices = {
       type: 'sell',
       payment_method: paymentMethod.type,
       amount: order.amount,
-      customer: order.customer,
+      user: order.user,
     };
 
     const transaction = await TransactionServices.create(transactionData);
 
     order.transaction = transaction._id;
-    order.payment_method = paymentMethod.type;
-    order.state = 'success';
+    order.state = EOrderState.SUCCESS;
 
     await order.save();
   },
