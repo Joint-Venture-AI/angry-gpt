@@ -23,6 +23,7 @@ router.delete(
   purifyRequest(ChatValidations.delete),
   ChatControllers.delete,
 );
+router.delete('/clear', ChatControllers.clear);
 router.get(
   '/:chatId',
   purifyRequest(MessageValidations.list),

@@ -24,7 +24,7 @@ export const ChatServices = {
       await session.endSession();
     }
   },
-  async clear(user: string) {
+  async clear(user: Types.ObjectId) {
     const chats = await Chat.find({ user }).select('_id');
     await Promise.allSettled(chats.map(({ _id }) => this.delete(_id)));
   },
