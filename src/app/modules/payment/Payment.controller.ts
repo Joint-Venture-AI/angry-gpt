@@ -15,9 +15,7 @@ export const PaymentControllers = {
   }),
 
   webhook: catchAsync(async (req, res) => {
-    const sig = req.headers['stripe-signature'];
-
-    if (typeof sig !== 'string') return res.end();
+    const sig = req.headers['stripe-signature'] as string;
 
     const event = stripe.webhooks.constructEvent(
       req.body,

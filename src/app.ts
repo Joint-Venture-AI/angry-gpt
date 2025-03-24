@@ -30,7 +30,11 @@ app.use(
   Morgan.successHandler,
   Morgan.errorHandler,
 
-  express.json(),
+  (req, res, next) =>
+    (req.headers['stripe-signature']
+      ? express.raw({ type: 'application/json' })
+      : express.json())(req, res, next),
+
   express.text(),
   express.urlencoded({ extended: true }),
   cookieParser(),
