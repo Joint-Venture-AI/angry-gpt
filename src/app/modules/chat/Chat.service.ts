@@ -7,7 +7,7 @@ export const ChatServices = {
     return await Chat.create({ user, bot });
   },
   async rename(chatId: string, name: string) {
-    return await Chat.findByIdAndUpdate(chatId, { name });
+    return await Chat.findByIdAndUpdate(chatId, { name }, { new: true });
   },
   async delete(chatId: string) {
     const session = await Chat.startSession();
