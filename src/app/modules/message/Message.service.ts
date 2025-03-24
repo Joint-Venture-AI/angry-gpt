@@ -1,3 +1,4 @@
+import { ChatConstants } from '../chat/Chat.constant';
 import { gemini } from '../chat/Chat.lib';
 import Chat from '../chat/Chat.model';
 import { chatModel } from './Message.constant';
@@ -32,7 +33,9 @@ export const MessageServices = {
 
     await Message.create({ chat: chatId, content, sender: 'bot' });
 
-    chat!.name = `${this.genTitle(content)}...`;
+    const { emoji, separator, date } = ChatConstants;
+
+    chat!.name = `${emoji()} ${this.genTitle(content)} ${separator()} ${date()}`;
     await chat!.save();
 
     return content;
@@ -62,35 +65,7 @@ export const MessageServices = {
   genTitle(response: string) {
     const rawLine = response.split('\n').find(line => line.trim());
 
-    if (!rawLine) {
-      const date = new Date();
-
-      const dateFormats = [
-        date.toLocaleDateString(undefined, {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }),
-        date.toLocaleDateString(undefined, { month: 'long', day: 'numeric' }),
-        date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-      ];
-
-      const titleTemplates = [
-        'Thoughts from',
-        'Conversation on',
-        'AI Session -',
-        'Ideas Unlocked -',
-        'You + AI •',
-        'Memory from',
-      ];
-
-      const randomDate =
-        dateFormats[Math.floor(Math.random() * dateFormats.length)];
-      const randomText =
-        titleTemplates[Math.floor(Math.random() * titleTemplates.length)];
-
-      return `${randomText} ${randomDate}`;
-    }
+    if (!rawLine) return '';
 
     // Step 1: Clean markdown (*, **, _, __)
     const title = rawLine
