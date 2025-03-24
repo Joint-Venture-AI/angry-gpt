@@ -9,7 +9,7 @@ export const ChatMiddlewares = {
 
       const { text, emoji, separator, date } = ChatConstants;
 
-      this.name = `${emoji()} ${text()} ${separator()} ${date}`;
+      this.name = `${emoji()} ${text()} ${separator()} ${date()}`;
       next();
     });
   },
