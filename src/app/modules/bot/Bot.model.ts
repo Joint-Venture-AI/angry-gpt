@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { TBot } from './Bot.interface';
+import config from '../../../config';
 
 export const botSchema = new Schema<TBot>(
   {
@@ -20,7 +21,7 @@ export const botSchema = new Schema<TBot>(
     },
     logo: {
       type: String,
-      default: '/images/logo.png',
+      default: config.server.logo,
     },
     isBot: {
       type: Boolean,
