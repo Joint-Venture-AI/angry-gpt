@@ -12,24 +12,19 @@ import { EUserRole } from '../modules/user/User.enum';
  */
 const auth = (...roles: EUserRole[]) =>
   catchAsync(async (req, _, next) => {
-    const token = req.headers?.authorization?.split(' ')[1];
+    req.user = (await User.findById(
+      verifyToken(req.headers.authorization!.split(' ')[1], 'access').userId,
+    ))!;
 
-    if (!token)
-      throw new ServerError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
-
-    const { userId } = verifyToken(token, 'access');
-
-    const user = await User.findById(userId);
-
-    if (!user)
-      throw new ServerError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
-
-    req.user = user;
-
-    if (roles.length && !roles.includes(user.role as EUserRole))
+    if (
+      !req.user ||
+      (roles[0] &&
+        req.user.role !== EUserRole.ADMIN &&
+        !roles.includes(req.user.role))
+    )
       throw new ServerError(
         StatusCodes.FORBIDDEN,
-        'You are not authorized to access this api',
+        'Sorry, you cannot access this resource!',
       );
 
     next();

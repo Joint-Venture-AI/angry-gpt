@@ -9,6 +9,7 @@ import { BookRoutes } from '../app/modules/book/Book.route';
 import { OrderRoutes } from '../app/modules/order/Order.route';
 import { ChatRoutes } from '../app/modules/chat/Chat.route';
 import { PaymentRoutes } from '../app/modules/payment/Payment.route';
+import { BotRoutes } from '../app/modules/bot/Bot.route';
 
 const routes: TRoute[] = [
   {
@@ -42,6 +43,10 @@ const routes: TRoute[] = [
   {
     path: '/payment',
     route: PaymentRoutes,
+  },
+  {
+    path: '/bots',
+    route: BotRoutes.user,
   },
 ];
 

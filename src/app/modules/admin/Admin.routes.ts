@@ -3,6 +3,7 @@ import { SubscriptionRoutes } from '../subscription/Subscription.route';
 import { TRoute } from '../../../types/route.types';
 import { UserRoutes } from '../user/User.route';
 import { BookRoutes } from '../book/Book.route';
+import { BotRoutes } from '../bot/Bot.route';
 
 const routes: TRoute[] = [
   {
@@ -16,6 +17,10 @@ const routes: TRoute[] = [
   {
     path: '/books',
     route: BookRoutes.admin,
+  },
+  {
+    path: '/bots',
+    route: BotRoutes.admin,
   },
 ];
 

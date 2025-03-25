@@ -29,6 +29,11 @@ router.delete(
   BotControllers.delete,
 );
 
-router.get('/', purifyRequest(BotValidations.list), BotControllers.list);
-
-export const BotRoutes = router;
+export const BotRoutes = {
+  admin: router,
+  user: Router().get(
+    '/',
+    purifyRequest(BotValidations.list),
+    BotControllers.list,
+  ),
+};
