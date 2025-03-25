@@ -1,6 +1,7 @@
 export const ChatConstants = {
   emoji: () =>
     String.fromCodePoint(0x1f_300 + Math.floor(Math.random() * 0x2ff)),
+
   separator: () =>
     [
       '-',
@@ -53,6 +54,7 @@ export const ChatConstants = {
       '╌',
       '╍',
     ][Math.floor(Math.random() * 50)],
+
   text: () =>
     [
       'Sparks of Thought',
@@ -159,6 +161,7 @@ export const ChatConstants = {
       'Dialogue Snapshot',
       'Mindstream Playback',
     ][Math.floor(Math.random() * 103)],
+
   date: () =>
     new Date().toLocaleDateString(undefined, {
       year: 'numeric',

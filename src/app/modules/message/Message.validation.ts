@@ -8,10 +8,12 @@ export const MessageValidations = {
       chatId: z.string().refine(exists(Chat)),
     }),
   }),
+
   chat: z.object({
     body: z.object({
       message: z.string().min(1, 'Message is required'),
     }),
+
     params: z.object({
       chatId: z.string().refine(exists(Chat)),
     }),

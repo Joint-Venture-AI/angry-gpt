@@ -6,9 +6,11 @@ export const ChatServices = {
   async create(user: Types.ObjectId, bot: string) {
     return await Chat.create({ user, bot });
   },
+
   async rename(chatId: string, name: string) {
     return await Chat.findByIdAndUpdate(chatId, { name }, { new: true });
   },
+
   async delete(chat: string | Types.ObjectId) {
     const session = await Chat.startSession();
     session.startTransaction();
@@ -24,10 +26,12 @@ export const ChatServices = {
       await session.endSession();
     }
   },
+
   async clear(user: Types.ObjectId) {
     const chats = await Chat.find({ user }).select('_id');
     await Promise.allSettled(chats.map(({ _id }) => this.delete(_id)));
   },
+
   async list({ user, page, limit }: Record<string, any>) {
     const chats = await Chat.find({ user })
       .sort({ createdAt: -1 })

@@ -16,6 +16,7 @@ export const ChatControllers = {
       data,
     });
   }),
+
   rename: catchAsync(async (req, res) => {
     const data = await ChatServices.rename(req.params.chatId, req.body.name);
 
@@ -24,6 +25,7 @@ export const ChatControllers = {
       data,
     });
   }),
+
   delete: catchAsync(async (req, res) => {
     await ChatServices.delete(req.params.chatId);
 
@@ -31,6 +33,7 @@ export const ChatControllers = {
       message: 'Chat deleted successfully',
     });
   }),
+
   clear: catchAsync(async (req, res) => {
     await ChatServices.clear(req.user!._id!);
 
@@ -38,6 +41,7 @@ export const ChatControllers = {
       message: 'Chat cleared successfully',
     });
   }),
+
   list: catchAsync(async ({ query, user }: any, res) => {
     const filter = {
       page: +query.page || 1,
