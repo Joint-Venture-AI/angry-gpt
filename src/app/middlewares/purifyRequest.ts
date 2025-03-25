@@ -2,26 +2,26 @@ import { AnyZodObject } from 'zod';
 import catchAsync from '../../util/server/catchAsync';
 
 /**
- * Middleware to purify and validate the request {body, cookies} using a Zod schema.
+ * Middleware to purify and validate the request {body, cookies, query, params} using multiple Zod schemas.
  *
- * This middleware uses the provided Zod schema to parse and validate the request body.
- * If the validation is successful, the purified data is assigned back to `req.body`.
- * If the validation fails, an error is thrown and handled by the `catchAsync` function.
+ * This middleware validates the request against all provided Zod schemas.
+ * The validated and merged data is then assigned back to `req`.
+ * If validation fails, an error is thrown and handled by `catchAsync`.
  *
- * @param {AnyZodObject} schema - The Zod schema to validate the request body against.
- * @return Middleware function to purify the request body.
+ * @param {...AnyZodObject} schemas - The Zod schemas to validate the request against.
+ * @return Middleware function to purify the request.
  */
-const purifyRequest = ({ parseAsync }: AnyZodObject) =>
+const purifyRequest = (...schemas: AnyZodObject[]) =>
   catchAsync(async (req, _, next) => {
-    const parsedData = await parseAsync({
-      body: req.body,
-      cookies: req.cookies,
-      query: req.query,
-      params: req.params,
-    });
+    const { body, cookies, query, params } = req;
 
-    Object.assign(req, parsedData);
+    const data = await Promise.all(
+      schemas.map(({ parseAsync }) =>
+        parseAsync({ body, cookies, query, params }),
+      ),
+    );
 
+    Object.assign(req, ...data);
     next();
   });
 
