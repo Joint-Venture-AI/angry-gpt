@@ -4,11 +4,11 @@ import { PaymentServices } from './Payment.service';
 import { stripe } from './Payment.utils';
 
 export const PaymentControllers = {
-  webhook: catchAsync(async (req, res) => {
-    const sig = req.headers['stripe-signature'] as string;
+  webhook: catchAsync(async ({ body, headers }, res) => {
+    const sig = headers['stripe-signature'] as string;
 
     const event = stripe.webhooks.constructEvent(
-      req.body,
+      body,
       sig,
       config.payment.stripe.webhook,
     );
