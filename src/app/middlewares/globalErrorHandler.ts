@@ -19,11 +19,9 @@ const defaultError: TErrorHandler = {
 };
 
 const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
-  if (config.server.node_env === 'development') {
+  if (config.server.node_env === 'development')
     console.log(colors.red('🚨 globalErrorHandler ~~ '), error);
-  } else {
-    errorLogger.error(colors.red('🚨 globalErrorHandler ~~ '), error);
-  }
+  else errorLogger.error(colors.red('🚨 globalErrorHandler ~~ '), error);
 
   const { statusCode, message, errorMessages } = formatError(error);
 
@@ -31,7 +29,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     success: false,
     message,
     errorMessages,
-    stack: config.server.node_env !== 'production' ? error.stack : undefined,
+    stack: config.server.node_env === 'development' && error.stack,
   });
 };
 
