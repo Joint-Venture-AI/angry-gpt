@@ -56,7 +56,8 @@ export const MessageServices = {
     const messages = await Message.find({ chat })
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .select('-chat');
 
     const total = await Message.countDocuments({ chat });
 
