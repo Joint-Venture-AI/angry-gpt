@@ -10,9 +10,9 @@ const chatSchema = new Schema<TChat>(
       required: true,
     },
     bot: {
-      type: String,
-      enum: ['angry', 'lola', 'mimi'],
-      default: 'angry',
+      type: Schema.Types.ObjectId,
+      ref: 'Bot',
+      required: true,
     },
     name: {
       type: String,

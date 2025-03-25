@@ -1,11 +1,12 @@
 import { z } from 'zod';
 import Chat from './Chat.model';
 import { exists } from '../../../util/db/exists';
+import Bot from '../bot/Bot.model';
 
 export const ChatValidations = {
   create: z.object({
     query: z.object({
-      bot: z.enum(['angry', 'lola', 'mimi']).default('angry'),
+      bot: z.string().refine(exists(Bot)),
     }),
   }),
 

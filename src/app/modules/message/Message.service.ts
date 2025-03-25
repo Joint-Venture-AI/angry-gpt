@@ -2,14 +2,13 @@ import OpenAI from 'openai';
 import { ChatConstants } from '../chat/Chat.constant';
 import { openai } from '../chat/Chat.lib';
 import Chat from '../chat/Chat.model';
-import { chatModel } from './Message.constant';
 import { Message } from './Message.model';
 import ServerError from '../../../errors/ServerError';
 import { StatusCodes } from 'http-status-codes';
 
 export const MessageServices = {
   async chat(chatId: string, message: string) {
-    const chat = (await Chat.findById(chatId))!;
+    const chat: any = (await Chat.findById(chatId).populate('bot', 'context'))!;
 
     const histories = await Message.find({ chat: chatId })
       .sort({ createdAt: -1 })
@@ -17,7 +16,7 @@ export const MessageServices = {
       .limit(5);
 
     const messages: OpenAI.ChatCompletionMessageParam[] = [
-      { role: 'system', content: chatModel[chat.bot].trim() },
+      { role: 'system', content: chat.bot.context },
       ...histories.reverse().map(msg => ({
         role: (msg.sender === 'user' ? 'user' : 'assistant') as
           | 'user'
