@@ -4,6 +4,8 @@ import { openai } from '../chat/Chat.lib';
 import Chat from '../chat/Chat.model';
 import { chatModel } from './Message.constant';
 import { Message } from './Message.model';
+import ServerError from '../../../errors/ServerError';
+import { StatusCodes } from 'http-status-codes';
 
 export const MessageServices = {
   async chat(chatId: string, message: string) {
@@ -15,7 +17,7 @@ export const MessageServices = {
       .limit(5);
 
     const messages: OpenAI.ChatCompletionMessageParam[] = [
-      { role: 'system', content: chatModel[chat.bot] },
+      { role: 'system', content: chatModel[chat.bot].trim() },
       ...histories.reverse().map(msg => ({
         role: (msg.sender === 'user' ? 'user' : 'assistant') as
           | 'user'
@@ -34,9 +36,16 @@ export const MessageServices = {
 
     const { content } = completion.choices[0].message;
 
+    if (!content)
+      throw new ServerError(
+        StatusCodes.BAD_REQUEST,
+        'Failed to generate response',
+      );
+
     await Message.create({ chat: chatId, content, sender: 'bot' });
 
     const { emoji, separator, date } = ChatConstants;
+
     chat.name = `${emoji()} ${this.genTitle(content!)} ${separator()} ${date()}`;
     await chat.save();
 

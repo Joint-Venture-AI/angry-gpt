@@ -13,6 +13,7 @@ export const MessageControllers = {
       message,
     });
   }),
+
   list: catchAsync(async ({ query, params }: any, res) => {
     const filter = {
       page: +query.page || 1,
