@@ -72,9 +72,6 @@ const config = {
   chatgpt: {
     key: env('chatgpt key', ''),
   },
-  gemini: {
-    key: env('gemini key', ''),
-  },
 };
 
 export default config;

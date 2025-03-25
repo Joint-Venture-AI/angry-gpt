@@ -1,42 +1,44 @@
+import OpenAI from 'openai';
 import { ChatConstants } from '../chat/Chat.constant';
-import { gemini } from '../chat/Chat.lib';
+import { openai } from '../chat/Chat.lib';
 import Chat from '../chat/Chat.model';
 import { chatModel } from './Message.constant';
 import { Message } from './Message.model';
 
 export const MessageServices = {
   async chat(chatId: string, message: string) {
-    const chat = await Chat.findById(chatId);
+    const chat = (await Chat.findById(chatId))!;
 
     const histories = await Message.find({ chat: chatId })
       .sort({ createdAt: -1 })
       .select('content sender -_id')
       .limit(5);
 
-    const history = [
-      {
-        role: 'user',
-        parts: [{ text: chatModel[chat!.bot] }],
-      },
-      ...histories.map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }],
+    const messages: OpenAI.ChatCompletionMessageParam[] = [
+      { role: 'system', content: chatModel[chat.bot] },
+      ...histories.reverse().map(msg => ({
+        role: (msg.sender === 'user' ? 'user' : 'assistant') as
+          | 'user'
+          | 'assistant',
+        content: msg.content,
       })),
+      { role: 'user', content: message },
     ];
-
-    const session = gemini.startChat({ history });
 
     await Message.create({ chat: chatId, content: message, sender: 'user' });
 
-    const result = await session.sendMessage(message);
-    const content = result.response.text();
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages,
+    });
+
+    const { content } = completion.choices[0].message;
 
     await Message.create({ chat: chatId, content, sender: 'bot' });
 
     const { emoji, separator, date } = ChatConstants;
-
-    chat!.name = `${emoji()} ${this.genTitle(content)} ${separator()} ${date()}`;
-    await chat!.save();
+    chat.name = `${emoji()} ${this.genTitle(content!)} ${separator()} ${date()}`;
+    await chat.save();
 
     return content;
   },

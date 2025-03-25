@@ -42,7 +42,6 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.0",
     "apple-signin-auth": "^1.7.8",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
