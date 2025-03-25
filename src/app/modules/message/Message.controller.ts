@@ -25,7 +25,7 @@ export const MessageControllers = {
     serveResponse(res, {
       message: 'Messages fetched successfully',
       meta,
-      data: messages,
+      data: messages.reverse(),
     });
   }),
 };
