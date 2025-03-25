@@ -4,10 +4,11 @@ import purifyRequest from '../../middlewares/purifyRequest';
 import { ChatValidations } from './Chat.validation';
 import { MessageValidations } from '../message/Message.validation';
 import { MessageControllers } from '../message/Message.controller';
+import { QueryValidations } from '../query/Query.validation';
 
 const router = Router();
 
-router.get('/', ChatControllers.list);
+router.get('/', purifyRequest(QueryValidations.list), ChatControllers.list);
 
 router.post(
   '/create',
@@ -31,7 +32,7 @@ router.delete('/clear', ChatControllers.clear);
 
 router.get(
   '/:chatId',
-  purifyRequest(MessageValidations.list),
+  purifyRequest(QueryValidations.list, MessageValidations.list),
   MessageControllers.list,
 );
 

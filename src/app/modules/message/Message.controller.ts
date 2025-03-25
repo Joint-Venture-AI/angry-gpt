@@ -15,13 +15,9 @@ export const MessageControllers = {
   }),
 
   list: catchAsync(async ({ query, params }: any, res) => {
-    const filter = {
-      page: +query.page || 1,
-      limit: +query.limit || 10,
-      chat: params.chatId,
-    };
+    query.chat = params.chatId;
 
-    const { messages, meta } = await MessageServices.list(filter);
+    const { messages, meta } = await MessageServices.list(query);
 
     serveResponse(res, {
       message: 'Messages fetched successfully',

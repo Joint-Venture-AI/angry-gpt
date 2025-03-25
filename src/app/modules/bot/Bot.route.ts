@@ -3,6 +3,7 @@ import purifyRequest from '../../middlewares/purifyRequest';
 import { BotControllers } from './Bot.controller';
 import { BotValidations } from './Bot.validation';
 import imageUploader from '../../middlewares/imageUploader';
+import { QueryValidations } from '../query/Query.validation';
 
 const router = Router();
 
@@ -48,7 +49,7 @@ export const BotRoutes = {
   admin: router,
   user: Router().get(
     '/',
-    purifyRequest(BotValidations.list),
+    purifyRequest(QueryValidations.list),
     BotControllers.list,
   ),
 };

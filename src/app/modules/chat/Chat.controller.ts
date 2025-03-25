@@ -43,13 +43,9 @@ export const ChatControllers = {
   }),
 
   list: catchAsync(async ({ query, user }: any, res) => {
-    const filter = {
-      page: +query.page || 1,
-      limit: +query.limit || 10,
-      user: user._id,
-    };
+    query.user = user._id;
 
-    const { chats, meta } = await ChatServices.list(filter);
+    const { chats, meta } = await ChatServices.list(query);
 
     serveResponse(res, {
       message: 'Chats fetched successfully',
