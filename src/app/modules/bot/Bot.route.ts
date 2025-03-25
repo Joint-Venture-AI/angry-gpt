@@ -2,24 +2,39 @@ import { Router } from 'express';
 import purifyRequest from '../../middlewares/purifyRequest';
 import { BotControllers } from './Bot.controller';
 import { BotValidations } from './Bot.validation';
+import imageUploader from '../../middlewares/imageUploader';
 
 const router = Router();
 
 router.post(
   '/create-bot',
+  imageUploader((req, images) => (req.body.logo = images[0]), {
+    width: 300,
+    height: 300,
+  }),
   purifyRequest(BotValidations.createBot),
   BotControllers.create,
 );
 
 router.post(
   '/create-url',
+  imageUploader((req, images) => (req.body.logo = images[0]), {
+    width: 300,
+    height: 300,
+  }),
   purifyRequest(BotValidations.createUrl),
   BotControllers.create,
 );
 
 router.patch(
-  '/:botId/update',
-  purifyRequest(BotValidations.exists, BotValidations.edit),
+  '/:botId/edit',
+  purifyRequest(BotValidations.exists),
+  imageUploader((req, images) => (req.body.logo = images[0]), {
+    width: 300,
+    height: 300,
+    isOptional: true,
+  }),
+  purifyRequest(BotValidations.edit),
   BotControllers.update,
 );
 

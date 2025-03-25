@@ -1,3 +1,4 @@
+import deleteFile from '../../../util/file/deleteFile';
 import { TBot } from './Bot.interface';
 import Bot from './Bot.model';
 
@@ -7,7 +8,15 @@ export const BotServices = {
   },
 
   async update(botId: string, botData: TBot) {
-    return await Bot.findByIdAndUpdate(botId, botData, { new: true });
+    const bot = (await Bot.findById(botId))!;
+    const oldLogo = bot?.logo;
+
+    Object.assign(bot, botData);
+    await bot.save();
+
+    if (botData?.logo) await deleteFile(oldLogo);
+
+    return bot;
   },
 
   async delete(botId: string) {

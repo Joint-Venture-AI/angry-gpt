@@ -8,8 +8,11 @@ export const BotValidations = {
       name: z.string().min(1, { message: 'Name is required' }),
       description: z.string().min(1, { message: 'Description is required' }),
       logo: z.string().optional(),
-      context: z.string().optional(),
-      isFree: z.boolean().optional(),
+      context: z.string().min(1, { message: 'Context is required' }),
+      isFree: z
+        .string()
+        .transform(val => val === 'true')
+        .optional(),
     }),
   }),
 
@@ -29,8 +32,11 @@ export const BotValidations = {
       description: z.string().optional(),
       logo: z.string().optional(),
       context: z.string().optional(),
-      isFree: z.boolean().optional(),
-      url: z.boolean().optional(),
+      isFree: z
+        .string()
+        .transform(val => val === 'true')
+        .optional(),
+      url: z.string().optional(),
     }),
   }),
 

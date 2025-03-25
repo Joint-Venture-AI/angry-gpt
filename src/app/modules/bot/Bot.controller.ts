@@ -15,7 +15,7 @@ export const BotControllers = {
   }),
 
   update: catchAsync(async (req, res) => {
-    const data = await BotServices.update(req.params.bookId, req.body);
+    const data = await BotServices.update(req.params.botId, req.body);
 
     serveResponse(res, {
       message: 'Bot updated successfully',
