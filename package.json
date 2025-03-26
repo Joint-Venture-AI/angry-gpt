@@ -19,7 +19,10 @@
     "typescript",
     "nodejs"
   ],
-  "author": "https://github.com/shaishabcoding",
+  "author": {
+    "name": "Shaishab Chandra Shil",
+    "github": "https://github.com/shaishabcoding"
+  },
   "license": "ISC",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
