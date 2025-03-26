@@ -22,13 +22,14 @@ export const OrderController = {
     });
   }),
 
-  // cancel: catchAsync(async (req, res) => {
-  //   await OrderService.cancel(req.params.id);
+  cancel: catchAsync(async (req, res) => {
+    const data = await OrderService.cancel(req.params.orderId);
 
-  //   serveResponse(res, {
-  //     message: 'Order has been cancel successfully!',
-  //   });
-  // }),
+    serveResponse(res, {
+      message: 'Order has been cancel successfully!',
+      data,
+    });
+  }),
 
   // shipped: catchAsync(async (req, res) => {
   //   await OrderService.shipped(req.params.id);

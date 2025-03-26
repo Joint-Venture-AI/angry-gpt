@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { OrderController } from './Order.controller';
+import purifyRequest from '../../middlewares/purifyRequest';
+import { OrderValidation } from './Order.validation';
 
 const publicRouter = Router();
 const privateRouter = Router();
@@ -7,7 +9,12 @@ const privateRouter = Router();
 // create a order
 // publicRouter.get('/', OrderController.retrieve);
 publicRouter.post('/checkout', OrderController.checkout);
-// publicRouter.post('/:id/cancel', OrderController.cancel);
+
+publicRouter.post(
+  '/:orderId/cancel',
+  purifyRequest(OrderValidation.exists),
+  OrderController.cancel,
+);
 
 /**
  * *************************************************************************************************************

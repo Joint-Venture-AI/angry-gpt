@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import Book from '../book/Book.model';
 import { Types } from 'mongoose';
+import { exists } from '../../../util/db/exists';
+import Order from './Order.model';
 
 export const OrderValidation = {
   checkout: z.object({
@@ -36,6 +38,12 @@ export const OrderValidation = {
           );
           return validDetails.filter(Boolean);
         }),
+    }),
+  }),
+
+  exists: z.object({
+    params: z.object({
+      orderId: z.string().refine(exists(Order)),
     }),
   }),
 };
