@@ -67,31 +67,29 @@ export const OrderService = {
     );
   },
 
-  // async list(query: Record<any, any>) {
-  //   const { page = '1', limit = '10', state } = query;
-  //   const filters: Record<string, any> = {};
+  async list({ state, page, limit }: Record<any, any>) {
+    const filter = state ? { state } : {};
 
-  //   if (state) filters.state = state;
+    const orders = await Order.find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate('details.book', 'title images')
+      .populate('transaction', 'transaction_id');
 
-  //   const orders = await Order.find(filters)
-  //     .skip((+page - 1) * +limit)
-  //     .limit(+limit)
-  //     .populate('customer', 'name')
-  //     .populate('productDetails.product', 'name images')
-  //     .populate('transaction', 'transaction_id');
+    const total = await Order.countDocuments(filter);
 
-  //   const totalOrders = await Order.countDocuments(filters);
-
-  //   return {
-  //     meta: {
-  //       totalPages: Math.ceil(totalOrders / +limit),
-  //       page: +page,
-  //       limit: +limit,
-  //       total: totalOrders,
-  //     },
-  //     orders,
-  //   };
-  // },
+    return {
+      meta: {
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPage: Math.ceil(total / limit),
+        },
+      },
+      orders,
+    };
+  },
 
   // async retrieve(query: Record<any, any>) {
   //   if (query.orderId) {

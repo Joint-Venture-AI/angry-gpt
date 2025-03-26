@@ -40,14 +40,15 @@ export const OrderController = {
     });
   }),
 
-  // list: catchAsync(async (req, res) => {
-  //   const data = await OrderService.list(req.query);
+  list: catchAsync(async (req, res) => {
+    const { meta, orders } = await OrderService.list(req.query);
 
-  //   serveResponse(res, {
-  //     message: 'Orders retrieved successfully!',
-  //     data,
-  //   });
-  // }),
+    serveResponse(res, {
+      message: 'Orders retrieved successfully!',
+      meta,
+      data: orders,
+    });
+  }),
 
   // retrieve: catchAsync(async (req, res) => {
   //   const data = await OrderService.retrieve(req.query);
