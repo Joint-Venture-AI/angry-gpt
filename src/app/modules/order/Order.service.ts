@@ -55,11 +55,17 @@ export const OrderService = {
     );
   },
 
-  // async shipped(orderId: string) {
-  //   await Order.findByIdAndUpdate(orderId, {
-  //     state: 'shipped',
-  //   });
-  // },
+  async shipped(orderId: string) {
+    return await Order.findByIdAndUpdate(
+      orderId,
+      {
+        state: 'shipped',
+      },
+      {
+        new: true,
+      },
+    );
+  },
 
   // async list(query: Record<any, any>) {
   //   const { page = '1', limit = '10', state } = query;

@@ -25,7 +25,11 @@ publicRouter.post(
  * **************************************************************************************************************
  */
 
-// privateRouter.post('/:id/shipped', OrderController.shipped);
+privateRouter.post(
+  '/:orderId/shipped',
+  purifyRequest(QueryValidations.exists('orderId', Order)),
+  OrderController.shipped,
+);
 // privateRouter.get('/', OrderController.list);
 
 export const OrderRoutes = {

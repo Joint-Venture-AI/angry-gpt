@@ -31,13 +31,14 @@ export const OrderController = {
     });
   }),
 
-  // shipped: catchAsync(async (req, res) => {
-  //   await OrderService.shipped(req.params.id);
+  shipped: catchAsync(async (req, res) => {
+    const data = await OrderService.shipped(req.params.orderId);
 
-  //   serveResponse(res, {
-  //     message: 'Order has been shipped successfully!',
-  //   });
-  // }),
+    serveResponse(res, {
+      message: 'Order has been shipped successfully!',
+      data,
+    });
+  }),
 
   // list: catchAsync(async (req, res) => {
   //   const data = await OrderService.list(req.query);
