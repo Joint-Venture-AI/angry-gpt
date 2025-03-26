@@ -46,18 +46,6 @@ export const OrderService = {
     };
   },
 
-  async cancel(orderId: string) {
-    return await Order.findByIdAndUpdate(
-      orderId,
-      {
-        state: 'cancel',
-      },
-      {
-        new: true,
-      },
-    );
-  },
-
   async changeState(orderId: string, state: EOrderState) {
     return await Order.findByIdAndUpdate(orderId, { state }, { new: true });
   },

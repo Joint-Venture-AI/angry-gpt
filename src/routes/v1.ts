@@ -33,7 +33,7 @@ const routes: TRoute[] = [
   {
     path: '/orders',
     middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
-    route: OrderRoutes.user,
+    route: OrderRoutes,
   },
   {
     path: '/chats',

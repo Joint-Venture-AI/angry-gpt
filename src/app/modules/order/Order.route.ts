@@ -17,20 +17,13 @@ router.get(
 
 router.post('/checkout', OrderController.checkout);
 
-router.post(
-  '/:orderId/cancel',
-  purifyRequest(QueryValidations.exists('orderId', Order)),
-  OrderController.cancel,
+router.patch(
+  '/:orderId/:state',
+  purifyRequest(
+    QueryValidations.exists('orderId', Order),
+    OrderValidation.state,
+  ),
+  OrderController.changeState,
 );
 
-export const OrderRoutes = {
-  user: router,
-  admin: Router().patch(
-    '/:orderId/:state',
-    purifyRequest(
-      QueryValidations.exists('orderId', Order),
-      OrderValidation.state,
-    ),
-    OrderController.changeState,
-  ),
-};
+export const OrderRoutes = router;

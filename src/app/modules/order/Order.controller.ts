@@ -3,6 +3,7 @@ import { PaymentServices } from '../payment/Payment.service';
 import catchAsync from '../../../util/server/catchAsync';
 import { OrderService } from './Order.service';
 import { EOrderState } from './Order.enum';
+import { EUserRole } from '../user/User.enum';
 
 export const OrderController = {
   checkout: catchAsync(async (req, res) => {
@@ -23,16 +24,9 @@ export const OrderController = {
     });
   }),
 
-  cancel: catchAsync(async (req, res) => {
-    const data = await OrderService.cancel(req.params.orderId);
+  changeState: catchAsync(async ({ params, user }, res) => {
+    if (user?.role !== EUserRole.ADMIN) params.state = EOrderState.CANCEL;
 
-    serveResponse(res, {
-      message: 'Order has been cancel successfully!',
-      data,
-    });
-  }),
-
-  changeState: catchAsync(async ({ params }, res) => {
     const data = await OrderService.changeState(
       params.orderId,
       params.state as EOrderState,
