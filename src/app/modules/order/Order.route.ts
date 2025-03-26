@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { OrderController } from './Order.controller';
 import purifyRequest from '../../middlewares/purifyRequest';
-import { OrderValidation } from './Order.validation';
+import { QueryValidations } from '../query/Query.validation';
+import Order from './Order.model';
 
 const publicRouter = Router();
 const privateRouter = Router();
@@ -12,7 +13,7 @@ publicRouter.post('/checkout', OrderController.checkout);
 
 publicRouter.post(
   '/:orderId/cancel',
-  purifyRequest(OrderValidation.exists),
+  purifyRequest(QueryValidations.exists('orderId', Order)),
   OrderController.cancel,
 );
 

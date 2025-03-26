@@ -1,6 +1,4 @@
 import { z } from 'zod';
-import { exists } from '../../../util/db/exists';
-import Book from './Book.model';
 
 export const BookValidations = {
   create: z.object({
@@ -46,12 +44,6 @@ export const BookValidations = {
         })
         .optional(),
       images: z.array(z.string()).optional(),
-    }),
-  }),
-
-  exists: z.object({
-    params: z.object({
-      bookId: z.string().refine(exists(Book)),
     }),
   }),
 };

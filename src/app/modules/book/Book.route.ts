@@ -3,8 +3,10 @@ import { BookController } from './Book.controller';
 import { BookValidations } from './Book.validation';
 import purifyRequest from '../../middlewares/purifyRequest';
 import imageUploader from '../../middlewares/imageUploader';
+import { QueryValidations } from '../query/Query.validation';
+import Book from './Book.model';
+
 const adminRoutes = Router();
-const userRoutes = Router();
 
 /**
  * Admin Routes
@@ -26,7 +28,7 @@ adminRoutes.post(
 
 adminRoutes.patch(
   '/:bookId/edit',
-  purifyRequest(BookValidations.exists),
+  purifyRequest(QueryValidations.exists('bookId', Book)),
   imageUploader(
     (req, images) => {
       req.body.images = images;
@@ -43,18 +45,20 @@ adminRoutes.patch(
 
 adminRoutes.delete(
   '/:bookId/delete',
-  purifyRequest(BookValidations.exists),
+  purifyRequest(QueryValidations.exists('bookId', Book)),
   BookController.delete,
 );
 
 /**
  * User Routes
  */
+const userRoutes = Router();
+
 userRoutes.get('/', BookController.list);
 
 userRoutes.get(
   '/:bookId',
-  purifyRequest(BookValidations.exists),
+  purifyRequest(QueryValidations.exists('bookId', Book)),
   BookController.retrieve,
 );
 

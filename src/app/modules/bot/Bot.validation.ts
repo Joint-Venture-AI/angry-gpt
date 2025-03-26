@@ -1,6 +1,4 @@
 import { z } from 'zod';
-import { exists } from '../../../util/db/exists';
-import Bot from './Bot.model';
 
 export const BotValidations = {
   createBot: z.object({
@@ -37,12 +35,6 @@ export const BotValidations = {
         .transform(val => val === 'true')
         .optional(),
       url: z.string().optional(),
-    }),
-  }),
-
-  exists: z.object({
-    params: z.object({
-      botId: z.string().refine(exists(Bot)),
     }),
   }),
 };

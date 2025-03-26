@@ -4,6 +4,7 @@ import { BotControllers } from './Bot.controller';
 import { BotValidations } from './Bot.validation';
 import imageUploader from '../../middlewares/imageUploader';
 import { QueryValidations } from '../query/Query.validation';
+import Bot from './Bot.model';
 
 const router = Router();
 
@@ -29,7 +30,7 @@ router.post(
 
 router.patch(
   '/:botId/edit',
-  purifyRequest(BotValidations.exists),
+  purifyRequest(QueryValidations.exists('botId', Bot)),
   imageUploader((req, images) => (req.body.logo = images[0]), {
     width: 300,
     height: 300,
@@ -41,7 +42,7 @@ router.patch(
 
 router.delete(
   '/:botId/delete',
-  purifyRequest(BotValidations.exists),
+  purifyRequest(QueryValidations.exists('botId', Bot)),
   BotControllers.delete,
 );
 
