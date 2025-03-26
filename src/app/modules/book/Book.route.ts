@@ -37,8 +37,8 @@ adminRoutes.patch(
       height: 550,
     },
   ),
-  purifyRequest(BookValidations.edit),
-  BookController.edit,
+  purifyRequest(BookValidations.update),
+  BookController.update,
 );
 
 adminRoutes.delete(

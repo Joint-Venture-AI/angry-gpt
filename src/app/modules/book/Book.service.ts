@@ -46,7 +46,7 @@ export const BookServices = {
     return await Book.findById(id);
   },
 
-  async edit(id: string, bookData: TBook) {
+  async update(id: string, bookData: TBook) {
     const book = (await Book.findById(id))!;
 
     const oldImages = book.images;

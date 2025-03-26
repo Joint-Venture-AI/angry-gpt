@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../util/server/catchAsync';
 import serveResponse from '../../../util/server/serveResponse';
 import { BotServices } from './Bot.service';
+import { imagesUploadRollback } from '../../middlewares/imageUploader';
 
 export const BotControllers = {
   create: catchAsync(async (req, res) => {
@@ -12,7 +13,7 @@ export const BotControllers = {
       message: 'Bot created successfully',
       data,
     });
-  }),
+  }, imagesUploadRollback),
 
   update: catchAsync(async (req, res) => {
     const data = await BotServices.update(req.params.botId, req.body);
@@ -21,7 +22,7 @@ export const BotControllers = {
       message: 'Bot updated successfully',
       data,
     });
-  }),
+  }, imagesUploadRollback),
 
   delete: catchAsync(async (req, res) => {
     await BotServices.delete(req.params.botId);

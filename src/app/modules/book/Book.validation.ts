@@ -26,7 +26,7 @@ export const BookValidations = {
     }),
   }),
 
-  edit: z.object({
+  update: z.object({
     body: z.object({
       title: z.string().optional(),
       author: z.string().optional(),
