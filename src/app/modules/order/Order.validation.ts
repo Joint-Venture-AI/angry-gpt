@@ -3,6 +3,8 @@ import { EOrderState } from './Order.enum';
 import Book from '../book/Book.model';
 import { exists } from '../../../util/db/exists';
 import config from '../../../config';
+import ServerError from '../../../errors/ServerError';
+import { StatusCodes } from 'http-status-codes';
 
 export const OrderValidation = {
   checkout: z.object({
@@ -31,7 +33,14 @@ export const OrderValidation = {
     }),
 
     query: z.object({
-      method: z.enum(config.payment.methods),
+      method: z.string().superRefine(method => {
+        const { methods } = config.payment;
+        if (!methods.includes(method))
+          throw new ServerError(
+            StatusCodes.BAD_REQUEST,
+            `Invalid payment method. Allowed: ${methods.join(', ')}`,
+          );
+      }),
     }),
   }),
 
