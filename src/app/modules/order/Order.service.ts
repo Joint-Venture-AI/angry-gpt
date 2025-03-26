@@ -5,6 +5,9 @@ import ServerError from '../../../errors/ServerError';
 import { StatusCodes } from 'http-status-codes';
 import Order from './Order.model';
 import { EOrderState } from './Order.enum';
+import { RootFilterQuery } from 'mongoose';
+import { TUser } from '../user/User.interface';
+import { EUserRole } from '../user/User.enum';
 
 export const OrderService = {
   async checkout(req: Request) {
@@ -91,27 +94,15 @@ export const OrderService = {
     };
   },
 
-  // async retrieve(query: Record<any, any>) {
-  //   if (query.orderId) {
-  //     const order = await Order.findById(query.orderId)
-  //       .populate('transaction', 'transaction_id')
-  //       .populate('productDetails.product', 'name images slug');
+  async retrieve(orderId: string, user: TUser) {
+    const filter: RootFilterQuery<TOrder> = {
+      _id: orderId,
+    };
 
-  //     if (!order)
-  //       throw new ServerError(StatusCodes.NOT_FOUND, 'Order not found');
+    if (user.role !== EUserRole.ADMIN) filter.user = user._id;
 
-  //     if (order.customer.toString() !== query.customer)
-  //       throw new ServerError(StatusCodes.FORBIDDEN, 'You are not authorized');
-
-  //     return order;
-  //   }
-
-  //   const orders = await Order.find({
-  //     customer: new Types.ObjectId(query.customer as string),
-  //   })
-  //     .populate('transaction', 'transaction_id')
-  //     .populate('productDetails.product', 'name images slug');
-
-  //   return orders;
-  // },
+    return await Order.findOne(filter)
+      .populate('details.book', 'title images')
+      .populate('transaction', 'transaction_id');
+  },
 };

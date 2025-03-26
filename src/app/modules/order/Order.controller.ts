@@ -50,12 +50,12 @@ export const OrderController = {
     });
   }),
 
-  // retrieve: catchAsync(async (req, res) => {
-  //   const data = await OrderService.retrieve(req.query);
+  retrieve: catchAsync(async ({ user, params }, res) => {
+    const data = await OrderService.retrieve(params.orderId, user!);
 
-  //   serveResponse(res, {
-  //     message: 'Order retrieved successfully!',
-  //     data,
-  //   });
-  // }),
+    serveResponse(res, {
+      message: 'Order retrieved successfully!',
+      data,
+    });
+  }),
 };

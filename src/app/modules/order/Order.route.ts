@@ -7,8 +7,12 @@ import Order from './Order.model';
 const publicRouter = Router();
 const privateRouter = Router();
 
-// create a order
-// publicRouter.get('/', OrderController.retrieve);
+publicRouter.get(
+  '/:orderId',
+  purifyRequest(QueryValidations.exists('orderId', Order)),
+  OrderController.retrieve,
+);
+
 publicRouter.post('/checkout', OrderController.checkout);
 
 publicRouter.post(
