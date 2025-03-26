@@ -6,9 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "concurrently \"ts-node-dev --respawn --transpile-only src/server.ts\" \"cmd /c dotenv -e .env -- stripe listen --forward-to %HREF%/api/v1/payment/stripe/webhook\"",
     "predev": "powershell -Command \"Get-Content .env | Where-Object {$_ -match '^\\w+='} | ForEach-Object { $name, $value = $_ -split '=', 2; Set-Item -Path env:$name -Value $value }; npx kill-port $env:PORT\"",
-    "postdev": "dotenv -e .env -- stripe listen --forward-to $HREF/api/v1/payment/stripe/webhook",
     "lint": "eslint src --ignore-path .eslintignore --ext .ts",
     "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
     "test": "echo \"Error: no test specified\" && exit 1"
