@@ -18,6 +18,7 @@ const bookSchema = new Schema<TBook>(
     price: {
       type: Number,
       required: true,
+      min: 0,
     },
     stock: {
       type: Number,

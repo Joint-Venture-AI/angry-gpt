@@ -51,6 +51,7 @@ const config = {
       secret: env('stripe secret', ''),
       webhook: env('stripe webhook', ''),
     },
+    methods: env<[string, ...string[]]>('payment methods', ['card']),
   },
   email: {
     user: email,

@@ -15,7 +15,11 @@ router.get(
   OrderController.retrieve,
 );
 
-router.post('/checkout', OrderController.checkout);
+router.post(
+  '/checkout',
+  purifyRequest(OrderValidation.checkout),
+  OrderController.checkout,
+);
 
 router.patch(
   '/:orderId/:state',

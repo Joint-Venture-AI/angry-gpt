@@ -6,13 +6,13 @@ import { EOrderState } from './Order.enum';
 import { EUserRole } from '../user/User.enum';
 
 export const OrderController = {
-  checkout: catchAsync(async (req, res) => {
-    const { orderId, amount } = await OrderService.checkout(req);
+  checkout: catchAsync(async ({ body, user, query }, res) => {
+    const { orderId, amount } = await OrderService.checkout(body, user!._id!);
 
     const checkout_url = await PaymentServices.create({
       name: orderId.toString(),
       amount,
-      method: req.query.method,
+      method: query.method,
     });
 
     serveResponse(res, {

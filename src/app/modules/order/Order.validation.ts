@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import Book from '../book/Book.model';
-import { Types } from 'mongoose';
 import { EOrderState } from './Order.enum';
+import Book from '../book/Book.model';
+import { exists } from '../../../util/db/exists';
+import config from '../../../config';
 
 export const OrderValidation = {
   checkout: z.object({
@@ -18,25 +19,19 @@ export const OrderValidation = {
           apartment: z.string().optional(),
         }),
       }),
+
       details: z
         .array(
           z.object({
-            book: z.string().refine(val => Types.ObjectId.isValid(val), {
-              message: 'Invalid book ID',
-            }),
-            quantity: z.number().min(1, 'Quantity is required'),
+            book: z.string().refine(exists(Book)),
+            quantity: z.number().default(1),
           }),
         )
-        .min(1, 'At least one book is required')
-        .transform(async details => {
-          const validDetails = await Promise.all(
-            details.map(async item => {
-              const book = await Book.findById(item.book);
-              return book ? item : null;
-            }),
-          );
-          return validDetails.filter(Boolean);
-        }),
+        .min(1, 'At least one book is required'),
+    }),
+
+    query: z.object({
+      method: z.enum(config.payment.methods),
     }),
   }),
 

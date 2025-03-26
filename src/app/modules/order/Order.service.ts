@@ -1,49 +1,35 @@
-import { Request } from 'express';
 import { TOrder } from './Order.interface';
 import Book from '../book/Book.model';
-import ServerError from '../../../errors/ServerError';
-import { StatusCodes } from 'http-status-codes';
 import Order from './Order.model';
 import { EOrderState } from './Order.enum';
-import { RootFilterQuery } from 'mongoose';
+import { RootFilterQuery, Types } from 'mongoose';
 import { TUser } from '../user/User.interface';
 import { EUserRole } from '../user/User.enum';
 
 export const OrderService = {
-  async checkout(req: Request) {
-    const { details, customer } = req.body as TOrder;
+  async checkout({ details, customer }: TOrder, user: Types.ObjectId) {
+    const bookIds = details.map(({ book }) => book);
 
-    let amount = 0;
+    const booksMap = new Map(
+      (await Book.find({ _id: { $in: bookIds } }, { price: 1 })).map(book => [
+        book._id.toString(),
+        book.price,
+      ]),
+    );
 
-    for (const { book, quantity } of details) {
-      const foundBook = await Book.findById(book);
-      if (foundBook) amount += foundBook.price * quantity;
-    }
-
-    if (amount === 0)
-      throw new ServerError(
-        StatusCodes.BAD_REQUEST,
-        'No valid books in the order',
-      );
+    const amount = details.reduce(
+      (sum, { book, quantity }) =>
+        sum + booksMap.get(book.toString())! * quantity,
+      0,
+    );
 
     const order = await Order.findOneAndUpdate(
-      { user: req.user!._id, state: EOrderState.PENDING },
-      {
-        $set: {
-          details,
-          customer,
-          amount,
-          state: EOrderState.PENDING,
-        },
-        $setOnInsert: { createdAt: new Date() },
-      },
+      { user, state: EOrderState.PENDING },
+      { $set: { details, customer, amount, state: EOrderState.PENDING } },
       { upsert: true, new: true },
     );
 
-    return {
-      orderId: order._id,
-      amount,
-    };
+    return { orderId: order!._id, amount };
   },
 
   async changeState(orderId: string, state: EOrderState) {
