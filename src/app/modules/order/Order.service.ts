@@ -62,8 +62,10 @@ export const OrderService = {
     return await Order.findByIdAndUpdate(orderId, { state }, { new: true });
   },
 
-  async list({ state, page, limit }: Record<any, any>) {
-    const filter = state ? { state } : {};
+  async list({ state, page, limit }: Record<any, any>, user: TUser) {
+    const filter: RootFilterQuery<TOrder> = state ? { state } : {};
+
+    if (user.role !== EUserRole.ADMIN) filter.user = user._id;
 
     const orders = await Order.find(filter)
       .skip((page - 1) * limit)

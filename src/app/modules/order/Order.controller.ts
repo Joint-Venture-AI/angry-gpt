@@ -44,8 +44,8 @@ export const OrderController = {
     });
   }),
 
-  list: catchAsync(async (req, res) => {
-    const { meta, orders } = await OrderService.list(req.query);
+  list: catchAsync(async ({ query, user }, res) => {
+    const { meta, orders } = await OrderService.list(query, user!);
 
     serveResponse(res, {
       message: 'Orders retrieved successfully!',
