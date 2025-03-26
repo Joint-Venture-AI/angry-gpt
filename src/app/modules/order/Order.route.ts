@@ -3,9 +3,16 @@ import { OrderController } from './Order.controller';
 import purifyRequest from '../../middlewares/purifyRequest';
 import { QueryValidations } from '../query/Query.validation';
 import Order from './Order.model';
+import { OrderValidation } from './Order.validation';
 
 const publicRouter = Router();
 const privateRouter = Router();
+
+publicRouter.get(
+  '/',
+  purifyRequest(QueryValidations.list),
+  OrderController.list,
+);
 
 publicRouter.get(
   '/:orderId',
@@ -29,16 +36,13 @@ publicRouter.post(
  * **************************************************************************************************************
  */
 
-privateRouter.post(
-  '/:orderId/shipped',
-  purifyRequest(QueryValidations.exists('orderId', Order)),
-  OrderController.shipped,
-);
-
-privateRouter.get(
-  '/',
-  purifyRequest(QueryValidations.list),
-  OrderController.list,
+privateRouter.patch(
+  '/:orderId/:state',
+  purifyRequest(
+    QueryValidations.exists('orderId', Order),
+    OrderValidation.state,
+  ),
+  OrderController.changeState,
 );
 
 export const OrderRoutes = {

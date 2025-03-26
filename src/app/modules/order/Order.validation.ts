@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import Book from '../book/Book.model';
 import { Types } from 'mongoose';
+import { EOrderState } from './Order.enum';
 
 export const OrderValidation = {
   checkout: z.object({
@@ -36,6 +37,15 @@ export const OrderValidation = {
           );
           return validDetails.filter(Boolean);
         }),
+    }),
+  }),
+
+  state: z.object({
+    params: z.object({
+      state: z
+        .string()
+        .transform(val => val.toUpperCase() as EOrderState)
+        .refine(val => val in EOrderState, { message: 'Invalid order state' }),
     }),
   }),
 };

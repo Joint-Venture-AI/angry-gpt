@@ -58,16 +58,8 @@ export const OrderService = {
     );
   },
 
-  async shipped(orderId: string) {
-    return await Order.findByIdAndUpdate(
-      orderId,
-      {
-        state: 'shipped',
-      },
-      {
-        new: true,
-      },
-    );
+  async changeState(orderId: string, state: EOrderState) {
+    return await Order.findByIdAndUpdate(orderId, { state }, { new: true });
   },
 
   async list({ state, page, limit }: Record<any, any>) {

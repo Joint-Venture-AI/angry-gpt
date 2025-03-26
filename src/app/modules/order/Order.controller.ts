@@ -2,6 +2,7 @@ import serveResponse from '../../../util/server/serveResponse';
 import { PaymentServices } from '../payment/Payment.service';
 import catchAsync from '../../../util/server/catchAsync';
 import { OrderService } from './Order.service';
+import { EOrderState } from './Order.enum';
 
 export const OrderController = {
   checkout: catchAsync(async (req, res) => {
@@ -31,11 +32,14 @@ export const OrderController = {
     });
   }),
 
-  shipped: catchAsync(async (req, res) => {
-    const data = await OrderService.shipped(req.params.orderId);
+  changeState: catchAsync(async ({ params }, res) => {
+    const data = await OrderService.changeState(
+      params.orderId,
+      params.state as EOrderState,
+    );
 
     serveResponse(res, {
-      message: 'Order has been shipped successfully!',
+      message: `Order ${params.state} successfully!`,
       data,
     });
   }),
