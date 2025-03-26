@@ -6,11 +6,11 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "concurrently \"ts-node-dev --respawn --transpile-only src/server.ts\" \"stripe listen --forward-to http://192.168.10.132:3036/api/v1/payment/stripe/webhook\"",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "predev": "powershell -Command \"Get-Content .env | Where-Object {$_ -match '^\\w+='} | ForEach-Object { $name, $value = $_ -split '=', 2; Set-Item -Path env:$name -Value $value }; npx kill-port $env:PORT\"",
+    "postdev": "dotenv -e .env -- stripe listen --forward-to $HREF/api/v1/payment/stripe/webhook",
     "lint": "eslint src --ignore-path .eslintignore --ext .ts",
-    "lint:fix": "npx eslint src --fix",
     "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
-    "prettier:fix": "npx prettier --write src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -34,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
     "concurrently": "^9.1.2",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.4.2",
