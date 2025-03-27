@@ -24,16 +24,6 @@ You will need Node.js and npm installed on your system.
 npm install
 ```
 
-### Environment Variables Setup
-
-1. Rename `env.example` to `.env`:
-
-```bash
-cp env.example .env
-```
-
-2. Update the `.env` file with your values.
-
 ### Installation
 
 To start the development server:
