@@ -7,7 +7,11 @@ import { OrderValidation } from './Order.validation';
 
 const router = Router();
 
-router.get('/', purifyRequest(QueryValidations.list), OrderController.list);
+router.get(
+  '/',
+  purifyRequest(QueryValidations.list, OrderValidation.list),
+  OrderController.list,
+);
 
 router.get(
   '/:orderId',

@@ -27,6 +27,7 @@ const orderSchema = new Schema<TOrder>(
   {
     details: [
       {
+        _id: false,
         book: {
           type: Schema.Types.ObjectId,
           ref: 'Book',
@@ -66,6 +67,7 @@ const orderSchema = new Schema<TOrder>(
   },
   {
     timestamps: true,
+    versionKey: false,
   },
 );
 

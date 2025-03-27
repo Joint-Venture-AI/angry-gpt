@@ -52,4 +52,18 @@ export const OrderValidation = {
         .refine(val => val in EOrderState, { message: 'Invalid order state' }),
     }),
   }),
+
+  list: z.object({
+    query: z.object({
+      state: z.string().superRefine(state => {
+        if (state && !(state.toUpperCase() in EOrderState))
+          throw new ServerError(
+            StatusCodes.BAD_REQUEST,
+            `Order state will be one of: ${Object.keys(EOrderState)
+              .map(state => state.toLocaleLowerCase())
+              .join(', ')}`,
+          );
+      }),
+    }),
+  }),
 };
