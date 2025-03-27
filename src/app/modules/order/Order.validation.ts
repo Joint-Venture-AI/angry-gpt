@@ -49,21 +49,32 @@ export const OrderValidation = {
       state: z
         .string()
         .transform(val => val.toUpperCase() as EOrderState)
-        .refine(val => val in EOrderState, { message: 'Invalid order state' }),
+        .superRefine(state => {
+          if (!(state in EOrderState))
+            throw new ServerError(
+              StatusCodes.BAD_REQUEST,
+              `Order state will be one of: ${Object.keys(EOrderState)
+                .join(', ')
+                .toLowerCase()}`,
+            );
+        }),
     }),
   }),
 
   list: z.object({
     query: z.object({
-      state: z.string().superRefine(state => {
-        if (state && !(state.toUpperCase() in EOrderState))
-          throw new ServerError(
-            StatusCodes.BAD_REQUEST,
-            `Order state will be one of: ${Object.keys(EOrderState)
-              .map(state => state.toLocaleLowerCase())
-              .join(', ')}`,
-          );
-      }),
+      state: z
+        .string()
+        .transform(val => val.toUpperCase() as EOrderState)
+        .superRefine(state => {
+          if (state && !(state in EOrderState))
+            throw new ServerError(
+              StatusCodes.BAD_REQUEST,
+              `Order state will be one of: ${Object.keys(EOrderState)
+                .join(', ')
+                .toLowerCase()}`,
+            );
+        }),
     }),
   }),
 };

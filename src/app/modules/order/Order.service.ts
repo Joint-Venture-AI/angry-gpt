@@ -33,7 +33,12 @@ export const OrderService = {
   },
 
   async changeState(orderId: string, state: EOrderState) {
-    return await Order.findByIdAndUpdate(orderId, { state }, { new: true });
+    return await Order.findByIdAndUpdate(orderId, { state }, { new: true })
+      .populate('details.book', 'title images')
+      .populate(
+        'transaction',
+        'transaction_id amount payment_method createdAt',
+      );
   },
 
   async list({ state, page, limit }: Record<any, any>, user: TUser) {
@@ -45,7 +50,10 @@ export const OrderService = {
       .skip((page - 1) * limit)
       .limit(limit)
       .populate('details.book', 'title images')
-      .populate('transaction', 'transaction_id');
+      .populate(
+        'transaction',
+        'transaction_id amount payment_method createdAt',
+      );
 
     const total = await Order.countDocuments(filter);
 
@@ -71,6 +79,9 @@ export const OrderService = {
 
     return await Order.findOne(filter)
       .populate('details.book', 'title images')
-      .populate('transaction', 'transaction_id');
+      .populate(
+        'transaction',
+        'transaction_id amount payment_method createdAt',
+      );
   },
 };
