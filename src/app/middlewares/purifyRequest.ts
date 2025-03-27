@@ -13,15 +13,19 @@ import catchAsync from '../../util/server/catchAsync';
  */
 const purifyRequest = (...schemas: AnyZodObject[]) =>
   catchAsync(async (req, _, next) => {
-    const { body, cookies, query, params } = req;
-
-    const data = await Promise.all(
-      schemas.map(({ parseAsync }) =>
-        parseAsync({ body, cookies, query, params }),
-      ),
+    const results = await Promise.all(
+      schemas.map(schema => schema.parseAsync(req)),
     );
 
-    Object.assign(req, ...data);
+    req.body = Object.assign({}, req.body, ...results.map(r => r.body));
+    req.query = Object.assign({}, req.query, ...results.map(r => r.query));
+    req.params = Object.assign({}, req.params, ...results.map(r => r.params));
+    req.cookies = Object.assign(
+      {},
+      req.cookies,
+      ...results.map(r => r.cookies),
+    );
+
     next();
   });
 
