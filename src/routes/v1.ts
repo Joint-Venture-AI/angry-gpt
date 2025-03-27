@@ -10,6 +10,7 @@ import { OrderRoutes } from '../app/modules/order/Order.route';
 import { ChatRoutes } from '../app/modules/chat/Chat.route';
 import { PaymentRoutes } from '../app/modules/payment/Payment.route';
 import { BotRoutes } from '../app/modules/bot/Bot.route';
+import { CartRoutes } from '../app/modules/cart/Cart.route';
 
 const routes: TRoute[] = [
   {
@@ -46,7 +47,13 @@ const routes: TRoute[] = [
   },
   {
     path: '/bots',
+    middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
     route: BotRoutes.user,
+  },
+  {
+    path: '/cart',
+    middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
+    route: CartRoutes,
   },
 ];
 
