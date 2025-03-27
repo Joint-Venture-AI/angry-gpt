@@ -17,8 +17,10 @@ export const OrderController = {
 
     serveResponse(res, {
       message: 'Order created successfully!',
-      data: {
+      meta: {
         orderId,
+      },
+      data: {
         checkout_url,
       },
     });
