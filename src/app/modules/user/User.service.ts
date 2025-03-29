@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Request } from 'express';
 import deleteFile from '../../../util/file/deleteFile';
 import ServerError from '../../../errors/ServerError';
+import { AuthServices } from '../auth/Auth.service';
 
 export const UserServices = {
   async create(userData: Partial<TUser>) {
@@ -12,7 +13,9 @@ export const UserServices = {
     if (user)
       throw new ServerError(StatusCodes.CONFLICT, 'User already exists');
 
-    return await User.create(userData);
+    await User.create(userData);
+
+    await AuthServices.sendOtp(userData.email!, 'active');
   },
 
   async edit(req: Request) {
