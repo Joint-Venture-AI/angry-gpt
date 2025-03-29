@@ -9,7 +9,7 @@ export const AuthControllers = {
 
     if (!data)
       return serveResponse(res, {
-        message: 'OTP sent to your email. Please verify your account.',
+        message: 'Send Otp successfully! Check your email.',
       });
 
     const { accessToken, refreshToken, user } = data;
@@ -44,7 +44,7 @@ export const AuthControllers = {
   }),
 
   sendOtp: catchAsync(async ({ body }, res) => {
-    await AuthServices.sendOtp(body.email);
+    await AuthServices.sendOtp(body.email, 'reset');
 
     serveResponse(res, {
       message: 'Send Otp successfully! Check your email.',

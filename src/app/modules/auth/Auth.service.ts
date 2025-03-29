@@ -21,15 +21,7 @@ export const AuthServices = {
 
     if (user.status === EUserStatus.ACTIVE) return this.retrieveToken(user._id);
 
-    const otp = (user.otp = generateOtp()).toString();
-    user.otpExp = new Date(Date.now() + 10 * 60 * 1000 * 1000);
-    await user.save();
-
-    await sendEmail({
-      to: email,
-      subject: `Your ${config.server.name} account activation OTP is ${otp}.`,
-      html: AuthTemplates.activate_otp(user.name, otp),
-    });
+    await this.sendOtp(email, 'active');
   },
 
   async setRefreshToken(res: Response, refreshToken: string) {
@@ -58,22 +50,18 @@ export const AuthServices = {
     await user.save();
   },
 
-  async sendOtp(email: string) {
+  async sendOtp(email: string, type: 'reset' | 'active') {
     const user = (await User.findOne({ email }))!;
 
-    const otp = generateOtp();
-
-    user.otp = otp;
+    const otp = (user.otp = generateOtp()).toString();
     user.otpExp = new Date(Date.now() + 10 * 60 * 1000 * 1000);
-
     await user.save();
 
-    if (email)
-      await sendEmail({
-        to: email,
-        subject: `Your ${config.server.name} password reset OTP is ${otp}.`,
-        html: AuthTemplates.reset_otp(user.name, otp.toString()),
-      });
+    await sendEmail({
+      to: email,
+      subject: `Your ${config.server.name} ${type} OTP is ${otp}.`,
+      html: AuthTemplates.otp(user.name, otp, type),
+    });
   },
 
   async verifyOtp(email: string) {
