@@ -38,12 +38,8 @@ export const AuthServices = {
   ) {
     const user = (await User.findById(id).select('+password'))!;
 
-    const isValidPassword = await bcrypt.compare(oldPassword, user.password!);
-    if (!isValidPassword)
-      throw new ServerError(
-        StatusCodes.UNAUTHORIZED,
-        "Email or password don't match!",
-      );
+    if (!(await bcrypt.compare(oldPassword, user.password!)))
+      throw new ServerError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
 
     user.password = newPassword;
 
