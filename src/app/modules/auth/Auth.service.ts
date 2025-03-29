@@ -89,36 +89,21 @@ export const AuthServices = {
       });
   },
 
-  async verifyOtp(email: string, otp: number) {
-    const user = await User.findOne({ email });
+  async verifyOtp(email: string) {
+    const { _id } = (await User.findOneAndUpdate(
+      { email },
+      {
+        $unset: {
+          otp: '',
+          otpExp: '',
+        },
+        $set: {
+          status: EUserStatus.ACTIVE,
+        },
+      },
+    ).select('_id'))!;
 
-    if (!user)
-      throw new ServerError(
-        StatusCodes.NOT_FOUND,
-        'User not found. Check your email and try again.',
-      );
-
-    if (user.otpExp && new Date(user.otpExp) < new Date())
-      throw new ServerError(
-        StatusCodes.UNAUTHORIZED,
-        'The OTP has expired. Please request a new one.',
-      );
-
-    if (user.otp !== otp)
-      throw new ServerError(
-        StatusCodes.UNAUTHORIZED,
-        'The OTP you entered is incorrect or expired. Please check your email and try again.',
-      );
-
-    if (user.status !== EUserStatus.ACTIVE) user.status = EUserStatus.ACTIVE;
-
-    /** otp = one time password; Be careful */
-    user.otp = undefined;
-    user.otpExp = undefined;
-
-    await user.save();
-
-    return this.retrieveToken(user._id);
+    return this.retrieveToken(_id);
   },
 
   async resetPassword(email: string, password: string) {

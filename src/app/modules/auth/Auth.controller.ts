@@ -57,11 +57,8 @@ export const AuthControllers = {
   }),
 
   verifyOtp: catchAsync(async ({ body }, res) => {
-    const { email, otp } = body;
-
     const { accessToken, refreshToken, user } = await AuthServices.verifyOtp(
-      email,
-      +otp,
+      body.email,
     );
 
     res.cookie('refreshToken', refreshToken, {

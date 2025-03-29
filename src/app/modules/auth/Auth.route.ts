@@ -60,7 +60,11 @@ router.post(
   AuthControllers.sendOtp,
 );
 
-router.post('/verify-otp', AuthControllers.verifyOtp);
+router.post(
+  '/verify-otp',
+  purifyRequest(AuthValidations.verifyOtp),
+  AuthControllers.verifyOtp,
+);
 
 router.post(
   '/reset-password',
