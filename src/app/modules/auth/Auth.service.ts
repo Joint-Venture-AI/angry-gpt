@@ -14,43 +14,22 @@ import { Request, Response } from 'express';
 import { facebookUser } from './Auth.lib';
 
 export const AuthServices = {
-  async login({ email, password }: Record<string, string>) {
-    const user = await User.findOne({
+  async login(email: string) {
+    const user = (await User.findOne({
       email,
-    }).select('+password');
+    }))!;
 
-    if (!user)
-      throw new ServerError(
-        StatusCodes.UNAUTHORIZED,
-        "Email or password don't match!",
-      );
+    if (user.status === EUserStatus.ACTIVE) return this.retrieveToken(user._id);
 
-    if (user.status !== EUserStatus.ACTIVE) {
-      const otp = generateOtp();
+    const otp = (user.otp = generateOtp()).toString();
+    user.otpExp = new Date(Date.now() + 10 * 60 * 1000 * 1000);
+    await user.save();
 
-      user.otp = otp;
-      user.otpExp = new Date(Date.now() + 10 * 60 * 1000 * 1000);
-
-      await user.save();
-
-      if (email)
-        await sendEmail({
-          to: email,
-          subject: `Your ${config.server.name} account activation OTP is ${otp}.`,
-          html: AuthTemplates.activate_otp(user.name, otp.toString()),
-        });
-
-      return;
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password!);
-    if (!isValidPassword)
-      throw new ServerError(
-        StatusCodes.UNAUTHORIZED,
-        "Email or password don't match!",
-      );
-
-    return this.retrieveToken(user._id);
+    await sendEmail({
+      to: email,
+      subject: `Your ${config.server.name} account activation OTP is ${otp}.`,
+      html: AuthTemplates.activate_otp(user.name, otp),
+    });
   },
 
   async setRefreshToken(res: Response, refreshToken: string) {

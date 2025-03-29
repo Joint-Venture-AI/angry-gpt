@@ -1,14 +1,25 @@
 import { z } from 'zod';
+import bcrypt from 'bcrypt';
 import User from '../user/User.model';
 import { StatusCodes } from 'http-status-codes';
 import ServerError from '../../../errors/ServerError';
 
 export const AuthValidations = {
   login: z.object({
-    body: z.object({
-      email: z.string().email('Invalid email format'),
-      password: z.string().min(1, 'Password is required'),
-    }),
+    body: z
+      .object({
+        email: z.string(),
+        password: z.string(),
+      })
+      .superRefine(async ({ email, password }) => {
+        const user = await User.findOne({ email }).select('+password');
+
+        if (!user || !(await bcrypt.compare(password, user.password!)))
+          throw new ServerError(
+            StatusCodes.UNAUTHORIZED,
+            'You are not authorized',
+          );
+      }),
   }),
 
   passwordChange: z.object({

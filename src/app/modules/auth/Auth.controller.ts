@@ -5,7 +5,7 @@ import serveResponse from '../../../util/server/serveResponse';
 
 export const AuthControllers = {
   login: catchAsync(async ({ body }, res) => {
-    const data = await AuthServices.login(body);
+    const data = await AuthServices.login(body.email);
 
     if (!data)
       return serveResponse(res, {
