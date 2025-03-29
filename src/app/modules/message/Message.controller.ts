@@ -22,7 +22,10 @@ export const MessageControllers = {
     serveResponse(res, {
       message: 'Messages fetched successfully',
       meta,
-      data: messages.reverse(),
+      data: messages.reverse().map((message: any) => {
+        message.isBot = message.sender === 'bot';
+        return message;
+      }),
     });
   }),
 };
