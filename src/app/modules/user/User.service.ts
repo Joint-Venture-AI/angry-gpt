@@ -19,23 +19,16 @@ export const UserServices = {
   },
 
   async edit(req: Request) {
-    const updateData = req.body as Partial<TUser>;
+    const userData = req.body as Partial<TUser>;
 
-    const imagesToDelete = req?.user?.avatar;
+    const oldAvatar = req?.user?.avatar;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req?.user!._id,
-      updateData,
-      {
-        new: true,
-        runValidators: true,
-      },
-    ).select('name avatar email role');
+    const updatedUser = await User.findByIdAndUpdate(req?.user!._id, userData, {
+      new: true,
+      runValidators: true,
+    }).select('name avatar email role');
 
-    if (!updatedUser)
-      throw new ServerError(StatusCodes.NOT_FOUND, 'Admin not found');
-
-    if (updateData?.avatar) await deleteFile(imagesToDelete!);
+    if (userData?.avatar) await deleteFile(oldAvatar!);
 
     return updatedUser;
   },
