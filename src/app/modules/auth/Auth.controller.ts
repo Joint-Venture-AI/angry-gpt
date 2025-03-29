@@ -2,7 +2,6 @@ import { AuthServices } from './Auth.service';
 import catchAsync from '../../../util/server/catchAsync';
 import config from '../../../config';
 import serveResponse from '../../../util/server/serveResponse';
-import { verifyToken } from './Auth.utils';
 
 export const AuthControllers = {
   login: catchAsync(async ({ body }, res) => {
@@ -15,11 +14,7 @@ export const AuthControllers = {
 
     const { accessToken, refreshToken, user } = data;
 
-    res.cookie('refreshToken', refreshToken, {
-      secure: config.server.node_env !== 'development',
-      maxAge: verifyToken(refreshToken, 'refresh').exp! * 1000,
-      httpOnly: true,
-    });
+    AuthServices.setRefreshToken(res, refreshToken);
 
     serveResponse(res, {
       message: 'Login successfully!',
@@ -61,11 +56,7 @@ export const AuthControllers = {
       body.email,
     );
 
-    res.cookie('refreshToken', refreshToken, {
-      secure: config.server.node_env !== 'development',
-      maxAge: verifyToken(refreshToken, 'refresh').exp! * 1000,
-      httpOnly: true,
-    });
+    AuthServices.setRefreshToken(res, refreshToken);
 
     serveResponse(res, {
       message: 'Otp verified successfully!',
@@ -81,9 +72,9 @@ export const AuthControllers = {
     });
   }),
 
-  refreshToken: catchAsync(async (req, res) => {
+  refreshToken: catchAsync(async ({ cookies }, res) => {
     const { accessToken } = await AuthServices.refreshToken(
-      req.cookies.refreshToken,
+      cookies.refreshToken,
     );
 
     serveResponse(res, {
@@ -96,11 +87,7 @@ export const AuthControllers = {
     const { accessToken, refreshToken, user } =
       await AuthServices.loginWith(req);
 
-    res.cookie('refreshToken', refreshToken, {
-      secure: config.server.node_env !== 'development',
-      maxAge: verifyToken(refreshToken!, 'refresh').exp! * 1000,
-      httpOnly: true,
-    });
+    AuthServices.setRefreshToken(res, refreshToken);
 
     serveResponse(res, {
       message: 'Login successfully!',

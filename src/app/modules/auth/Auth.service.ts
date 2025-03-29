@@ -10,7 +10,7 @@ import config from '../../../config';
 import { EUserStatus } from '../user/User.enum';
 import downloadImage from '../../../util/file/downloadImage';
 import deleteFile from '../../../util/file/deleteFile';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { facebookUser } from './Auth.lib';
 
 export const AuthServices = {
@@ -51,6 +51,14 @@ export const AuthServices = {
       );
 
     return this.retrieveToken(user._id);
+  },
+
+  async setRefreshToken(res: Response, refreshToken: string) {
+    res.cookie('refreshToken', refreshToken, {
+      secure: config.server.node_env !== 'development',
+      maxAge: verifyToken(refreshToken, 'refresh').exp! * 1000,
+      httpOnly: true,
+    });
   },
 
   async changePassword(
