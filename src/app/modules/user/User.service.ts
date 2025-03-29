@@ -33,19 +33,19 @@ export const UserServices = {
     return updatedUser;
   },
 
-  async list(query: Record<string, unknown>) {
+  async list({ page, limit }: Record<string, any>) {
     const users = await User.find()
-      .limit((query?.limit as number) ?? 10)
-      .skip((query?.skip as number) ?? 10);
+      .skip((page - 1) * limit)
+      .limit(limit);
 
-    const totalUsers = await User.countDocuments();
+    const total = await User.countDocuments();
 
     return {
       meta: {
-        total: totalUsers,
-        page: query?.page as number,
-        limit: query?.limit as number,
-        totalPage: Math.ceil(totalUsers / (query?.limit as number)),
+        page,
+        limit,
+        total,
+        totalPage: Math.ceil(total / limit),
       },
       users,
     };

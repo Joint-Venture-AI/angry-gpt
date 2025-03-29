@@ -22,11 +22,12 @@ export const UserControllers = {
   }, imagesUploadRollback),
 
   list: catchAsync(async (req, res) => {
-    const usersWithMeta = await UserServices.list(req.query);
+    const { meta, users } = await UserServices.list(req.query);
 
     serveResponse(res, {
-      message: 'Users are retrieved successfully!',
-      data: usersWithMeta,
+      message: 'Users retrieved successfully!',
+      meta,
+      data: users,
     });
   }),
 };
