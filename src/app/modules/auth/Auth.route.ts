@@ -33,11 +33,15 @@ router.patch(
   UserControllers.edit,
 );
 
-router.post('/login', AuthControllers.login);
+router.post(
+  '/login',
+  purifyRequest(AuthValidations.login),
+  AuthControllers.login,
+);
 
 router.post(
   '/login/:provider',
-  purifyRequest(AuthValidations.loginWithValidationSchema),
+  purifyRequest(AuthValidations.loginWith),
   AuthControllers.loginWith,
 );
 
@@ -46,11 +50,15 @@ router.post('/logout', AuthControllers.logout);
 router.patch(
   '/change-password',
   auth(EUserRole.USER, EUserRole.ADMIN),
-  purifyRequest(AuthValidations.passwordChangeValidationSchema),
+  purifyRequest(AuthValidations.passwordChange),
   AuthControllers.changePassword,
 );
 
-router.post('/send-otp', AuthControllers.sendOtp);
+router.post(
+  '/send-otp',
+  purifyRequest(AuthValidations.sendOtp),
+  AuthControllers.sendOtp,
+);
 
 router.post('/verify-otp', AuthControllers.verifyOtp);
 
@@ -65,7 +73,7 @@ router.post(
  */
 router.get(
   '/refresh-token',
-  purifyRequest(AuthValidations.refreshTokenValidationSchema),
+  purifyRequest(AuthValidations.refreshToken),
   AuthControllers.refreshToken,
 );
 

@@ -72,13 +72,7 @@ export const AuthServices = {
   },
 
   async sendOtp(email: string) {
-    const user = await User.findOne({ email });
-
-    if (!user)
-      throw new ServerError(
-        StatusCodes.NOT_FOUND,
-        'User not found. Check your email and try again.',
-      );
+    const user = (await User.findOne({ email }))!;
 
     const otp = generateOtp();
 

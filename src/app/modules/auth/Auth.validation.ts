@@ -1,7 +1,17 @@
 import { z } from 'zod';
+import User from '../user/User.model';
+import { StatusCodes } from 'http-status-codes';
+import ServerError from '../../../errors/ServerError';
 
 export const AuthValidations = {
-  passwordChangeValidationSchema: z.object({
+  login: z.object({
+    body: z.object({
+      email: z.string().email('Invalid email format'),
+      password: z.string().min(1, 'Password is required'),
+    }),
+  }),
+
+  passwordChange: z.object({
     body: z.object({
       oldPassword: z
         .string()
@@ -14,7 +24,7 @@ export const AuthValidations = {
     }),
   }),
 
-  refreshTokenValidationSchema: z.object({
+  refreshToken: z.object({
     cookies: z.object({
       refreshToken: z.string({
         required_error: 'refreshToken is missing',
@@ -22,12 +32,21 @@ export const AuthValidations = {
     }),
   }),
 
-  loginWithValidationSchema: z.object({
+  loginWith: z.object({
     params: z.object({
       provider: z.enum(['facebook', 'google', 'apple'], {
         errorMap: () => ({
           message: 'Provider must be one of facebook, google, or apple',
         }),
+      }),
+    }),
+  }),
+
+  sendOtp: z.object({
+    body: z.object({
+      email: z.string().superRefine(async email => {
+        if (!(await User.exists({ email })))
+          throw new ServerError(StatusCodes.NOT_FOUND, 'User does not exist');
       }),
     }),
   }),
