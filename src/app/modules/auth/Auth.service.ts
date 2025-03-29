@@ -82,16 +82,12 @@ export const AuthServices = {
   },
 
   async resetPassword(email: string, password: string) {
-    const user = await User.findOne({ email });
-
-    if (!user)
-      throw new ServerError(
-        StatusCodes.NOT_FOUND,
-        'User not found. Try again later.',
-      );
-
-    user.password = password;
-    await user.save();
+    await User.updateOne(
+      { email },
+      {
+        $set: { password },
+      },
+    );
   },
 
   async refreshToken(refreshToken: string) {

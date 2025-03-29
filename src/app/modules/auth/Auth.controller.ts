@@ -39,7 +39,7 @@ export const AuthControllers = {
     await AuthServices.changePassword(req.user!._id!, req.body);
 
     serveResponse(res, {
-      message: 'Password has changed successfully!',
+      message: 'Password changed successfully!',
     });
   }),
 
@@ -78,7 +78,7 @@ export const AuthControllers = {
     );
 
     serveResponse(res, {
-      message: 'New Access create successfully!',
+      message: 'AccessToken generated successfully!',
       data: { token: accessToken },
     });
   }),

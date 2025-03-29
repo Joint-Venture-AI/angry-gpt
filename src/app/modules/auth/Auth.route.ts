@@ -69,6 +69,7 @@ router.post(
 router.post(
   '/reset-password',
   auth(EUserRole.USER, EUserRole.ADMIN),
+  purifyRequest(AuthValidations.resetPassword),
   AuthControllers.resetPassword,
 );
 

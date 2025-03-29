@@ -77,4 +77,10 @@ export const AuthValidations = {
           );
       }),
   }),
+
+  resetPassword: z.object({
+    body: z.object({
+      password: z.string().min(6, 'Password must be 6 characters long'),
+    }),
+  }),
 };
