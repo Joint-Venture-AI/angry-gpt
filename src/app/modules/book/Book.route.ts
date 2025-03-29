@@ -54,7 +54,11 @@ adminRoutes.delete(
  */
 const userRoutes = Router();
 
-userRoutes.get('/', BookController.list);
+userRoutes.get(
+  '/',
+  purifyRequest(QueryValidations.list, BookValidations.list),
+  BookController.list,
+);
 
 userRoutes.get(
   '/:bookId',

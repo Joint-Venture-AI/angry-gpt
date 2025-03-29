@@ -46,4 +46,11 @@ export const BookValidations = {
       images: z.array(z.string()).optional(),
     }),
   }),
+
+  list: z.object({
+    query: z.object({
+      sort: z.string().optional(),
+      search: z.string().optional(),
+    }),
+  }),
 };

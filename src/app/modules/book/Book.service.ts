@@ -1,14 +1,13 @@
 import { TBook } from './Book.interface';
 import Book from './Book.model';
 import deleteFile from '../../../util/file/deleteFile';
-import { TPagination } from '../../../util/server/serveResponse';
 
 export const BookServices = {
   async create(bookData: TBook) {
     return await Book.create(bookData);
   },
 
-  async list({ page = '1', limit = '10', search = '', sort = '-createdAt' }) {
+  async list({ page, limit, search, sort }: Record<string, any>) {
     const query = search
       ? {
           $or: [
@@ -18,24 +17,22 @@ export const BookServices = {
         }
       : {};
 
-    const total = await Book.countDocuments(query);
-
     const books = await Book.find(query)
       .sort(sort)
-      .skip((+page - 1) * +limit)
-      .limit(+limit);
+      .skip((page - 1) * limit)
+      .limit(limit);
 
-    const pagination: TPagination = {
-      limit: +limit,
-      page: +page,
-      total,
-      totalPage: Math.ceil(total / +limit),
-    };
+    const total = await Book.countDocuments(query);
 
     return {
       books,
       meta: {
-        pagination,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPage: Math.ceil(total / limit),
+        },
         search,
         sort,
       },
@@ -59,10 +56,10 @@ export const BookServices = {
     return book;
   },
 
-  async delete(id: string) {
-    const book = await Book.findByIdAndDelete(id);
+  async delete(bookId: string) {
+    const book = (await Book.findByIdAndDelete(bookId))!;
 
-    book!.images?.forEach(deleteFile);
+    book.images?.forEach(deleteFile);
 
     return book;
   },
