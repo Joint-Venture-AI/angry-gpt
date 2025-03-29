@@ -5,6 +5,7 @@ import { ChatValidations } from './Chat.validation';
 import { MessageValidations } from '../message/Message.validation';
 import { MessageControllers } from '../message/Message.controller';
 import { QueryValidations } from '../query/Query.validation';
+import Chat from './Chat.model';
 
 const router = Router();
 
@@ -18,13 +19,16 @@ router.post(
 
 router.patch(
   '/:chatId/rename',
-  purifyRequest(ChatValidations.rename),
+  purifyRequest(
+    QueryValidations.exists('chatId', Chat),
+    ChatValidations.rename,
+  ),
   ChatControllers.rename,
 );
 
 router.delete(
   '/:chatId/delete',
-  purifyRequest(ChatValidations.delete),
+  purifyRequest(QueryValidations.exists('chatId', Chat)),
   ChatControllers.delete,
 );
 
@@ -32,13 +36,16 @@ router.delete('/clear', ChatControllers.clear);
 
 router.get(
   '/:chatId',
-  purifyRequest(QueryValidations.list, MessageValidations.list),
+  purifyRequest(QueryValidations.exists('chatId', Chat), QueryValidations.list),
   MessageControllers.list,
 );
 
 router.post(
   '/:chatId',
-  purifyRequest(MessageValidations.chat),
+  purifyRequest(
+    QueryValidations.exists('chatId', Chat),
+    MessageValidations.chat,
+  ),
   MessageControllers.chat,
 );
 
