@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "predev": "npx kill-port 3036",
     "dev": "concurrently \"npm run server\" \"npm run stripe\"",
     "server": "ts-node-dev --respawn --transpile-only src/server.ts",
     "stripe": "stripe listen --forward-to http://192.168.10.132:3036/api/v1/payment/stripe/webhook",
@@ -32,6 +31,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/kill-port": "^2.0.3",
     "@types/morgan": "^1.9.9",
     "@types/multer": "^1.4.11",
     "@types/nodemailer": "^6.4.16",
@@ -40,6 +40,7 @@
     "concurrently": "^9.1.2",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
+    "kill-port": "^2.0.1",
     "prettier": "^3.4.2",
     "prettier-eslint": "^16.3.0",
     "ts-node-dev": "^2.0.0",
