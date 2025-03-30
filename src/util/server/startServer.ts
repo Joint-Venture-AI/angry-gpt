@@ -7,7 +7,6 @@ import shutdownServer from './shutdownServer';
 import connectDB from './connectDB';
 import { AdminServices } from '../../app/modules/admin/Admin.service';
 import killPort from 'kill-port';
-import { PaymentServices } from '../../app/modules/payment/Payment.service';
 
 const {
   server: { port, ip_address, href, name },
@@ -30,12 +29,9 @@ export default async function startServer() {
       logger.info(colors.yellow(`🚀 ${name} is running on ${href}`));
     });
 
-    const stripe = PaymentServices.listener();
-
     ['SIGTERM', 'SIGINT', 'unhandledRejection', 'uncaughtException'].forEach(
       signal =>
         process.on(signal, (err?: Error) => {
-          stripe?.kill();
           shutdownServer(server, signal, err);
         }),
     );
