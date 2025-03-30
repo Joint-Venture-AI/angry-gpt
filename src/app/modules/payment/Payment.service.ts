@@ -5,6 +5,7 @@ import Stripe from 'stripe';
 import config from '../../../config';
 import Order from '../order/Order.model';
 import { EOrderState } from '../order/Order.enum';
+import { exec } from 'child_process';
 
 export const PaymentServices = {
   create: async ({ name, amount, method = 'card' }: Record<string, any>) => {
@@ -59,5 +60,17 @@ export const PaymentServices = {
     order.state = EOrderState.SUCCESS;
 
     await order.save();
+  },
+
+  listener: () => {
+    if (config.server.node_env !== 'development') return;
+
+    const forwardUrl = `${config.server.href}/api/v1/payment/stripe/webhook`;
+    const stripe = exec(`stripe listen --forward-to ${forwardUrl}`);
+
+    stripe.stdout?.on('data', data => process.stdout.write(data));
+    stripe.stderr?.on('data', data => process.stderr.write(data));
+
+    return stripe;
   },
 };

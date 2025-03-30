@@ -5,8 +5,6 @@ const transactionSchema = new Schema<TTransaction>(
   {
     transaction_id: {
       type: String,
-      unique: true,
-      trim: true,
     },
     user: {
       type: Schema.Types.ObjectId,
