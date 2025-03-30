@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 import config from '../../../config';
 import Order from '../order/Order.model';
 import { EOrderState } from '../order/Order.enum';
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
 
 export const PaymentServices = {
   create: async ({ name, amount, method = 'card' }: Record<string, any>) => {
@@ -64,6 +64,8 @@ export const PaymentServices = {
 
   listener: () => {
     if (config.server.node_env !== 'development') return;
+
+    execSync('taskkill /F /IM stripe.exe >nul 2>&1');
 
     const forwardUrl = `${config.server.href}/api/v1/payment/stripe/webhook`;
     const stripe = exec(`stripe listen --forward-to ${forwardUrl}`);
