@@ -6,9 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "concurrently \"npm run server\" \"npm run stripe\"",
-    "server": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "stripe": "stripe listen --forward-to http://192.168.10.132:3036/api/v1/payment/stripe/webhook",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "lint": "eslint src --ignore-path .eslintignore --ext .ts",
     "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -37,7 +35,6 @@
     "@types/nodemailer": "^6.4.16",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
-    "concurrently": "^9.1.2",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "kill-port": "^2.0.1",
