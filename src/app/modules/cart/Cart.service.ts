@@ -5,7 +5,7 @@ export const CartServices = {
   async retrieve(userId: Types.ObjectId) {
     const cart = await Cart.findOne({ user: userId }).populate(
       'details.book',
-      'title images author price',
+      'title images author price stock',
     );
 
     return cart?.details ?? [];
