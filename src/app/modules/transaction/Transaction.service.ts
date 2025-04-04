@@ -29,4 +29,25 @@ export const TransactionServices = {
         select: 'amount details customer',
       });
   },
+
+  async retrieveMeta() {
+    const byWeb = (
+      await Transaction.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: { $round: ['$amount', 2] } },
+          },
+        },
+      ])
+    )[0]?.totalAmount;
+
+    const byApp = 0; /** Todo */
+
+    return {
+      byWeb,
+      byApp,
+      total: byWeb + byApp,
+    };
+  },
 };

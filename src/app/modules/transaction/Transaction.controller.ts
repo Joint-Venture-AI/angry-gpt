@@ -5,9 +5,11 @@ import serveResponse from '../../../util/server/serveResponse';
 export const TransactionControllers = {
   list: catchAsync(async (req, res) => {
     const { transactions } = await TransactionServices.list(req.query);
+    const meta = await TransactionServices.retrieveMeta();
 
     serveResponse(res, {
       message: 'Transactions retrieved successfully!',
+      meta,
       data: transactions,
     });
   }),
