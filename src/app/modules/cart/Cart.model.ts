@@ -8,11 +8,21 @@ const cartSchema = new Schema<TCart>(
       ref: 'User',
       required: true,
     },
-    books: {
-      type: [Schema.Types.ObjectId],
-      ref: 'Book',
-      required: true,
-    },
+    details: [
+      {
+        _id: false,
+        book: {
+          type: Schema.Types.ObjectId,
+          ref: 'Book',
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
+      },
+    ],
   },
   {
     versionKey: false,

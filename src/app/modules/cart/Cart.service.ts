@@ -2,28 +2,35 @@ import { Types } from 'mongoose';
 import Cart from './Cart.model';
 
 export const CartServices = {
-  async add(book: string, user: Types.ObjectId) {
-    await Cart.findOneAndUpdate(
-      { user },
-      { $addToSet: { books: book } },
-      { upsert: true, new: true },
-    );
-  },
-
-  async retrieve(user: Types.ObjectId) {
-    const cart = await Cart.findOne({ user }).populate(
-      'books',
+  async retrieve(userId: Types.ObjectId) {
+    const cart = await Cart.findOne({ user: userId }).populate(
+      'details.book',
       'title images author price',
     );
 
-    return cart?.books ?? [];
+    return cart?.details ?? [];
   },
 
-  async remove(book: string, user: Types.ObjectId) {
+  async remove(bookId: string, userId: Types.ObjectId) {
     await Cart.findOneAndUpdate(
-      { user },
-      { $pull: { books: book } },
-      { upsert: true, new: true },
+      { user: userId },
+      { $pull: { details: { book: bookId } } },
+      { new: true },
+    );
+  },
+
+  async update({ bookId, quantity }: any, userId: Types.ObjectId) {
+    return (
+      (await Cart.findOneAndUpdate(
+        { user: userId, 'details.book': bookId },
+        { $set: { 'details.$.quantity': quantity } },
+        { new: true },
+      )) ??
+      (await Cart.findOneAndUpdate(
+        { user: userId },
+        { $addToSet: { details: { book: bookId, quantity } } },
+        { new: true, upsert: true },
+      ))
     );
   },
 };
