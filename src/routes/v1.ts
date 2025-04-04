@@ -13,6 +13,7 @@ import { BotRoutes } from '../app/modules/bot/Bot.route';
 import { CartRoutes } from '../app/modules/cart/Cart.route';
 import catchAsync from '../util/server/catchAsync';
 import serveResponse from '../util/server/serveResponse';
+import { SettingController } from '../app/modules/setting/Setting.controller';
 
 const routes: TRoute[] = [
   {
@@ -69,6 +70,10 @@ const routes: TRoute[] = [
         });
       }),
     ),
+  },
+  {
+    path: '/settings',
+    route: Router().get('/', SettingController.retrieve),
   },
 ];
 

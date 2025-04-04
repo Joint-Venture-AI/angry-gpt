@@ -5,6 +5,7 @@ import { UserRoutes } from '../user/User.route';
 import { BookRoutes } from '../book/Book.route';
 import { BotRoutes } from '../bot/Bot.route';
 import { TransactionRoutes } from '../transaction/Transaction.route';
+import { SettingController } from '../setting/Setting.controller';
 
 const routes: TRoute[] = [
   {
@@ -26,6 +27,10 @@ const routes: TRoute[] = [
   {
     path: '/transactions',
     route: TransactionRoutes,
+  },
+  {
+    path: '/settings',
+    route: Router().patch('/set', SettingController.modify),
   },
 ];
 
