@@ -11,6 +11,8 @@ import { ChatRoutes } from '../app/modules/chat/Chat.route';
 import { PaymentRoutes } from '../app/modules/payment/Payment.route';
 import { BotRoutes } from '../app/modules/bot/Bot.route';
 import { CartRoutes } from '../app/modules/cart/Cart.route';
+import catchAsync from '../util/server/catchAsync';
+import serveResponse from '../util/server/serveResponse';
 
 const routes: TRoute[] = [
   {
@@ -54,6 +56,19 @@ const routes: TRoute[] = [
     path: '/cart',
     middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
     route: CartRoutes,
+  },
+  {
+    path: '/me',
+    middlewares: [auth(EUserRole.USER, EUserRole.ADMIN)],
+    route: Router().get(
+      '/',
+      catchAsync((req, res) => {
+        serveResponse(res, {
+          message: 'User fetched successfully',
+          data: req.user,
+        });
+      }),
+    ),
   },
 ];
 
