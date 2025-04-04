@@ -6,7 +6,6 @@ import RoutesV1 from './routes/v1';
 import { Morgan } from './util/logger/morgen';
 import cookieParser from 'cookie-parser';
 import ServerError from './errors/ServerError';
-import serveResponse from './util/server/serveResponse';
 import config from './config';
 
 /**
@@ -42,13 +41,16 @@ app.use(
 
 // Health check endpoint
 app.get('/', (_, res) => {
-  serveResponse(res, {
-    message: `${config.server.name} is running successfully. Please check the documentation for more details.`,
-  });
+  res.send(
+    `${config.server.name} is running successfully. Please check the documentation for more details. <a href="${config.server.docs}">Documentation</a>`,
+  );
 });
 
 // API routes
 app.use('/api/v1', RoutesV1);
+
+// Api docs
+app.use('/docs', (_, res) => res.redirect(config.server.docs));
 
 // 404 handler
 app.use(({ originalUrl }, _, next) => {

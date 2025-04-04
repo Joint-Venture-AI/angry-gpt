@@ -26,6 +26,7 @@ const config = {
     name,
     logo: env('logo', '/images/logo.png'),
     default_avatar: env('default avatar', '/images/placeholder.png'),
+    docs: env('docs', ''),
   },
   url: {
     database: env('database url', 'mongodb://127.0.0.1:27017'),
