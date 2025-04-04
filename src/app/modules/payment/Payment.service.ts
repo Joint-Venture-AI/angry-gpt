@@ -5,6 +5,7 @@ import Stripe from 'stripe';
 import config from '../../../config';
 import Order from '../order/Order.model';
 import { EOrderState } from '../order/Order.enum';
+import Cart from '../cart/Cart.model';
 
 export const PaymentServices = {
   create: async ({ name, amount, method = 'card' }: Record<string, any>) => {
@@ -60,5 +61,7 @@ export const PaymentServices = {
     order.state = EOrderState.SUCCESS;
 
     await order.save();
+
+    await Cart.deleteMany({ user: order.user });
   },
 };
