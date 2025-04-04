@@ -3,6 +3,8 @@ import { TransactionControllers } from './Transaction.controller';
 
 const router = Router();
 
-router.get('/', TransactionControllers.retrieve);
+router.get('/', TransactionControllers.list);
+
+router.get('/:transactionId', TransactionControllers.retrieve);
 
 export const TransactionRoutes = router;

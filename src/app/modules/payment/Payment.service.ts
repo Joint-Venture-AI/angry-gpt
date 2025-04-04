@@ -51,6 +51,7 @@ export const PaymentServices = {
       payment_method: paymentMethod.type,
       amount: order.amount,
       user: order.user,
+      order: order._id,
     };
 
     const transaction = await TransactionServices.create(transactionData);

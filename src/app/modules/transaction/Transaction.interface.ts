@@ -8,6 +8,7 @@ export type TTransaction = {
   payment_method: string;
   subscription?: string;
   type: 'sell' | 'subscription';
+  order: Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 };

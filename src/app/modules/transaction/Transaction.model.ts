@@ -21,6 +21,11 @@ const transactionSchema = new Schema<TTransaction>(
       required: true,
       trim: true,
     },
+    order: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Order',
+    },
     subscription: String,
   },
   {

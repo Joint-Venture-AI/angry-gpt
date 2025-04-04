@@ -4,6 +4,7 @@ import { TRoute } from '../../../types/route.types';
 import { UserRoutes } from '../user/User.route';
 import { BookRoutes } from '../book/Book.route';
 import { BotRoutes } from '../bot/Bot.route';
+import { TransactionRoutes } from '../transaction/Transaction.route';
 
 const routes: TRoute[] = [
   {
@@ -21,6 +22,10 @@ const routes: TRoute[] = [
   {
     path: '/bots',
     route: BotRoutes.admin,
+  },
+  {
+    path: '/transactions',
+    route: TransactionRoutes,
   },
 ];
 

@@ -7,10 +7,10 @@ import { EUserRole } from '../user/User.enum';
 
 export const OrderController = {
   checkout: catchAsync(async ({ body, user, query }, res) => {
-    const { orderId, amount } = await OrderService.checkout(body, user!._id!);
+    const { order, amount } = await OrderService.checkout(body, user!._id!);
 
     const checkout_url = await PaymentServices.create({
-      name: orderId.toString(),
+      name: order?._id.toString(),
       amount,
       method: query.method,
     });
@@ -18,7 +18,7 @@ export const OrderController = {
     serveResponse(res, {
       message: 'Order created successfully!',
       meta: {
-        orderId,
+        order,
       },
       data: {
         checkout_url,

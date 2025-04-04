@@ -27,9 +27,9 @@ export const OrderService = {
       { user, state: EOrderState.PENDING },
       { $set: { details, customer, amount, state: EOrderState.PENDING } },
       { upsert: true, new: true },
-    );
+    ).populate('details.book', 'title images');
 
-    return { orderId: order!._id, amount };
+    return { order, amount };
   },
 
   async changeState(orderId: string, state: EOrderState) {
