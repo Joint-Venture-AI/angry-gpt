@@ -24,7 +24,7 @@ export const AuthServices = {
     await this.sendOtp(email, 'active');
   },
 
-  async setRefreshToken(res: Response, refreshToken: string) {
+  setRefreshToken(res: Response, refreshToken: string) {
     res.cookie('refreshToken', refreshToken, {
       secure: config.server.node_env !== 'development',
       maxAge: verifyToken(refreshToken, 'refresh').exp! * 1000,
