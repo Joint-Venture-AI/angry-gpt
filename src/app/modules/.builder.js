@@ -38,15 +38,13 @@ export default ${mName};`,
 
 export const ${mName}Validations = {};`,
 
-  utils: mName => `// Utils for ${mName}\nexport const ${mName}Utils = {};`,
+  utils: () => '',
 
-  lib: mName => `// Library for ${mName}\nexport const ${mName}Lib = {};`,
+  lib: () => '',
 
-  template: mName =>
-    `// Template for ${mName}\nexport const ${mName}Template = {};`,
+  template: mName => `export const ${mName}Templates = {};`,
 
-  middleware: mName =>
-    `// Middleware for ${mName}\nexport const ${mName}Middleware = {};`,
+  middleware: mName => `export const ${mName}Middlewares = {};`,
 };
 
 inquirer
