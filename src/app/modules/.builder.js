@@ -23,7 +23,7 @@ import { T${mName} } from './${mName}.interface';
 
 const ${mName.toLowerCase()}Schema = new Schema<T${mName}>(
   {},
-  { timestamps: true, versionKey: false }
+  { timestamps: true, versionKey: false },
 );
 
 const ${mName} = model<T${mName}>('${mName}', ${mName.toLowerCase()}Schema);
