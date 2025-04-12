@@ -15,6 +15,8 @@ export const UserControllers = {
   edit: catchAsync(async (req, res) => {
     const updatedUser = await UserServices.edit(req);
 
+
+
     serveResponse(res, {
       message: 'Profile updated successfully!',
       data: updatedUser,

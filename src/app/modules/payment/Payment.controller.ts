@@ -13,6 +13,8 @@ export const PaymentControllers = {
       config.payment.stripe.webhook,
     );
 
+    console.log(event.type, { event });
+
     if (event.type === 'checkout.session.completed')
       await PaymentServices.success(event);
 

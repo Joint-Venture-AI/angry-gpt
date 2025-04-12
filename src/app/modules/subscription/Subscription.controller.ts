@@ -11,4 +11,14 @@ export const SubscriptionControllers = {
       data: subscription,
     });
   }),
+
+  list: catchAsync(async (req, res) => {
+    const { meta, subscriptions } = await SubscriptionServices.list(req.query);
+
+    serveResponse(res, {
+      message: 'Subscriptions retrieved successfully',
+      meta,
+      data: subscriptions,
+    });
+  }),
 };

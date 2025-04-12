@@ -6,6 +6,7 @@ export type TUser = {
   name: string;
   avatar?: string;
   email?: string;
+  country?: string;
   password?: string;
   role: EUserRole;
   status: EUserStatus;

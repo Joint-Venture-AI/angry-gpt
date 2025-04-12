@@ -17,6 +17,7 @@ export const UserValidations = {
       name: z.string().optional(),
       email: z.string().email('Invalid email format').optional(),
       avatar: z.string().optional(),
+      country: z.string().optional(),
     }),
   }),
 };

@@ -21,12 +21,13 @@ export const UserServices = {
   async edit(req: Request) {
     const userData = req.body as Partial<TUser>;
 
+
     const oldAvatar = req?.user?.avatar;
 
     const updatedUser = await User.findByIdAndUpdate(req?.user!._id, userData, {
       new: true,
       runValidators: true,
-    }).select('name avatar email role');
+    }).select('name country avatar email role');
 
     if (userData?.avatar) await deleteFile(oldAvatar!);
 
