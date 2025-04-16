@@ -13,7 +13,7 @@ export const MessageServices = {
     const histories = await Message.find({ chat: chatId })
       .sort({ createdAt: -1 })
       .select('content sender -_id')
-      .limit(5);
+      .limit(30);
 
     const messages: OpenAI.ChatCompletionMessageParam[] = [
       { role: 'system', content: chat.bot.context },
