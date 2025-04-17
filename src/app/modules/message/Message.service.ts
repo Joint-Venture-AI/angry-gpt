@@ -16,7 +16,7 @@ export const MessageServices = {
       .limit(30);
 
     const messages: OpenAI.ChatCompletionMessageParam[] = [
-      { role: 'system', content: chat.bot.context },
+      { role: 'system', content: chat.bot.context + `\n today is: ${new Date().toISOString()}` },
       ...histories.reverse().map(msg => ({
         role: (msg.sender === 'user' ? 'user' : 'assistant') as
           | 'user'
