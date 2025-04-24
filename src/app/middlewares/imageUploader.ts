@@ -66,9 +66,11 @@ const imageUploader = (
   return catchAsync((req, res, next) => {
     upload(req, res, async err => {
       if (err)
-        throw new ServerError(
-          StatusCodes.BAD_REQUEST,
-          err.message || 'File upload failed',
+        next(
+          new ServerError(
+            StatusCodes.BAD_REQUEST,
+            err.message || 'File upload failed',
+          ),
         );
 
       const uploadedImages = req.files as { images?: Express.Multer.File[] };
@@ -79,7 +81,7 @@ const imageUploader = (
         uploadedImages.images.length === 0
       ) {
         if (!isOptional)
-          throw new ServerError(StatusCodes.BAD_REQUEST, 'No images uploaded');
+          next(new ServerError(StatusCodes.BAD_REQUEST, 'No images uploaded'));
 
         return next();
       }
@@ -101,9 +103,11 @@ const imageUploader = (
 
             resizedImages.push(`/images/resized/${file.filename}`);
           } catch (resizeError) {
-            throw new ServerError(
-              StatusCodes.INTERNAL_SERVER_ERROR,
-              'Image resizing failed',
+            next(
+              new ServerError(
+                StatusCodes.INTERNAL_SERVER_ERROR,
+                'Image resizing failed',
+              ),
             );
           }
         }

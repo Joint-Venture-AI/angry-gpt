@@ -21,7 +21,6 @@ export const UserServices = {
   async edit(req: Request) {
     const userData = req.body as Partial<TUser>;
 
-
     const oldAvatar = req?.user?.avatar;
 
     const updatedUser = await User.findByIdAndUpdate(req?.user!._id, userData, {
