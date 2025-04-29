@@ -12,11 +12,13 @@ export const MessageServices = {
 
     const histories = await Message.find({ chat: chatId })
       .sort({ createdAt: -1 })
-      .select('content sender -_id')
-      .limit(30);
+      .select('content sender -_id');
 
     const messages: OpenAI.ChatCompletionMessageParam[] = [
-      { role: 'system', content: chat.bot.context + `\n today is: ${new Date().toISOString()}` },
+      {
+        role: 'system',
+        content: chat.bot.context + `\n today is: ${new Date().toISOString()}`,
+      },
       ...histories.reverse().map(msg => ({
         role: (msg.sender === 'user' ? 'user' : 'assistant') as
           | 'user'
