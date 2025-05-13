@@ -3,10 +3,11 @@ import serveResponse from '../../../util/server/serveResponse';
 import { MessageServices } from './Message.service';
 
 export const MessageControllers = {
-  chat: catchAsync(async (req, res) => {
+  chat: catchAsync(async ({ params, body, query }, res) => {
     const message = await MessageServices.chat(
-      req.params.chatId,
-      req.body.message,
+      params.chatId,
+      body.message,
+      query.bot as string,
     );
 
     serveResponse(res, {
@@ -24,6 +25,7 @@ export const MessageControllers = {
       meta,
       data: messages.reverse().map((message: any) => {
         message.isBot = message.sender === 'bot';
+
         return message;
       }),
     });

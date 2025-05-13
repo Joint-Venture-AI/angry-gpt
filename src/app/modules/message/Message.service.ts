@@ -5,9 +5,14 @@ import Chat from '../chat/Chat.model';
 import { Message } from './Message.model';
 import ServerError from '../../../errors/ServerError';
 import { StatusCodes } from 'http-status-codes';
+import Bot from '../bot/Bot.model';
 
 export const MessageServices = {
-  async chat(chatId: string, message: string) {
+  async chat(chatId: string, message: string, bot: string | null = null) {
+    let actLike = '';
+
+    if (bot) actLike = (await Bot.findOne({ name: bot }).lean())?.context ?? '';
+
     const chat: any = (await Chat.findById(chatId).populate('bot', 'context'))!;
 
     const histories = await Message.find({ chat: chatId })
@@ -17,7 +22,11 @@ export const MessageServices = {
     const messages: OpenAI.ChatCompletionMessageParam[] = [
       {
         role: 'system',
-        content: chat.bot.context + `\n today is: ${new Date().toISOString()}`,
+        content:
+          actLike &&
+          `you are like: ${actLike} \n` +
+            chat.bot.context +
+            `\n today is: ${new Date().toISOString()}`,
       },
       ...histories.reverse().map(msg => ({
         role: (msg.sender === 'user' ? 'user' : 'assistant') as
