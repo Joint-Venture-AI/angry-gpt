@@ -22,11 +22,7 @@ export const MessageServices = {
     const messages: OpenAI.ChatCompletionMessageParam[] = [
       {
         role: 'system',
-        content:
-          actLike &&
-          `you are like: ${actLike} \n` +
-            chat.bot.context +
-            `\n today is: ${new Date().toISOString()}`,
+        content: actLike || chat.bot.context,
       },
       ...histories.reverse().map(msg => ({
         role: (msg.sender === 'user' ? 'user' : 'assistant') as
