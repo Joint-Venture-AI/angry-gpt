@@ -6,5 +6,5 @@ import crypto from 'crypto';
  * This function generates a random secret key using the crypto module.
  * The key is generated as a hex string of 32 characters.
  */
-export const genSecret = (length: number = 32) =>
+export const genSecret = (length = 32) =>
   crypto.randomBytes(length).toString('hex');

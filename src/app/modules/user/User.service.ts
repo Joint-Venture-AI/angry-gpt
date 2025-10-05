@@ -26,7 +26,7 @@ export const UserServices = {
     const updatedUser = await User.findByIdAndUpdate(req?.user!._id, userData, {
       new: true,
       runValidators: true,
-    }).select('name avatar email role');
+    }).select('name country avatar email role');
 
     if (userData?.avatar) await deleteFile(oldAvatar!);
 

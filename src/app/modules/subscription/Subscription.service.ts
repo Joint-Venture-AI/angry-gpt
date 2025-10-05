@@ -36,4 +36,24 @@ export const SubscriptionServices = {
 
     return subscription;
   },
+
+  async list({ page, limit }: any) {
+    const subscriptions = await Subscription.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const total = await Subscription.countDocuments();
+
+    return {
+      subscriptions,
+      meta: {
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPage: Math.ceil(total / limit),
+        },
+      },
+    };
+  },
 };

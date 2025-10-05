@@ -16,6 +16,10 @@ const userSchema = new Schema<TUser>(
       type: String,
       default: config.server.default_avatar,
     },
+    country: {
+      type: String,
+      default: 'NA'
+    },
     password: {
       type: String,
       select: false,

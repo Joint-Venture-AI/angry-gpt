@@ -2,17 +2,24 @@ import { Router } from 'express';
 import { SubscriptionControllers } from './Subscription.controller';
 import purifyRequest from '../../middlewares/purifyRequest';
 import { SubscriptionValidations } from './Subscription.validation';
+import { QueryValidations } from '../query/Query.validation';
 
-const adminRoutes = Router();
-const userRoutes = Router();
+const admin = Router();
+const user = Router();
 
-adminRoutes.post(
+admin.post(
   '/create',
   purifyRequest(SubscriptionValidations.create),
   SubscriptionControllers.create,
 );
 
+user.get(
+  '/',
+  purifyRequest(QueryValidations.list),
+  SubscriptionControllers.list,
+);
+
 export const SubscriptionRoutes = {
-  admin: adminRoutes,
-  user: userRoutes,
+  admin,
+  user,
 };

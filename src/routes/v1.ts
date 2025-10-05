@@ -14,6 +14,7 @@ import { CartRoutes } from '../app/modules/cart/Cart.route';
 import catchAsync from '../util/server/catchAsync';
 import serveResponse from '../util/server/serveResponse';
 import { SettingController } from '../app/modules/setting/Setting.controller';
+import { SubscriptionRoutes } from '../app/modules/subscription/Subscription.route';
 
 const routes: TRoute[] = [
   {
@@ -74,6 +75,10 @@ const routes: TRoute[] = [
   {
     path: '/settings',
     route: Router().get('/', SettingController.retrieve),
+  },
+  {
+    path: '/subscriptions',
+    route: SubscriptionRoutes.user,
   },
 ];
 
