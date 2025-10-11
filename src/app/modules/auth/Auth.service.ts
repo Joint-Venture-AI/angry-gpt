@@ -78,6 +78,9 @@ export const AuthServices = {
   },
 
   async resetPassword(email: string, password: string) {
+    const salt = await bcrypt.genSalt(config.bcrypt_salt_rounds);
+    password = await bcrypt.hash(password, salt);
+
     await User.updateOne(
       { email },
       {
