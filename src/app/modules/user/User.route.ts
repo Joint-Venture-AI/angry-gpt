@@ -11,19 +11,21 @@ export const UserRoutes = {
     purifyRequest(QueryValidations.list),
     UserControllers.list,
   ),
-  user: Router().patch(
-    '/edit',
-    imageUploader(
-      (req, images) => {
-        req.body.avatar = images[0];
-      },
-      {
-        isOptional: true,
-        width: 300,
-        height: 300,
-      },
-    ),
-    purifyRequest(UserValidations.edit),
-    UserControllers.edit,
-  ),
+  user: Router()
+    .patch(
+      '/edit',
+      imageUploader(
+        (req, images) => {
+          req.body.avatar = images[0];
+        },
+        {
+          isOptional: true,
+          width: 300,
+          height: 300,
+        },
+      ),
+      purifyRequest(UserValidations.edit),
+      UserControllers.edit,
+    )
+    .delete('/', UserControllers.accountDelete),
 };
