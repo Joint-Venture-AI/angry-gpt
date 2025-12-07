@@ -50,4 +50,10 @@ export const UserServices = {
       users,
     };
   },
+
+  async accountDelete(userId: any) {
+    const user = await User.findByIdAndDelete(userId);
+
+    if (user?.avatar) await deleteFile(user.avatar);
+  },
 };

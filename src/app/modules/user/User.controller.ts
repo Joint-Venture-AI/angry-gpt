@@ -30,4 +30,12 @@ export const UserControllers = {
       data: users,
     });
   }),
+
+  accountDelete: catchAsync(async (req, res) => {
+    await UserServices.accountDelete(req.user!._id!);
+
+    serveResponse(res, {
+      message: 'Account deleted successfully!',
+    });
+  }),
 };
