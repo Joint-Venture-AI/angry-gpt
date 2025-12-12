@@ -19,4 +19,13 @@ export const SettingController = {
       data: settings,
     });
   }),
+
+  retrieveByName: catchAsync(async (req, res) => {
+    const setting = await SettingService.retrieveByName(req.params.name);
+
+    serveResponse(res, {
+      message: 'Setting retrieved successfully.',
+      data: setting?.value,
+    });
+  }),
 };
