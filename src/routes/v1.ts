@@ -74,7 +74,9 @@ const routes: TRoute[] = [
   },
   {
     path: '/settings',
-    route: Router().get('/', SettingController.retrieve),
+    route: Router()
+      .get('/', SettingController.retrieve)
+      .get('/:name', SettingController.retrieveByName),
   },
   {
     path: '/subscriptions',

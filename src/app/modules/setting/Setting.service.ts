@@ -5,4 +5,6 @@ export const SettingService = {
     Setting.updateOne({ name }, { value }, { upsert: true }),
 
   retrieve: async () => Setting.find(),
+
+  retrieveByName: async (name: string) => Setting.findOne({ name }),
 };
